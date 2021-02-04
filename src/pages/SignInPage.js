@@ -1,12 +1,15 @@
+import { useContextState } from 'dynamic-context-provider'
 import React, { useState } from 'react'
 import { signInWithGoogle } from '../firebase'
 import { signInWithEmailAndPasswordHandler } from '../firebase'
 
 const SignInPage = () => {
+    const { user } = useContextState()
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
     async function handleSubmit(e){
         await signInWithEmailAndPasswordHandler(e, email, password)
+        console.log('log: user', user)
     }
     
     return (

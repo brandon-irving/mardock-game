@@ -32,7 +32,7 @@ export const signInWithGoogle = () => {
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const generateUserDocument = async (user, additionalData) => {
-    if (!user) return;
+    if (!user) return {};
     const userRef = firestore.doc(`users/${user.uid}`);
     const snapshot = await userRef.get();
     if (!snapshot.exists) {
@@ -42,6 +42,7 @@ export const generateUserDocument = async (user, additionalData) => {
           displayName,
           email,
           photoURL,
+          uid: user.uid,
           ...additionalData
         });
       } catch (error) {

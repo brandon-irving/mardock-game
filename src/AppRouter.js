@@ -2,12 +2,14 @@ import { useContextState } from "dynamic-context-provider";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { auth, generateUserDocument } from "./firebase";
+import CrudPage from "./pages/CrudPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 
 const routes = [
     { route: '/sign-in', title: 'Sign In'},
     { route: '/sign-up', title: 'Sign Up'},
+    { route: '/crud', title: 'Crud'},
     { route: '/', title: 'Home'},
 ]
 function renderRoutes(routes) {
@@ -26,7 +28,7 @@ export default function AppRouter() {
 
         auth.onAuthStateChanged(async(userAuth) => {
             const user = await generateUserDocument(userAuth);
-            updateContextState({user: {displayName: user.displayName, email: user.email, image: user.photoURL}})
+            updateContextState({user})
           });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -42,6 +44,9 @@ export default function AppRouter() {
           </Route>
           <Route path="/sign-up">
             <SignUpPage />
+          </Route>
+          <Route path="/crud">
+            <CrudPage />
           </Route>
           <Route path="/" exact>
             <div>Home</div>

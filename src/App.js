@@ -1,4 +1,3 @@
-// import { auth, signInWithGoogle } from './firebase/firebase';
 import { ContextStateProvider } from 'dynamic-context-provider';
 import { globalStateConfig } from './core/globalStateVars';
 import AppRouter from './AppRouter';
