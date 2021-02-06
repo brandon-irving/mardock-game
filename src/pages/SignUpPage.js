@@ -6,7 +6,8 @@ const SignUpPage = () => {
     const [displayName, setdisplayName] = useState('')
     const [password, setpassword] = useState('')
     async function handleSubmit(e){
-        await createUserWithEmailAndPasswordHandler(e, {displayName, email, password})
+        const user = await createUserWithEmailAndPasswordHandler(e, {displayName, email, password})
+        console.log('log: Manual User Signup', user)
     }
     return (
         <div>

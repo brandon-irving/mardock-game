@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/database";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
@@ -26,11 +27,13 @@ const getUserDocument = async uid => {
     }
   };
 firebase.initializeApp(firebaseConfig);
+
 export const signInWithGoogle = () => {
     auth.signInWithPopup(provider);
 };
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
+
 export const generateUserDocument = async (user, additionalData) => {
     if (!user) return {};
     const userRef = firestore.doc(`users/${user.uid}`);
@@ -38,29 +41,28 @@ export const generateUserDocument = async (user, additionalData) => {
     if (!snapshot.exists) {
       const { email, displayName, photoURL } = user;
       try {
-        await userRef.set({
-          displayName,
-          email,
-          photoURL,
-          uid: user.uid,
-          ...additionalData
-        });
+        const userForCloudStore = { displayName, email, photoURL, uid: user.uid, ...additionalData }
+        await userRef.set(userForCloudStore);
       } catch (error) {
         console.error("Error creating user document", error);
       }
     }
     return getUserDocument(user.uid);
   };
+
   export const createUserWithEmailAndPasswordHandler = async (event, values={email: '', password: '', displayName: ''}) => {
+    let newUser = null
     const { email, password, displayName } = values
     event.preventDefault();
     try{
       const {user} = await auth.createUserWithEmailAndPassword(email, password);
-      generateUserDocument(user, {displayName, email});
+      newUser = await generateUserDocument(user, {displayName, email});
+      console.log('log: createUserWithEmailAndPasswordHandler', { user, newUser})
     }
     catch(error){
       console.error('Error Signing up with email and password');
     }
+    return newUser
   };
   export const signInWithEmailAndPasswordHandler = (event, email, password) => {
     event.preventDefault();
@@ -68,3 +70,21 @@ export const generateUserDocument = async (user, additionalData) => {
       console.error("Error signing in with password and email", error);
     });
   };
+
+  export const observer = (updateContextState)=>{
+    firestore.collection('users').onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(change => {
+        const user = change.doc.data()
+
+        if (change.type === 'added') {
+        }
+        if (change.type === 'modified') {
+          console.log('log: modified newUser', user)
+          updateContextState({user})
+
+        }
+        if (change.type === 'removed') {
+        }
+      });
+    });
+  }

@@ -1,16 +1,14 @@
 import { useContextState } from "dynamic-context-provider";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { auth, generateUserDocument } from "./firebase";
-import CrudPage from "./pages/CrudPage";
+import { auth, generateUserDocument, observer } from "./firebase";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 
 const routes = [
-    { route: '/sign-in', title: 'Sign In'},
-    { route: '/sign-up', title: 'Sign Up'},
-    { route: '/crud', title: 'Crud'},
-    { route: '/', title: 'Home'},
+  { route: '/sign-in', title: 'Sign In' },
+  { route: '/sign-up', title: 'Sign Up' },
+  { route: '/', title: 'Home' },
 ]
 function renderRoutes(routes) {
   return routes.map((config, i) => {
@@ -23,21 +21,29 @@ function renderRoutes(routes) {
 }
 
 export default function AppRouter() {
-    const { updateContextState} = useContextState()
-    useEffect(() => {
+  const { user, globalLoading, updateContextState } = useContextState()
 
-        auth.onAuthStateChanged(async(userAuth) => {
-            const user = await generateUserDocument(userAuth);
-            updateContextState({user})
-          });
+  useEffect(() => {
+
+    auth.onAuthStateChanged(async (userAuth) => {
+      const user = await generateUserDocument(userAuth);
+      updateContextState({ user, globalLoading: false })
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+  }, [])
+
+  useEffect(() => {
+    if (globalLoading) return
+    observer(updateContextState)
+  })
+  if(globalLoading)return null// TODO: add splash/loading screen
   return (
     <Router>
       <>
-      <nav>
+        <nav>
           <ul>{renderRoutes(routes)}</ul>
         </nav>
+        <h1>{user.displayName}</h1>
         <Switch>
           <Route path="/sign-in">
             <SignInPage />
@@ -45,14 +51,11 @@ export default function AppRouter() {
           <Route path="/sign-up">
             <SignUpPage />
           </Route>
-          <Route path="/crud">
-            <CrudPage />
-          </Route>
           <Route path="/" exact>
             <div>Home</div>
           </Route>
           <Route>
-          <div>Home</div>
+            <div>Home</div>
           </Route>
         </Switch>
       </>
