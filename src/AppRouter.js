@@ -4,24 +4,26 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { auth, generateUserDocument, observer } from "./firebase";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import Home from "./pages/Home";
+import Root from "./common/Root";
 
-const routes = [
-  { route: '/sign-in', title: 'Sign In' },
-  { route: '/sign-up', title: 'Sign Up' },
-  { route: '/', title: 'Home' },
-]
-function renderRoutes(routes) {
-  return routes.map((config, i) => {
-    return (
-      <li key={i}>
-        <Link to={config.route}>{config.title}</Link>
-      </li>
-    );
-  });
-}
+// const routes = [
+//   { route: '/sign-in', title: 'Sign In' },
+//   { route: '/sign-up', title: 'Sign Up' },
+//   { route: '/', title: 'Home' },
+// ]
+// function renderRoutes(routes) {
+//   return routes.map((config, i) => {
+//     return (
+//       <li key={i}>
+//         <Link to={config.route}>{config.title}</Link>
+//       </li>
+//     );
+//   });
+// }
 
 export default function AppRouter() {
-  const { user, globalLoading, updateContextState } = useContextState()
+  const { globalLoading, updateContextState } = useContextState()
 
   useEffect(() => {
 
@@ -39,12 +41,8 @@ export default function AppRouter() {
   if(globalLoading)return null// TODO: add splash/loading screen
   return (
     <Router>
-      <>
-        <nav>
-          <ul>{renderRoutes(routes)}</ul>
-        </nav>
-        <h1>{user.displayName}</h1>
-        <Switch>
+      <Root>
+      <Switch>
           <Route path="/sign-in">
             <SignInPage />
           </Route>
@@ -52,13 +50,13 @@ export default function AppRouter() {
             <SignUpPage />
           </Route>
           <Route path="/" exact>
-            <div>Home</div>
+            <Home />
           </Route>
           <Route>
-            <div>Home</div>
+            <Home />
           </Route>
         </Switch>
-      </>
+      </Root>
     </Router>
   );
 }
