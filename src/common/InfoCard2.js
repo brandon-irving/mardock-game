@@ -15,31 +15,20 @@ import HpBar from './ProgressBar/HpBar'
 import { Typography } from '@material-ui/core'
 const useStyles = makeStyles(styles);
 
-const InfoCard = ({ 
-    title='Knight', 
-    text="The knight is a real nigga",
-    imgSrc="",
-    noBox=false,
+const InfoCard2 = ({ 
+children
 }) => {
     const classes = useStyles();
     
     return (
         <GridItem xs={12} sm={6} md={4}>
         <Card>
-          {!noBox && 
-          <div style={{display: 'flex', justifyContent: 'center'}}>  
-            <CardIcon color="rose">
-            <ImageIcon alt={title} src={imgSrc} />
-            </CardIcon>
-          </div>}
-          <p style={{color: 'white', fontSize: '15pt', textAlign: 'center'}} className={classes.cardCategory}>{title}</p>
-          {/* <Typography style={{color: 'white', textAlign: 'center'}} variant="subtitle1">{text}</Typography> */}
-          <CardFooter stats>
-          <Typography style={{color: 'white', textAlign: 'center'}} variant="subtitle1">{text}</Typography>
-          </CardFooter>
+            <div style={{color: 'white', margin: '10px',display: 'flex', flexWrap: 'wrap'}}>
+            {children}
+            </div>
         </Card>
       </GridItem>
     )
 }
 
-export default InfoCard
+export default InfoCard2

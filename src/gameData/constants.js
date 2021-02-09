@@ -1,4 +1,4 @@
-export const stats = {
+export const statSheet = {
     str: { title: 'Strength', description: '' },
     def: { title: 'Defense', description: '' },
     spd: { title: 'Speed', description: '' },

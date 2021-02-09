@@ -21,7 +21,7 @@ export default function CardIcon(props) {
     [className]: className !== undefined
   });
   return (
-    <div className={cardIconClasses} {...rest}>
+    <div style={{marginRight: 0}} className={cardIconClasses} {...rest}>
       {children}
     </div>
   );

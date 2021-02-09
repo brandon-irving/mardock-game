@@ -1,8 +1,7 @@
 import React from 'react'
-import logo from '../images/knight.svg'
-const ImageIcon = ({ }) => {
+const ImageIcon = ({ src, alt='' }) => {
     return (
-        <img style={{ width: '25vw', maxWidth: '100px', height: 'inherit' }} src={logo} alt="Logo" />
+        <img style={{ width: '25vw', maxWidth: '100px', height: 'inherit' }} src={src} alt={alt} />
     )
 }
 

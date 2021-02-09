@@ -1,6 +1,6 @@
 import { flatMap, forEach, map } from "lodash";
-import { stats } from './constants'
-import items from './items'
+import { statSheet } from './constants'
+import items from './items/items'
 
 export function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -14,7 +14,7 @@ export function getSpecialMonsterList(containerObject) { // min and max included
 }
 
 export function generateStats(range=5) {
-  const generatedStats = Object.keys(stats).reduce((acc, statKey)=>{
+  const generatedStats = Object.keys(statSheet).reduce((acc, statKey)=>{
   const newStats = {...acc}
   let randomStat = randomIntFromInterval(9, 14)
   if(range > 5 && range <= 10){
@@ -45,3 +45,5 @@ export function generateStats(range=5) {
 
     return listOfItems
   }
+
+  export const normalise = (value, MAX) => (value - 0) * 100 / (MAX - 0);
