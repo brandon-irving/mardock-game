@@ -6,21 +6,8 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Home from "./pages/Home";
 import Root from "./common/Root";
+import BattlePage from "./pages/BattlePage";
 
-// const routes = [
-//   { route: '/sign-in', title: 'Sign In' },
-//   { route: '/sign-up', title: 'Sign Up' },
-//   { route: '/', title: 'Home' },
-// ]
-// function renderRoutes(routes) {
-//   return routes.map((config, i) => {
-//     return (
-//       <li key={i}>
-//         <Link to={config.route}>{config.title}</Link>
-//       </li>
-//     );
-//   });
-// }
 
 export default function AppRouter() {
   const { globalLoading, updateContextState } = useContextState()
@@ -48,6 +35,9 @@ export default function AppRouter() {
           </Route>
           <Route path="/sign-up">
             <SignUpPage />
+          </Route>
+          <Route path="/Battle">
+            <BattlePage />
           </Route>
           <Route path="/" exact>
             <Home />

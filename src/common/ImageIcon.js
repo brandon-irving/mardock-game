@@ -1,7 +1,7 @@
 import React from 'react'
-const ImageIcon = ({ src, alt='' }) => {
+const ImageIcon = ({ src, alt='', width="25vw" }) => {
     return (
-        <img style={{ width: '25vw', maxWidth: '100px', height: 'inherit' }} src={src} alt={alt} />
+        <img style={{ width, maxWidth: '100px', height: 'inherit' }} src={src} alt={alt} />
     )
 }
 
