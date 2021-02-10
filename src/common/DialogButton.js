@@ -1,29 +1,35 @@
-import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
 import { omit } from 'lodash'
 import React, { useState } from 'react'
 
 const DialogButton = (props) => {
-    const { dialog ={}, children, onClick=()=>null } = props
-    const [openDialog, setopenDialog] = useState(false)
+    const { dialog ={open: false, setopen: ()=>{}}, children, onClick=()=>null } = props
     const buttonProps = omit(props, ['dialog'])
 
     async function handleClick(){
-        setopenDialog(true)
+        dialog.setopen(true)
         await onClick()
     }
     function handleClose(){
-        setopenDialog(false)
+        dialog.setopen(false)
     }
     return (
         <>
     <Button {...buttonProps} onClick={handleClick}>{children}</Button>
-    <Dialog open={openDialog} onClose={handleClose} >
-    <DialogTitle id={dialog.title}>{dialog.title}</DialogTitle>
-    <DialogContent>
-    {dialog.content}
-    ioeuniofnoifijo
-    </DialogContent>
-    </Dialog>
+     <Dialog fullWidth style={{bottom: '50vw'}} open={dialog.open} onClose={handleClose}>
+        <DialogTitle id={dialog.title}>{dialog.title}</DialogTitle>
+        <DialogContent>
+         {dialog.content}
+        </DialogContent>
+        {/* <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Subscribe
+          </Button>
+        </DialogActions> */}
+      </Dialog>
     </>
     )
 }
