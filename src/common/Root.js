@@ -102,7 +102,6 @@ export default function Root({children}) {
       e.preventDefault()
       e.stopPropagation()
     history.push( `${route}`)
-      console.log('log: link pressed', history)
   }
   function handleLogOut(){
       console.log('log: logout')

@@ -16,7 +16,6 @@ const HpBar = () => {
         }
         const [gaugeValue, setgaugeValue] = useState(getHp())
         
-        console.log('log: stats', {stats})
         
         useEffect(() => {
             setgaugeValue(getHp())

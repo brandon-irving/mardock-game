@@ -14,9 +14,11 @@ const BaseBluePrint = ({values, type='base', options=[{label: '', value: ''}], t
                             id: type,
                             name: type,
                             type: 'select',
-                            label: '',
                             options,
-                            helperText: values[type].description
+                            helperText: <>
+                           <Typography style={{fontSize: '10pt'}}>{values[type].description}</Typography>
+                           <Typography style={{fontSize: '10pt'}}>{values[type].useDescription}</Typography>  
+                            </>
                         }
                     },
                 ]

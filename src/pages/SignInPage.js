@@ -10,11 +10,9 @@ const SignInPage = () => {
     async function handleSubmit(e){
         await signInWithEmailAndPasswordHandler(e, email, password)
 
-        console.log('log: Manual User Sign in', user)
     }
     async function handleGoogleSignIn(e){
         await signInWithGoogle()
-        console.log('log: Google User Sign in', user)
     }
     return (
         <div>

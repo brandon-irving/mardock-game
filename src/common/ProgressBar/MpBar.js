@@ -14,7 +14,6 @@ const MpBar = () => {
           return normalise(currentMp, maxMp)
         }
         const [gaugeValue, setgaugeValue] = useState(getMp())
-        console.log('log: accessory', mp)
         
         useEffect(() => {
             setgaugeValue(getMp())

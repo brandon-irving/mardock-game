@@ -41,7 +41,6 @@ export function generateStats(range=5) {
       const item = {...items[itemName], quantity}
       listOfItems.push(item)
     })
-    console.log('log: itemInfoString',listOfItems)
 
     return listOfItems
   }

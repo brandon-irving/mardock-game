@@ -57,7 +57,6 @@ export const generateUserDocument = async (user, additionalData) => {
     try{
       const {user} = await auth.createUserWithEmailAndPassword(email, password);
       newUser = await generateUserDocument(user, {displayName, email});
-      console.log('log: createUserWithEmailAndPasswordHandler', { user, newUser})
     }
     catch(error){
       console.error('Error Signing up with email and password');
@@ -79,7 +78,6 @@ export const generateUserDocument = async (user, additionalData) => {
         if (change.type === 'added') {
         }
         if (change.type === 'modified') {
-          console.log('log: modified newUser', user)
           updateContextState({user})
 
         }

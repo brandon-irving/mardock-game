@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
                             map(equipped, equipment=>{
                               return(
                                 <Grid item xs={4}>
-                            <CustomIcon text={equipment.title} logo={equipment.src} alt={equipment.src}/>
+                            <CustomIcon text={equipment.label} logo={equipment.src} alt={equipment.src}/>
                             </Grid>
                               )
                             })
@@ -96,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
                                      
                      </InfoCard2>
              <InfoCard 
-             title={characterClass.title}
+             title={characterClass.label}
              text={characterClass.description}
              imgSrc={characterClass.src}
              />
