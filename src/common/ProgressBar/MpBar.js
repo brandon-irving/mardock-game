@@ -2,15 +2,21 @@ import React, { useState, useEffect } from 'react'
 import ProgressBar from '.'
 import { useContextState } from 'dynamic-context-provider';
 import { normalise } from '../../gameData/helpers'
-import { accessories } from '../../gameData/items/accessories';
+import { useStatSheet } from '../hooks/useStatSheet'
+import { useGetEquippedData } from '../hooks/useGetEquippedData'
 
 const MpBar = () => {
     const { 
         user: {
-            character:  { mp, maxMp, equipped: {armor={mp: 0}, accessory={mp: 0}}} } 
+            character:  { mp, maxMp, equipped: {armor={mp: 0}}} } 
         } = useContextState()
+        const accessory = useGetEquippedData('accessory')
+        const weapon = useGetEquippedData('weapon')
+        const stats = useStatSheet()
+        console.log('log: TODO-add stat modifiers', stats)
+
         function getMp(){
-            const currentMp = mp + armor.mp
+        const currentMp = mp + (armor.mp || 0) + (weapon.mp || 0) + (accessory.mp || 0)
           return normalise(currentMp, maxMp)
         }
         const [gaugeValue, setgaugeValue] = useState(getMp())

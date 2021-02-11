@@ -7,6 +7,7 @@ import SignUpPage from "./pages/SignUpPage";
 import Home from "./pages/Home";
 import Root from "./common/Root";
 import BattlePage from "./pages/BattlePage";
+import Page from './common/Page'
 
 
 export default function AppRouter() {
@@ -27,8 +28,10 @@ export default function AppRouter() {
   })
   if(globalLoading)return null// TODO: add splash/loading screen
   return (
+    <>
     <Router>
       <Root>
+        <Page>
       <Switch>
           <Route path="/sign-in">
             <SignInPage />
@@ -46,7 +49,10 @@ export default function AppRouter() {
             <Home />
           </Route>
         </Switch>
+        </Page>
       </Root>
     </Router>
+    
+    </>
   );
 }

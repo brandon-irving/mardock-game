@@ -7,6 +7,7 @@ import AttackForm from './AttackForm'
 import ItemsForm from './ItemsForm'
 import SpellForm from './SpellForm'
 import MonsterView from './MonsterView'
+import ApNotifier from '../../common/ApNotifier'
 
 const BattlePage = () => {
     const [aopen, setaopen] = React.useState(false)
@@ -63,6 +64,8 @@ const BattlePage = () => {
             <div>
                 <HpBar />
                 <MpBar />
+                <ApNotifier />
+               
             </div>
         </div>
 
