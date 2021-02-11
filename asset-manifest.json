@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.js": "/static/js/main.ed1c1356.chunk.js",
+    "main.js.map": "/static/js/main.ed1c1356.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.627f332f.js",
+    "runtime-main.js.map": "/static/js/runtime-main.627f332f.js.map",
+    "static/css/2.160bd010.chunk.css": "/static/css/2.160bd010.chunk.css",
+    "static/js/2.5b36aa25.chunk.js": "/static/js/2.5b36aa25.chunk.js",
+    "static/js/2.5b36aa25.chunk.js.map": "/static/js/2.5b36aa25.chunk.js.map",
+    "static/js/3.62a7b052.chunk.js": "/static/js/3.62a7b052.chunk.js",
+    "static/js/3.62a7b052.chunk.js.map": "/static/js/3.62a7b052.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.160bd010.chunk.css.map": "/static/css/2.160bd010.chunk.css.map",
+    "static/js/2.5b36aa25.chunk.js.LICENSE.txt": "/static/js/2.5b36aa25.chunk.js.LICENSE.txt",
+    "static/media/bag.74d92ec9.svg": "/static/media/bag.74d92ec9.svg",
+    "static/media/darkRiteArmor.9c40cf0e.svg": "/static/media/darkRiteArmor.9c40cf0e.svg",
+    "static/media/equipped.80f4d893.svg": "/static/media/equipped.80f4d893.svg",
+    "static/media/fist.50aa2aec.svg": "/static/media/fist.50aa2aec.svg",
+    "static/media/jewelArmanar.eb01ddc8.svg": "/static/media/jewelArmanar.eb01ddc8.svg",
+    "static/media/knight.f5702281.svg": "/static/media/knight.f5702281.svg",
+    "static/media/shield.2e601a46.svg": "/static/media/shield.2e601a46.svg",
+    "static/media/sword.119d0a25.svg": "/static/media/sword.119d0a25.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.627f332f.js",
+    "static/css/2.160bd010.chunk.css",
+    "static/js/2.5b36aa25.chunk.js",
+    "static/js/main.ed1c1356.chunk.js"
+  ]
+}
