@@ -1,37 +1,159 @@
+import React from 'react'
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 import { useContextState } from 'dynamic-context-provider'
-import React, { useState } from 'react'
 import { signInWithGoogle } from '../firebase'
 import { signInWithEmailAndPasswordHandler } from '../firebase'
+import { MuiFormGenerator } from 'mui-form-generator'
+import theme from '../core/theme';
+import { useHistory } from 'react-router-dom';
 
-const SignInPage = () => {
-    const { user } = useContextState()
-    const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
-    async function handleSubmit(e){
-        await signInWithEmailAndPasswordHandler(e, email, password)
-
-    }
-    async function handleGoogleSignIn(e){
-        await signInWithGoogle()
-    }
+function Copyright() {
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <h1>{user && user.displayName}</h1>
-                <label>Email</label>
-                <input value={email} type="email" onChange={e=>setemail(e.target.value)}/>
-                </div>
-                <div>
-                <label>Password</label>
-                <input value={password} type="password" onChange={e=>setpassword(e.target.value)}/>
-                </div>
-            <button type="submit">Submit</button>
-            </form>      
-            <p>Or sign in with google</p>     
-            <button onClick={handleGoogleSignIn}>Google</button>
-        </div>
-    )
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://github.com/brandon-irving/mardock-game">
+                Mardock Game
+      </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
+    );
 }
 
-export default SignInPage
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%'
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+}));
+const BluePrint = () => {
+    return ({
+        Rows: [
+            {
+                Cols: [
+                    {
+                        Input: {
+                            id: 'email',
+                            name: 'email',
+                            type: 'email',
+                            label: 'Email',
+                            variant: 'filled',
+
+                        }
+                    },
+                ]
+            },
+            {
+                Cols: [
+                    {
+                        Input: {
+                            id: 'password',
+                            name: 'password',
+                            type: 'password',
+                            label: 'Password',
+                            variant: 'filled',
+
+                        }
+                    },
+                ]
+            },
+            {
+                Cols: [
+                    {
+                        Button: {
+                            id: 'submit',
+                            name: 'submit',
+                            type: 'submit',
+                            label: 'Sign in',
+                            fullWidth: true,
+                            disabled: false,
+                            variant: 'outlined',
+                        }
+                    },
+                ]
+            },
+           
+
+        ]
+    })
+}
+function validate(values) {
+    const errors = {}
+    Object.keys(values).forEach(field => {
+        const isEmpty = (!values[field]) || (typeof values[field] === 'string' && !values[field].length)
+        if (isEmpty) {
+            errors[field] = 'required'
+        }
+    })
+    return errors
+}
+export default function SignIn() {
+    const { user } = useContextState()
+    const history = useHistory()
+    const classes = useStyles();
+    const initialValues = { email: '', password: '' }
+
+    async function handleSubmit(values) {
+        await signInWithEmailAndPasswordHandler(values.email, values.password)
+        const route = user.character ? '/' : 'create'
+        console.log('log: handleSubmit', {user, route})
+        history.push(route)
+    }
+    async function handleGoogleSignIn(e) {
+        await signInWithGoogle()
+        const route = user.character ? '/' : 'create'
+        console.log('log: handleGoogleSignIn', {user, route})
+        history.replace(route)
+    }
+    return (
+        <>
+        <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+            Sign in
+</Typography>
+        <MuiFormGenerator
+            theme={theme}
+            manualValidate={validate}
+            blueprint={BluePrint({ handleGoogleSignIn })}
+            initialValues={initialValues}
+            handleSubmit={handleSubmit}
+        />
+     <Grid container>
+    <Grid item xs>
+        <Button onClick={handleGoogleSignIn}>
+        Google sign in
+        </Button>
+    
+    </Grid>
+    <Grid item>
+    <Button onClick={handleGoogleSignIn}>
+        Sign Up
+        </Button>
+     
+    </Grid>
+  </Grid>
+    </>
+    );
+}

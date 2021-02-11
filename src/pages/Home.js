@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
                         </Grid>
                         <Grid style={{textAlign: 'end'}} item xs={9}>
                         <Typography>Rank Title</Typography>                        
-                        <Typography>100 Gil</Typography>                        
+                        <Typography>{character.gil} Gil</Typography>                        
                         </Grid>
                         <Grid container style={{marginTop: '10px'}}>
                           {
@@ -100,7 +100,6 @@ const useStyles = makeStyles((theme) => ({
              text={characterClass.description}
              imgSrc={characterClass.src}
              />
-             <InfoCard />
       </GridContainer>
         </div>
     )

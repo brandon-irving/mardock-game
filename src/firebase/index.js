@@ -63,19 +63,21 @@ export const generateUserDocument = async (user, additionalData) => {
     }
     return newUser
   };
-  export const signInWithEmailAndPasswordHandler = (event, email, password) => {
-    event.preventDefault();
+  export const signInWithEmailAndPasswordHandler = ( email, password) => {
     auth.signInWithEmailAndPassword(email, password).catch(error => {
       console.error("Error signing in with password and email", error);
     });
+  };
+  export const signOut = async() => {
+    await auth.signOut()
   };
 
   export const observer = (updateContextState)=>{
     firestore.collection('users').onSnapshot(querySnapshot => {
       querySnapshot.docChanges().forEach(change => {
         const user = change.doc.data()
-
         if (change.type === 'added') {
+
         }
         if (change.type === 'modified') {
           updateContextState({user})

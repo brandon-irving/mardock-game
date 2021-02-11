@@ -1,12 +1,9 @@
 import { useContextState } from "dynamic-context-provider";
-import { map } from "lodash";
-import { statSheet } from "../../gameData/constants";
 
-export function useStatSheet(){
-    const { user: {character: {stats}} } = useContextState()
-    const completeStats = map(Object.keys(statSheet), statKey=>{
-        const statCount = stats[statKey] || 0
-        const statInfo = statSheet[statKey]
+export function convertStatSheet(stats){
+    const completeStats = Object.keys(stats).reduce((acc, statAbbr)=>{
+        const stat = stats[statAbbr]
+        const statCount = stat.points
         let statBoost = 0
         if(statCount >= 12 && statCount<14){
             statBoost = 1
@@ -23,8 +20,13 @@ export function useStatSheet(){
         if(statCount >= 20 ){
             statBoost = 5
         }
-        return {...statInfo, ...statSheet[statKey], abbr: statKey.toUpperCase(),statCount, statBoost}
-    })
-
+        return {...acc, [statAbbr]: {...stat, statBoost}}
+    },{})
+    
     return completeStats
+}
+export function useStatSheet(manualStats){
+    const { user: {character} } = useContextState()
+    const stats = manualStats || character.stats
+    return convertStatSheet(stats)
 }

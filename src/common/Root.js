@@ -19,6 +19,11 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailIcon from '@material-ui/icons/Mail';
 import { useHistory } from 'react-router-dom';
 import routes from '../core/routes';
+import FloatingButton from './FloatingButton';
+import ImageIcon from './ImageIcon';
+import bag from '../images/bag.svg';
+import { signOut } from '../firebase';
+import { useContextState } from 'dynamic-context-provider';
 
 const drawerWidth = 240;
 
@@ -103,8 +108,10 @@ export default function Root({children}) {
       e.stopPropagation()
     history.push( `${route}`)
   }
-  function handleLogOut(){
-      console.log('log: logout')
+  const { user } = useContextState()
+  async function handleLogOut(){
+    await signOut()
+      console.log('log: logout', user)
   }
   return (
     <div className={classes.root}>
@@ -174,6 +181,9 @@ export default function Root({children}) {
         <div className={classes.toolbar} />
         {children}
       </main>
+      <FloatingButton >
+    <ImageIcon width='9vw' src={bag} alt="bag" />
+    </FloatingButton>
     </div>
   );
 }
