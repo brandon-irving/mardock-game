@@ -9,7 +9,5 @@ export function useGetItems(){
         newItems.push(item)
         return newItems
     },[])
-    console.log('log: items', {userItems, items})
     return userItems 
-
 }

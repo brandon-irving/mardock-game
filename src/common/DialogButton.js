@@ -21,14 +21,6 @@ const DialogButton = (props) => {
         <DialogContent>
          {dialog.content}
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Subscribe
-          </Button>
-        </DialogActions> */}
       </Dialog>
     </>
     )

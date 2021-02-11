@@ -65,9 +65,9 @@ const useStyles = makeStyles((theme) => ({
                         </Grid>
                         <Grid container style={{marginTop: '10px'}}>
                           {
-                            map(equipped, equipment=>{
+                            map(equipped, (equipment, index)=>{
                               return(
-                                <Grid item xs={4}>
+                                <Grid key={index} item xs={4}>
                             <CustomIcon text={equipment.label} logo={equipment.src} alt={equipment.src}/>
                             </Grid>
                               )

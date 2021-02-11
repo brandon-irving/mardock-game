@@ -13,7 +13,6 @@ const HpBar = () => {
         const accessory = useGetEquippedData('accessory')
         const weapon = useGetEquippedData('weapon')
         const stats = useStatSheet()
-        console.log('log: TODO-add stat modifiers', stats)
         
         function getHp(){
         const currentHp = hp + (armor.hp || 0) + (weapon.hp || 0) + (accessory.hp || 0)

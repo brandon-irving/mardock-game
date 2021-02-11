@@ -13,7 +13,6 @@ const MpBar = () => {
         const accessory = useGetEquippedData('accessory')
         const weapon = useGetEquippedData('weapon')
         const stats = useStatSheet()
-        console.log('log: TODO-add stat modifiers', stats)
 
         function getMp(){
         const currentMp = mp + (armor.mp || 0) + (weapon.mp || 0) + (accessory.mp || 0)
