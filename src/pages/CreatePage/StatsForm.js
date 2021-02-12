@@ -47,7 +47,7 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
           <Avatar alt={stat.abbr} >{stat.abbr}</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={`${stat.title}: ${stat.points} ${rollBonusText}`}
+          primary={`${stat.label}: ${stat.points} ${rollBonusText}`}
           secondary={stat.description}
         />
        
@@ -66,20 +66,21 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
 }
 
 
-export default function StatsForm({characterStats, setcharacterStats, availablePoints, setavailablePoints}) {
+export default function StatsForm({updateCharacter, createUserObj, availablePoints, setavailablePoints}) {
   const classes = useStyles();
-  const statObj = convertStatSheet(characterStats)
+  const statObj = convertStatSheet(createUserObj.stats)
+
   function updateCharacterStat(key, value){
     const newCharStats = {...statObj}
     newCharStats[key].points = newCharStats[key].points + value
-    setcharacterStats(convertStatSheet(newCharStats))
+    updateCharacter({stats: convertStatSheet(newCharStats)})
   }
   return (
     <List className={classes.root}>
         <p>{availablePoints}</p>
         {
             map(Object.keys(statObj), abbr=>{
-                const stat = {...characterStats[abbr], abbr}
+                const stat = {...createUserObj.stats[abbr], abbr}
                return <Stat updateCharacterStat={updateCharacterStat} stat={stat} availablePoints={availablePoints} setavailablePoints={setavailablePoints}/>
             })
         }

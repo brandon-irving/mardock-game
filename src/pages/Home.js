@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     const stats = useStatSheet()
     const equipped = useEquipped()
     const characterClass = classes[character.class]
-    console.log('log: character', {characterClass, character})
     return (
         <div>
             <Card>

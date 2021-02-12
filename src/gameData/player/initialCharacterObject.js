@@ -1,7 +1,7 @@
 export const initialCharacterObject = {
     ap: 0,
     class: 'knight',
-    equipped: {accessory: '', armor: {}, weapon: ''},
+    equipped: {accessory: '', armor: {}, weapon: 'Long Sword'},
     exp: 0,
     gil: 0,
     hp: 10,

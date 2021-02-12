@@ -8,7 +8,7 @@ export function useEquipped(){
         const equipment = equipped[key]
         let equippedInfo = null
         if(key === 'armor'){
-        equippedInfo = {...equipment, ...armors[equipment.title]}
+        equippedInfo = {...equipment, ...armors[equipment.label]}
         }else if(key === 'weapon'){
             equippedInfo = weapons[equipment]
         }else if(key === 'accessory'){

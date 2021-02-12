@@ -11,10 +11,13 @@ import { initialCharacterObject } from '../../gameData/player/initialCharacterOb
 import { forEach } from 'lodash';
 import ClassForm from './ClassForm';
 import StatsForm from './StatsForm';
+import WeaponForm from './WeaponForm';
 import CompleteCreateForm from './CompleteCreateForm';
 
 import { statSheet } from '../../gameData/constants';
 import { useContextState } from 'dynamic-context-provider';
+import weapons from '../../gameData/items/weapons';
+import { useToaster } from '../../common/hooks/useToaster';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,29 +36,64 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ['Select a class', 'Create an ad group', 'Create an ad'];
+  return ['Select a Class', 'Choose Your Stats', 'Choose a Weapon', 'Create Character'];
 }
 
 
 
 export default function CreatePage() {
   const { user } = useContextState()
+  const [openErrorToaster] = useToaster()
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
-  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName})
-  const [characterStats, setcharacterStats] = useState(statSheet)
+  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: statSheet})
   const [availablePoints, setavailablePoints] = useState(10)
-
+  function checkIfSkilledEnoughToEquip(value={requirement: {}}, character={stats:{}}){
+    let skilledEnough = false
+    forEach(Object.keys(character.stats), statName=>{
+      const { points } = character.stats[statName]
+      const requirement = value.requirement[statName] 
+      const noRequirements = !Object.keys(value.requirement).length
+      if((requirement && points >= requirement) || noRequirements){
+        skilledEnough = true
+      }
+    })
+    return skilledEnough
+  }
+  function isInvalidateCharacerObj(){
+    let invalid = false
+    if(!createUserObj.class){
+      invalid = 'Please select a class'
+    }
+    if(!createUserObj.equipped.weapon){
+      invalid = 'Please select a weapon'
+    }
+    if(!createUserObj.equipped.weapon){
+      invalid = 'Please select a weapon'
+    }
+    if(!checkIfSkilledEnoughToEquip(weapons[createUserObj.equipped.weapon], createUserObj)){
+      invalid = 'You are not able to use this weapon'
+    }
+    return invalid
+  }
 
   function updateCharacter(fields={}){
-      const newObj = {...initialCharacterObject}
+      const newObj = {...createUserObj}
       forEach(Object.keys(fields), fieldName=>{
         newObj[fieldName] = fields[fieldName]
       })
       setcreateUserObj(newObj)
   }
   const handleNext = () => {
+    if(isInvalidateCharacerObj()){
+      return openErrorToaster({
+        open: true,
+        duration: 3000,
+        message: isInvalidateCharacerObj(),
+        severity: 'danger'
+      })
+    } 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -72,11 +110,13 @@ export default function CreatePage() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <ClassForm setvalues={(classOption)=>updateCharacter(classOption)} initialValues={{class: createUserObj.class}} />
+        return <ClassForm createUserObj={createUserObj} updateCharacter={updateCharacter} />
       case 1:
-        return <StatsForm updateCharacter={updateCharacter} availablePoints={availablePoints} setavailablePoints={setavailablePoints} characterStats={characterStats} setcharacterStats={setcharacterStats}/>;
+        return <StatsForm createUserObj={createUserObj} updateCharacter={updateCharacter} availablePoints={availablePoints} setavailablePoints={setavailablePoints} />;
       case 2:
-        return <CompleteCreateForm createUserObj={{...createUserObj, stats: characterStats}}/>
+        return <WeaponForm createUserObj={createUserObj} updateCharacter={updateCharacter} initialValues={{weapon: createUserObj.equipped.weapon}}/>
+      case 3:
+          return <CompleteCreateForm createUserObj={createUserObj}/>
       default:
         return 'Unknown step';
     }
@@ -84,8 +124,8 @@ export default function CreatePage() {
   function handleSubmit(){
     const character = {
       ...createUserObj,
-      stats: Object.keys(characterStats).reduce((acc,statKey)=>{
-        return {...acc, [statKey]: characterStats[statKey].points}
+      stats: Object.keys(createUserObj.stats).reduce((acc,statKey)=>{
+        return {...acc, [statKey]: createUserObj.stats[statKey].points}
       },{})
     }
     console.log('log: handleSubmit', { character })

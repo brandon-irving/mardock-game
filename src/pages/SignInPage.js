@@ -116,13 +116,11 @@ export default function SignIn() {
     async function handleSubmit(values) {
         await signInWithEmailAndPasswordHandler(values.email, values.password)
         const route = user.character ? '/' : 'create'
-        console.log('log: handleSubmit', {user, route})
         history.push(route)
     }
     async function handleGoogleSignIn(e) {
         await signInWithGoogle()
         const route = user.character ? '/' : 'create'
-        console.log('log: handleGoogleSignIn', {user, route})
         history.replace(route)
     }
     return (
