@@ -16,7 +16,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import MailIcon from '@material-ui/icons/Mail';
 import { useHistory } from 'react-router-dom';
 import routes from '../core/routes';
 import FloatingButton from './FloatingButton';
@@ -24,8 +23,6 @@ import ImageIcon from './ImageIcon';
 import bag from '../images/bag.svg';
 import { signOut } from '../firebase';
 import { useContextState } from 'dynamic-context-provider';
-import { Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
 
 const drawerWidth = 240;
 
@@ -92,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Root({children}) {
-  const { user, toaster } = useContextState()
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory()
@@ -186,14 +182,7 @@ export default function Root({children}) {
       <FloatingButton >
     <ImageIcon width='9vw' src={bag} alt="bag" />
     </FloatingButton>
-    <Snackbar open={toaster.open} autoHideDuration={toaster.duration} onClose={toaster.handleClose}>
-  <Alert onClose={toaster.handleClose} severity={toaster.severity}>
-    {toaster.message}
-  </Alert>
-</Snackbar>
+  
     </div>
   );
-}
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }

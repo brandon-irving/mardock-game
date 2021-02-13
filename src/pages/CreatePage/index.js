@@ -17,7 +17,8 @@ import CompleteCreateForm from './CompleteCreateForm';
 import { statSheet } from '../../gameData/constants';
 import { useContextState } from 'dynamic-context-provider';
 import weapons from '../../gameData/items/weapons';
-import { useToaster } from '../../common/hooks/useToaster';
+import {classes} from '../../gameData/player/classes';
+import { launchToaster } from '../../core/toaster';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,12 +44,12 @@ function getSteps() {
 
 export default function CreatePage() {
   const { user } = useContextState()
-  const [openErrorToaster] = useToaster()
-  const classes = useStyles();
+  const classStyles = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
   const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: statSheet})
   const [availablePoints, setavailablePoints] = useState(10)
+  
   function checkIfSkilledEnoughToEquip(value={requirement: {}}, character={stats:{}}){
     let skilledEnough = false
     forEach(Object.keys(character.stats), statName=>{
@@ -61,6 +62,7 @@ export default function CreatePage() {
     })
     return skilledEnough
   }
+
   function isInvalidateCharacerObj(){
     let invalid = false
     if(!createUserObj.class){
@@ -85,14 +87,10 @@ export default function CreatePage() {
       })
       setcreateUserObj(newObj)
   }
+
   const handleNext = () => {
-    if(isInvalidateCharacerObj()){
-      return openErrorToaster({
-        open: true,
-        duration: 3000,
-        message: isInvalidateCharacerObj(),
-        severity: 'danger'
-      })
+    if(isInvalidateCharacerObj() && activeStep === 2){
+      return launchToaster({type: 'error', content: isInvalidateCharacerObj()})
     } 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -102,11 +100,23 @@ export default function CreatePage() {
   };
 
   function goToStep(index){
+    if(isInvalidateCharacerObj() && index === 3){
+      return launchToaster({type: 'error', content: isInvalidateCharacerObj()})
+    } 
     setActiveStep(index);
 
   }
 
-
+function getDefaultWeapon(){
+  let weapon = 'Long Sword'
+  forEach(Object.keys(classes), className=>{
+    const { starterWeapon, label } = classes[className]
+    if(label === createUserObj.class){
+      weapon =starterWeapon
+    }
+  })
+  return weapon
+}
   function getStepContent(step) {
     switch (step) {
       case 0:
@@ -131,19 +141,19 @@ export default function CreatePage() {
     console.log('log: handleSubmit', { character })
   }
   return (
-    <div className={classes.root}>
+    <div className={classStyles.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel onClick={()=>goToStep(index)}>{label}</StepLabel>
             <StepContent>
               {getStepContent(index)}
-              <div className={classes.actionsContainer}>
+              <div className={classStyles.actionsContainer}>
                 <div>
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    className={classes.button}
+                    className={classStyles.button}
                   >
                     Back
                   </Button>
@@ -151,7 +161,7 @@ export default function CreatePage() {
                     variant="contained"
                     color="primary"
                     onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-                    className={classes.button}
+                    className={classStyles.button}
                   >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>

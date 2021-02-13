@@ -26,7 +26,6 @@ export default function AppRouter() {
     observer(updateContextState)
   })
   if (globalLoading) return null// TODO: add splash/loading screen
-  console.log('log: user', user)
   return (
     <>
       <Router>
