@@ -22,6 +22,10 @@ export const initialCharacterObject = {
             gun: []
         },
         spells: []
+    },
+    dmMessage: {
+        hint: null,
+        innerThoughts: null
     }
 
 }

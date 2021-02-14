@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
+import { launchToaster } from "../core/toaster";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
@@ -30,6 +31,17 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
+export async function getCollection(collectionPath){
+  let data = null
+  const apiCall = collectionPath.length < 2 ? firestore.collection(collectionPath[0]) : firestore.collection(collectionPath[0]).doc(collectionPath[1])
+  const collectionRef = await apiCall
+  const doc = await collectionRef.get();
+  if (doc.exists) {
+    data= doc.data()
+  }
+  return data
+}
+
 export async function findUser(query = { key: 'name', comparison: '==', equals: 'Brandon' }) {
   let user = {}
   const { key, comparison, equals } = query
@@ -43,6 +55,7 @@ export async function findUser(query = { key: 'name', comparison: '==', equals: 
   });
   return user
 }
+
 export const signInWithGoogle = async () => {
  const { additionalUserInfo: {profile: {email}}} = await auth.signInWithPopup(provider)
  const user = await findUser({key: 'email', comparison: '==', equals: email})
@@ -92,6 +105,7 @@ export const signOut = async () => {
 };
 
 export const observer = (updateContextState) => {
+  // Listens for user
   firestore.collection('users').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
       const user = change.doc.data()
@@ -99,17 +113,45 @@ export const observer = (updateContextState) => {
 
       }
       if (change.type === 'modified') {
-        updateContextState({ user })
-
+        const { hint, innerThoughts } = user.character.dmMessage
+        const message = hint || innerThoughts || ''
+        if(hint){
+          launchToaster({type: 'info', content: `✨  ${message}`})
+          updateCharacter(user, {'character.dmMessage.hint': null})
+        }
+        if(innerThoughts){
+          launchToaster({type: 'warning', content: `💭 ${message}`})
+          updateCharacter(user, {'character.dmMessage.innerThoughts': null})
+        }
+        
+        updateContextState({ user: {...user, hint: null, innerThoughts: null} })
       }
       if (change.type === 'removed') {
       }
     });
   });
 }
-// export const updateCharacter = (user) => {
-//   const userRef = firestore.doc(`users/${user.uid}`);
 
-//   // Set the 'capital' field of the city
-//   const res = await userRef.update({ capital: true });
-// }
+export const dmObserver = (launchToaster) => {
+  // Listens for user
+  firestore.collection('DM').onSnapshot(querySnapshot => {
+    querySnapshot.docChanges().forEach(change => {
+      const data = change.doc.data()
+      if (change.type === 'added') {
+
+      }
+      if (change.type === 'modified') {
+        console.log('log: data', data)
+      }
+      if (change.type === 'removed') {
+      }
+    });
+  });
+}
+
+
+export const updateCharacter = async (user, updates) => {
+  const userRef = firestore.doc(`users/${user.uid}`);
+
+   await userRef.update(updates);
+}

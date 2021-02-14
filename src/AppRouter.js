@@ -1,7 +1,7 @@
 import { useContextState } from "dynamic-context-provider";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { auth, generateUserDocument, observer } from "./firebase";
+import { auth, generateUserDocument, observer, dmObserver } from "./firebase";
 import SignInPage from "./pages/SignInPage";
 import Home from "./pages/Home";
 import Root from "./common/Root";
@@ -9,6 +9,7 @@ import BattlePage from "./pages/BattlePage";
 import CharacterPage from "./pages/CharacterPage";
 import { PrivateRoute } from "./common/PrivateRoute";
 import CreatePage from "./pages/CreatePage";
+import { launchToaster } from "./core/toaster";
 
 export default function AppRouter() {
   const { user, globalLoading, updateContextState } = useContextState()
@@ -23,8 +24,10 @@ export default function AppRouter() {
 
   useEffect(() => {
     if (globalLoading) return
-    observer(updateContextState)
+    dmObserver()
+    observer(updateContextState, launchToaster)
   })
+
   if (globalLoading) return null// TODO: add splash/loading screen
   return (
     <>
