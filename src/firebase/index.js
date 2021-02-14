@@ -155,3 +155,8 @@ export const updateCharacter = async (user, updates) => {
 
    await userRef.update(updates);
 }
+export const startBattle = async (battle) => {
+  const userRef = firestore.collection('DM').doc('battles');
+  
+   await userRef.update({current: {...battle}});
+}

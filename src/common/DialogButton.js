@@ -16,7 +16,7 @@ const DialogButton = (props) => {
     return (
         <>
     <Button {...buttonProps} onClick={handleClick}>{children}</Button>
-     <Dialog fullScreen={dialog.fullScreen} fullWidth style={{bottom: '50vw'}} open={dialog.open} onClose={handleClose}>
+     <Dialog fullScreen={dialog.fullScreen} fullWidth  open={dialog.open} onClose={handleClose}>
         <DialogTitle id={dialog.title}>{dialog.title}</DialogTitle>
         <DialogContent>
          {dialog.content}

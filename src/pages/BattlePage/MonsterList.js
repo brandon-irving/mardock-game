@@ -13,7 +13,9 @@ import ImageIcon from '../../common/ImageIcon'
 import monsters from '../../gameData/monsters';
 import { buildMonster, generateMonsters } from '../../gameData/monsters/builders';
 import DialogButton from '../../common/DialogButton';
-
+import { Close } from '@material-ui/icons';
+import MonsterView from './MonsterView'
+import { startBattle } from '../../firebase';
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -23,44 +25,45 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MonsterList() {
-    const { monsters } = useGetBattle()
-    const [open, setopen] = React.useState(false)
-    const classes = useStyles();
-    const dialog = {
-        fullScreen: true,
-        open,
-        setopen,
-        title: 'Enemy Battle',
-        content: <div  />,
+    const battle = useGetBattle('tutorialBattle1')
+    const { monsters } = battle
+    const [monster, setmonster] = React.useState(null)
+    function closeMonsterView(){
+        setmonster(null)
     }
+    const classes = useStyles();
 
-
+    React.useEffect(() => {
+        if(!battle.monsters)return
+        startBattle(battle)
+    }, [battle])
     if (!monsters) return null
     return (
+        <>
+         {
+                monster !== null && <MonsterView monster={monster} close={closeMonsterView}/>
+            }
         <div className={classes.root}>
-            <List component="nav" aria-label="monster-list">
+           
+            {!monster && <List component="nav" aria-label="monster-list">
                 {
                     map(monsters, (monster, i) => {
                         return (
                             <React.Fragment key={i}>
-                                <DialogButton
-                                    dialog={dialog}
-                                    fullWidth
-                                >
-                                    <ListItem>
+                               <ListItem button onClick={()=>setmonster(monster)}>
                                         <ListItemIcon>
                                             <ImageIcon width="50px" src={monster.src} />
                                         </ListItemIcon>
                                         <ListItemText primary={monster.name} />
                                     </ListItem>
-                                </DialogButton>
 
                                 {monsters[i + 1] !== undefined && <Divider />}
                             </React.Fragment>
                         )
                     })
                 }
-            </List>
+            </List>}
         </div>
+        </>
     );
 }

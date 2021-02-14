@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(6),
     },
   }));
-function getInitials(fullName){
+function getInitials(fullName='John Doe'){
   const names = fullName.split(' ')
   const initialsArray = []
   forEach(names, name=>{
