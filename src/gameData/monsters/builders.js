@@ -50,7 +50,7 @@ export function generateMonsters(monsterConfig={ wolf: 3, bear: 2, special: ['Gr
             forEach(monsterConfig.special, monsterKey=>{
                 forEach(specialMonsters, monsters=>{
                     if(monsters[monsterKey]){
-                        newMonsters.push({...monsters[monsterKey], ...buildMonster(monsters[monsterKey])})
+                        newMonsters.push({...monsters[monsterKey],name: `${monsters[monsterKey].name} ${i}`, ...buildMonster(monsters[monsterKey])})
                     }
                 })
             })
@@ -58,7 +58,7 @@ export function generateMonsters(monsterConfig={ wolf: 3, bear: 2, special: ['Gr
             for(let i = 0; i<amountOfMonster; i++){
                 const randomInt = randomIntFromInterval(0, (monsterList.length - 1)) // removes the special field
                 const randomMonsterKey = monsterList[randomInt]
-                const randomMonster = ({...monsterData[randomMonsterKey], ...buildMonster(monsterData[randomMonsterKey]) })
+                const randomMonster = ({...monsterData[randomMonsterKey],name: `${monsterData[randomMonsterKey].name} ${i}`, ...buildMonster(monsterData[randomMonsterKey]) })
                 newMonsters.push(randomMonster)
             }
         }
@@ -69,5 +69,5 @@ export function generateMonsters(monsterConfig={ wolf: 3, bear: 2, special: ['Gr
     forEach(generatedMonsters, monster=>{
         experience += monster.exp
     })
-    return {monsters: generatedMonsters, exp: experience}
+    return {monsters: generatedMonsters, exp: Math.round(experience)}
 }

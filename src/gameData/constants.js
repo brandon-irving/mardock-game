@@ -13,7 +13,6 @@ export const statSheet = {
 
 /*
 buildMonster(type='wolf', level, attacks={common: 2, special: 1})
-generateRandomMonsters({type=[{type: 'woodland', count: 3}], levelRange=[1,5], count=5})
 */
 
 

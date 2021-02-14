@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import React, { useState } from 'react'
 
 const DialogButton = (props) => {
-    const { dialog ={open: false, setopen: ()=>{}}, children, onClick=()=>null } = props
+    const { dialog ={fullScreen: false, open: false, setopen: ()=>{}}, children, onClick=()=>null } = props
     const buttonProps = omit(props, ['dialog'])
 
     async function handleClick(){
@@ -16,7 +16,7 @@ const DialogButton = (props) => {
     return (
         <>
     <Button {...buttonProps} onClick={handleClick}>{children}</Button>
-     <Dialog fullWidth style={{bottom: '50vw'}} open={dialog.open} onClose={handleClose}>
+     <Dialog fullScreen={dialog.fullScreen} fullWidth style={{bottom: '50vw'}} open={dialog.open} onClose={handleClose}>
         <DialogTitle id={dialog.title}>{dialog.title}</DialogTitle>
         <DialogContent>
          {dialog.content}

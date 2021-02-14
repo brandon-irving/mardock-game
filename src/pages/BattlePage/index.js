@@ -6,8 +6,8 @@ import MpBar from '../../common/ProgressBar/MpBar'
 import AttackForm from './AttackForm'
 import ItemsForm from './ItemsForm'
 import SpellForm from './SpellForm'
-import MonsterView from './MonsterView'
 import ApNotifier from '../../common/ApNotifier'
+import MonsterList from './MonsterList'
 
 const BattlePage = () => {
     const [aopen, setaopen] = React.useState(false)
@@ -15,7 +15,7 @@ const BattlePage = () => {
     const [iopen, setiopen] = React.useState(false)
     return (
         <div>
-            <MonsterView />
+            <MonsterList />
             <Grid style={{ textAlign: 'center', marginTop: '50vw' }} container >
                 <Grid item xs={6}>
                     <DialogButton
