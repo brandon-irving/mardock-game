@@ -58,6 +58,8 @@ export default function EquipBaseForm({ type = '', options = defaultOptions, onS
     const [values, setvalues] = React.useState(initialValues)
 
     if(!options.length)return 'None'
+    const blueprint = BluePrint({ values, type, options })
+
     function validate(values) {
         const errors = {}
         Object.keys(values).forEach(field => {
@@ -78,7 +80,6 @@ export default function EquipBaseForm({ type = '', options = defaultOptions, onS
         blueprint.pop()
     }
     
-    const blueprint = BluePrint({ values, type, options })
     return (
         <MuiFormGenerator
             theme={theme}

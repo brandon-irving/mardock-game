@@ -10,9 +10,12 @@ export function useEquipped(){
         if(key === 'armor'){
         equippedInfo = {...equipment, ...armors[equipment.label]}
         }else if(key === 'weapon'){
-            equippedInfo = weapons[equipment]
-        }else if(key === 'accessory'){
-            equippedInfo = accessories[equipment]
+            equippedInfo = weapons[equipment] || ''
+        }else if(key === 'secondaryWeapon'){
+            equippedInfo = weapons[equipment] || ''
+        }
+        else if(key === 'accessory'){
+            equippedInfo = accessories[equipment] || ''
         }
         return  equippedInfo
     })

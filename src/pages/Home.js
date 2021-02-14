@@ -18,7 +18,7 @@ import MpBar from '../common/ProgressBar/MpBar'
 import { Card, CardContent, CardHeader, Avatar, Divider, Grid, Typography } from '@material-ui/core'
 import InfoCard2 from '../common/InfoCard2'
 import {statSheet} from '../gameData/constants'
-import { map } from 'lodash'
+import { forEach, map } from 'lodash'
 import equipped from '../images/equipped.svg'
 import shield from '../images/shield.svg'
 import CustomIcon from '../common/CustomIcon'
@@ -26,6 +26,7 @@ import { useStatSheet } from '../common/hooks/useStatSheet'
 import { useContextState } from 'dynamic-context-provider'
 import { useEquipped } from '../common/hooks/useEquipped'
 import { classes } from '../gameData/player/classes'
+import { titles } from '../gameData/player/titles'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,12 +44,20 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(6),
     },
   }));
-
+function getInitials(fullName){
+  const names = fullName.split(' ')
+  const initialsArray = []
+  forEach(names, name=>{
+    initialsArray.push( name.charAt(0))
+  })
+ return initialsArray.join(' ')
+}
   const Home = () => {
     const { user: { character } } = useContextState() 
     const className = useStyles();
     const stats = useStatSheet()
     const equipped = useEquipped()
+    const characterTitle = titles[character.title]
     const characterClass = classes[character.class]
     return (
         <div>
@@ -56,15 +65,17 @@ const useStyles = makeStyles((theme) => ({
                 <CardContent>
                     <Grid container>
                         <Grid item xs={3}>
-                        <Avatar className={className.large}>BI</Avatar>
+                        <Avatar className={className.large}>{getInitials(character.name)}</Avatar>
                         </Grid>
                         <Grid style={{textAlign: 'end'}} item xs={9}>
-                        <Typography>Rank Title</Typography>                        
+                        <Typography>{character.name}</Typography>                        
+                        <Typography>{character.exp} Exp</Typography>                        
                         <Typography>{character.gil} Gil</Typography>                        
                         </Grid>
                         <Grid container style={{marginTop: '10px'}}>
                           {
                             map(equipped, (equipment, index)=>{
+                              if(!equipment)return null
                               return(
                                 <Grid key={index} item xs={4}>
                             <CustomIcon text={equipment.label} logo={equipment.src} alt={equipment.src}/>
@@ -84,8 +95,9 @@ const useStyles = makeStyles((theme) => ({
              <GridContainer>
                  <InfoCard2>
                      <Grid container>
-                     {map(stats, (stat, i)=>{
-                       let statMessage = `${stat.abbr.toUpperCase()}: ${stat.statCount}`
+                     {map(Object.keys(stats), (abbr, i)=>{
+                       const stat = stats[abbr]
+                       let statMessage = `${abbr.toUpperCase()}: ${stat.points}`
                        if(stat.statBoost > 0){
                         statMessage = statMessage + ` +${stat.statBoost}`
                        }
@@ -95,6 +107,11 @@ const useStyles = makeStyles((theme) => ({
                                      
                      </InfoCard2>
              <InfoCard 
+             title={characterTitle.label}
+             text={characterTitle.description}
+             imgSrc={characterTitle.src}
+             />
+               <InfoCard 
              title={characterClass.label}
              text={characterClass.description}
              imgSrc={characterClass.src}

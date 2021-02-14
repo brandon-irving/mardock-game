@@ -23,6 +23,7 @@ import ImageIcon from './ImageIcon';
 import bag from '../images/bag.svg';
 import { signOut } from '../firebase';
 import { useContextState } from 'dynamic-context-provider';
+import { find } from 'lodash';
 
 const drawerWidth = 240;
 
@@ -87,11 +88,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-
+function getTitle(route){
+  const title = find(routes, {route})?.title || ''
+  return title
+}
 export default function Root({children}) {
   const classes = useStyles();
   const theme = useTheme();
   const history = useHistory()
+
+  const headerTitle = getTitle(history.location.pathname)
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -133,8 +139,12 @@ export default function Root({children}) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            {headerTitle}
           </Typography>
+          <FloatingButton>
+            <ImageIcon width='40px' src={bag} alt="bag" />
+          </FloatingButton>
+      
         </Toolbar>
       </AppBar>
       <Drawer
@@ -178,11 +188,7 @@ export default function Root({children}) {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {children}
-      </main>
-      <FloatingButton >
-    <ImageIcon width='9vw' src={bag} alt="bag" />
-    </FloatingButton>
-  
+      </main>  
     </div>
   );
 }

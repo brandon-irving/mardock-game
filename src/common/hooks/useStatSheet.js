@@ -1,8 +1,9 @@
 import { useContextState } from "dynamic-context-provider";
-
+import { statSheet } from '../../gameData/constants'
 export function convertStatSheet(stats){
-    const completeStats = Object.keys(stats).reduce((acc, statAbbr)=>{
-        const stat = stats[statAbbr]
+    
+    const completeStats = Object.keys(stats).reduce((acc, abbr)=>{
+        const stat = stats[abbr]
         const statCount = stat.points
         let statBoost = 0
         if(statCount >= 12 && statCount<14){
@@ -20,7 +21,7 @@ export function convertStatSheet(stats){
         if(statCount >= 20 ){
             statBoost = 5
         }
-        return {...acc, [statAbbr]: {...stat, statBoost}}
+        return {...acc, [abbr]: {...statSheet[abbr], ...stat, abbr, statBoost}}
     },{})
     
     return completeStats

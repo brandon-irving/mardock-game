@@ -79,9 +79,9 @@ export default function StatsForm({updateCharacter, createUserObj, availablePoin
     <List className={classes.root}>
         <p>{availablePoints}</p>
         {
-            map(Object.keys(statObj), abbr=>{
+            map(Object.keys(statObj), (abbr, i)=>{
                 const stat = {...createUserObj.stats[abbr], abbr}
-               return <Stat updateCharacterStat={updateCharacterStat} stat={stat} availablePoints={availablePoints} setavailablePoints={setavailablePoints}/>
+               return <Stat key={i} updateCharacterStat={updateCharacterStat} stat={stat} availablePoints={availablePoints} setavailablePoints={setavailablePoints}/>
             })
         }
     </List>

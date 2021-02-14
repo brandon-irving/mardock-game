@@ -58,12 +58,18 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
         ]
     })
 }
+const errorMessageMap = {
+    Attack: 'You dont know any specials with this weapon',
+    Items: 'No items',
+    Spell: "You don't know any spells" 
+}
 const defaultOptions = [{ description: 'This is a description', label: 'Long Sword', value: 'Long Sword' }, { description: 'This is another description', label: 'Short Sword', value: 'Short Sword' }]
 const defaultTargets = [{ label: 'Monster 1', value: 'Monster 1' }, { label: 'Monster 2', value: 'Monster 2' }]
 export default function BaseForm({ type = '', options = defaultOptions, targets = defaultTargets, onSubmit = () => { } }) {
     const initialValues = { [type]: options[0], target: targets[0] }
     const [values, setvalues] = React.useState(initialValues)
 
+    if(!options.length) return errorMessageMap[type]
     function validate(values) {
         const errors = {}
         Object.keys(values).forEach(field => {

@@ -16,7 +16,7 @@ const BluePrint = (options) => {
                             type: 'select',
                             label: 'Weapon',
                             variant: 'filled',
-                            options
+                            options,
                         }
                     },
                 ]

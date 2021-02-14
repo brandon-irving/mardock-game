@@ -12,6 +12,7 @@ import { signInWithEmailAndPasswordHandler } from '../firebase'
 import { MuiFormGenerator } from 'mui-form-generator'
 import theme from '../core/theme';
 import { useHistory } from 'react-router-dom';
+import BasicRoot from '../common/BasicRoot';
 
 function Copyright() {
     return (
@@ -114,17 +115,17 @@ export default function SignIn() {
     const initialValues = { email: '', password: '' }
 
     async function handleSubmit(values) {
-        await signInWithEmailAndPasswordHandler(values.email, values.password)
+        const user = await signInWithEmailAndPasswordHandler(values.email, values.password)
         const route = user.character ? '/' : 'create'
         history.push(route)
     }
     async function handleGoogleSignIn(e) {
-        await signInWithGoogle()
+        const user = await signInWithGoogle()
         const route = user.character ? '/' : 'create'
         history.replace(route)
     }
     return (
-        <>
+        <BasicRoot>
         <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
         </Avatar>
@@ -152,6 +153,6 @@ export default function SignIn() {
      
     </Grid>
   </Grid>
-    </>
+    </BasicRoot>
     );
 }

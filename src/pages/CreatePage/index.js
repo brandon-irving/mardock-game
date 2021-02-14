@@ -19,6 +19,9 @@ import { useContextState } from 'dynamic-context-provider';
 import weapons from '../../gameData/items/weapons';
 import {classes} from '../../gameData/player/classes';
 import { launchToaster } from '../../core/toaster';
+import { useUpdateCharacter } from '../../common/hooks/useUpdateCharacter';
+import { useHistory } from 'react-router-dom';
+import BasicRoot from '../../common/BasicRoot';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,12 +47,14 @@ function getSteps() {
 
 export default function CreatePage() {
   const { user } = useContextState()
+  const history = useHistory()
   const classStyles = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
   const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: statSheet})
   const [availablePoints, setavailablePoints] = useState(10)
-  
+  const [updateFireBaseCharacter] = useUpdateCharacter()
+
   function checkIfSkilledEnoughToEquip(value={requirement: {}}, character={stats:{}}){
     let skilledEnough = false
     forEach(Object.keys(character.stats), statName=>{
@@ -106,17 +111,17 @@ export default function CreatePage() {
     setActiveStep(index);
 
   }
-
-function getDefaultWeapon(){
-  let weapon = 'Long Sword'
-  forEach(Object.keys(classes), className=>{
-    const { starterWeapon, label } = classes[className]
-    if(label === createUserObj.class){
-      weapon =starterWeapon
-    }
-  })
-  return weapon
-}
+// TODO: make global function
+// function getDefaultWeapon(){
+//   let weapon = 'Long Sword'
+//   forEach(Object.keys(classes), className=>{
+//     const { starterWeapon, label } = classes[className]
+//     if(label === createUserObj.class){
+//       weapon =starterWeapon
+//     }
+//   })
+//   return weapon
+// }
   function getStepContent(step) {
     switch (step) {
       case 0:
@@ -131,16 +136,31 @@ function getDefaultWeapon(){
         return 'Unknown step';
     }
   }
-  function handleSubmit(){
-    const character = {
-      ...createUserObj,
-      stats: Object.keys(createUserObj.stats).reduce((acc,statKey)=>{
-        return {...acc, [statKey]: createUserObj.stats[statKey].points}
-      },{})
+  async function handleSubmit(){
+    try{
+      const character = {
+        ...createUserObj,
+        stats: Object.keys(createUserObj.stats).reduce((acc,statKey)=>{
+          return {...acc, [statKey]: createUserObj.stats[statKey].points}
+        },{})
+      }
+      await updateFireBaseCharacter({character})
+      history.replace('/')
+    }catch(e){
+      console.error('log: error', e)
     }
-    console.log('log: handleSubmit', { character })
+
+    console.log('log: handleSubmit', { createUserObj })
   }
+  async function checkIfCharacterExists(){
+    console.log('log: checkIfCharacterExists user', user)
+    if(user.character)return history.replace('/')
+  }
+  React.useEffect(() => {
+    checkIfCharacterExists()
+  }, [user])
   return (
+    <BasicRoot>
     <div className={classStyles.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
@@ -172,5 +192,6 @@ function getDefaultWeapon(){
         ))}
       </Stepper>
     </div>
+    </BasicRoot>
   );
 }

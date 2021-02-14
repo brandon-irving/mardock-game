@@ -58,8 +58,11 @@ const defaultOptions = []
 const defaultTargets = []
 
 export default function UseBaseForm({ type = '', options = defaultOptions, targets = defaultTargets, onSubmit = () => { } }) {
+
     const initialValues = { [type]: options[0], target: targets[0] }
     const [values, setvalues] = React.useState(initialValues)
+
+    if(!options.length)return 'None'
 
     function validate(values) {
         const errors = {}

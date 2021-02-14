@@ -6,9 +6,9 @@ import SignInPage from "./pages/SignInPage";
 import Home from "./pages/Home";
 import Root from "./common/Root";
 import BattlePage from "./pages/BattlePage";
+import CharacterPage from "./pages/CharacterPage";
 import { PrivateRoute } from "./common/PrivateRoute";
 import CreatePage from "./pages/CreatePage";
-import BasicRoot from './common/BasicRoot'
 
 export default function AppRouter() {
   const { user, globalLoading, updateContextState } = useContextState()
@@ -30,26 +30,36 @@ export default function AppRouter() {
     <>
       <Router>
         <Switch>
+        {/* Protected Routes */}
+        
           <PrivateRoute path="/Battle">
-            <Root>
+          <Root>
               <BattlePage />
-            </Root>
+              </Root>
           </PrivateRoute>
           <PrivateRoute path="/" exact>
             <Root>
               <Home />
-            </Root>
+              </Root>
           </PrivateRoute>
+          <PrivateRoute path="/Character">
+            <Root>
+              <CharacterPage />
+              </Root>
+          </PrivateRoute>
+
+        {/* Unprotected Routes */}
           <Route path="/create">
-            <BasicRoot>
             <CreatePage />
-            </BasicRoot>
           </Route>
-          <Route>
-          <BasicRoot>
+          {user.character && <PrivateRoute>
+            <Root>
+            <Home />
+            </Root>
+          </PrivateRoute>}
+          {!user.character && <Route>
             <SignInPage />
-            </BasicRoot>
-          </Route>
+          </Route>}
         </Switch>
       </Router>
     </>
