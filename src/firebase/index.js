@@ -3,7 +3,6 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
 import { launchToaster } from "../core/toaster";
-
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
   authDomain: "dnd-story-assistant.firebaseapp.com",
@@ -15,46 +14,12 @@ const firebaseConfig = {
   measurementId: "G-BE6J3N57ET"
 };
 const provider = new firebase.auth.GoogleAuthProvider();
-const getUserDocument = async uid => {
-  if (!uid) return null;
-  try {
-    const userDocument = await firestore.doc(`users/${uid}`).get();
-    return {
-      uid,
-      ...userDocument.data()
-    };
-  } catch (error) {
-    console.error("Error fetching user", error);
-  }
-};
+
+
 firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
-
-export async function getCollection(collectionPath){
-  let data = null
-  const apiCall = collectionPath.length < 2 ? firestore.collection(collectionPath[0]) : firestore.collection(collectionPath[0]).doc(collectionPath[1])
-  const collectionRef = await apiCall
-  const doc = await collectionRef.get();
-  if (doc.exists) {
-    data= doc.data()
-  }
-  return data
-}
-
-export async function findUser(query = { key: 'name', comparison: '==', equals: 'Brandon' }) {
-  let user = {}
-  const { key, comparison, equals } = query
-  const snapshot = await firestore.collection(`users`).where(key, comparison, equals).get();
-  if (snapshot.empty) {
-    console.log('No matching documents.');
-    return;
-  }
-  snapshot.forEach(doc => {
-    user = doc.data()
-  });
-  return user
-}
+/******************************** Core *********************************/
 
 export const signInWithGoogle = async () => {
  const { additionalUserInfo: {profile: {email}}} = await auth.signInWithPopup(provider)
@@ -100,6 +65,7 @@ export const signInWithEmailAndPasswordHandler = async (email, password) => {
 
   return user
 };
+
 export const signOut = async () => {
   await auth.signOut()
 };
@@ -132,7 +98,7 @@ export const observer = (updateContextState) => {
   });
 }
 
-export const dmObserver = (launchToaster) => {
+export const dmObserver = () => {
   // Listens for user
   firestore.collection('DM').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
@@ -148,15 +114,107 @@ export const dmObserver = (launchToaster) => {
     });
   });
 }
+/******************************** Generic (used to build others) *********************************/
+export async function updateDoc(path, updates, specialKey){
+  const ref = firestore.doc(`${path}`);
+  const snapshot = await ref.get();
+  if (!snapshot.exists) {
+    if(specialKey){
+      return await ref.set({[specialKey]: updates});
 
+    }else{
+      return await ref.set(updates);
+    } 
+  }
+  if(specialKey){
+    return await ref.update({[specialKey]: updates});
+
+  }else{
+    return await ref.update(updates);
+  }
+}
+const getDocument = async (path) => {
+  try {
+    const doc = await firestore.doc(path).get();
+    return {
+      ...doc.data()
+    };
+  } catch (error) {
+    console.error("Error fetching user", error);
+  }
+};
+
+
+export async function getCollection(collectionPath=['collection', 'document']){
+  let data = null
+  const apiCall = collectionPath.length < 2 ? firestore.collection(collectionPath[0]) : firestore.collection(collectionPath[0]).doc(collectionPath[1])
+  const collectionRef = await apiCall
+  const doc = await collectionRef.get();
+  if (doc.exists) {
+    data= doc.data()
+  }
+  return data
+}
+
+/******************************** Users *********************************/
+export async function findUser(query = { key: 'name', comparison: '==', equals: 'Brandon' }) {
+  let user = {}
+  const { key, comparison, equals } = query
+  const snapshot = await firestore.collection(`users`).where(key, comparison, equals).get();
+  if (snapshot.empty) {
+    console.log('No matching documents.');
+    return;
+  }
+  snapshot.forEach(doc => {
+    user = doc.data()
+  });
+  return user
+}
+/******************************** Users *********************************/
+export const getUserDocument = async uid => {
+  if (!uid) return null;
+  try {
+    const userDocument = await getDocument(`users/${uid}`)
+    return {
+      uid,
+      ...userDocument
+    };
+  } catch (error) {
+    console.error("Error fetching user", error);
+  }
+};
 
 export const updateCharacter = async (user, updates) => {
-  const userRef = firestore.doc(`users/${user.uid}`);
-
-   await userRef.update(updates);
+   await updateDoc(`users/${user.uid}`, updates)
 }
+
+export const giveCharacterItem = async (user, updates, itemCategory) => {
+  const path = `character.items.${itemCategory}`
+  await updateCharacter(user, {[path]: updates})
+}
+
+/******************************** DM *********************************/
+
+export async function getAllUsers(){
+  const ref = await firestore.collection(`users`)
+  const usersRef = await ref.get()
+  const users = []
+  usersRef.forEach(user => {
+    users.push(user.data())
+  });
+  return users
+}
+
+export const updateStoryChapter = async (chapter, updates, specialKey) => {
+  await updateDoc(`DM/${chapter}`, updates, specialKey)
+}
+
 export const startBattle = async (battle) => {
   const userRef = firestore.collection('DM').doc('battles');
-  
    await userRef.update({current: {...battle}});
+}
+
+export async function getStoryChapter(chapter){
+  const res = await getCollection(['DM', chapter])
+  return res || {notes: ''}
 }

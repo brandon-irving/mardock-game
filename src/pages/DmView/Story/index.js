@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Card,
     CardContent,
@@ -8,35 +8,54 @@ import {
     Button,
     Divider,
     List,
-    ListItem
+    ListItem,
+    CircularProgress,
+    Backdrop
 } from '@material-ui/core'
 import { map } from 'lodash'
 import story from '../../../gameData/story'
-import theme from '../../../core/theme'
-import { MuiFormGenerator } from 'mui-form-generator'
 import 'mui-form-generator/dist/index.css'
-import { Chapter1BluePrint } from './blueprints'
 import RichTextEditor from '../../../common/RichTextEditor'
+import { getStoryChapter, updateStoryChapter } from '../../../firebase'
+import { makeStyles } from '@material-ui/core/styles';
+import { useGlobalLoading } from '../hooks'
 
-const blueprints = {
-    'Chapter 1': () => Chapter1BluePrint({})
-}
 const Story = () => {
-    const [selectedChapter, setselectedChapter] = useState('Chapter 1')
-    function handleSelectChapter(story) {
-        setselectedChapter(story)
+    const classes = useStyles();
+
+    const [isLoading, setisLoading] = useState(true)
+    const [selectedChapter, setselectedChapter] = useState({})
+    const [globalLoading, setglobalLoading] = useGlobalLoading()
+    
+    async function handleSelectChapter(chapter) {
+        setglobalLoading(true)
+        const ch = await getStoryChapter(chapter)
+        setselectedChapter({label: chapter, notes: ch.notes})
+        setglobalLoading(false)
     }
-    function handleSubmit(values) {
+    async function handleNoteSave(values) {
+        await updateStoryChapter(selectedChapter.label, values, 'notes')
+        console.log('log: handleNoteSave', values)
+    }
+    async function getFirstChapterData() {
+        const ch = await getStoryChapter('Chapter 1')
+        setselectedChapter({ label: 'Chapter 1', notes: ch.notes })
+        console.log('log: getFirstChapterData', { label: 'Chapter 1', notes: ch.notes })
+        setisLoading(false)
 
     }
+    useEffect(() => {
+        getFirstChapterData()
+    }, [])
+    if (isLoading) return null
     return (
         <Grid container>
-            <Grid style={{ maxHeight: 500, overflow: 'scroll'}} item xs={6}>
+            <Grid style={{ maxHeight: 500, overflow: 'scroll' }} item xs={6}>
                 <List>
                     {
                         map(Object.keys(story), chapter => {
                             return (
-                                <ListItem>
+                                <ListItem key={chapter}>
                                     <Card style={{ margin: '25px' }}>
                                         <CardContent>
                                             <Typography align="center" variant="h5" component="h2">
@@ -52,7 +71,7 @@ const Story = () => {
                                             </Typography>
                                         </CardContent>
                                         <CardActions>
-                                            <Button onClick={() => handleSelectChapter(chapter)} fullWidth>Start Chapter</Button>
+                                            <Button onClick={async () => handleSelectChapter(chapter)} fullWidth>Start Chapter</Button>
                                         </CardActions>
                                     </Card>
                                 </ListItem>
@@ -65,10 +84,20 @@ const Story = () => {
 
             </Grid>
             <Grid style={{ border: '1px solid' }} item xs={6}>
-                <RichTextEditor />
+                <Typography variant="h5" align="center">{selectedChapter.label} Notes</Typography>
+                <RichTextEditor defaultData={selectedChapter.notes} onSave={handleNoteSave} />
             </Grid>
+            <Backdrop className={classes.backdrop} open={globalLoading} >
+  <CircularProgress color="inherit" />
+</Backdrop>
         </Grid>
     )
 }
 
+const useStyles = makeStyles((theme) => ({
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
+  }));
 export default Story

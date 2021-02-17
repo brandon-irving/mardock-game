@@ -16,7 +16,7 @@ export default function AppRouter() {
 
   useEffect(() => {
     auth.onAuthStateChanged(async (userAuth) => {
-      const user = await generateUserDocument(userAuth);
+      const user = await generateUserDocument(userAuth) || {}
       updateContextState({ user, globalLoading: false })
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

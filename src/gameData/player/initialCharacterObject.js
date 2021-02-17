@@ -6,7 +6,7 @@ export const initialCharacterObject = {
     gil: 0,
     hp: 10,
     mp: 10,
-    items: {misc:{}, weapons: {}, armor: {}, accessories: {}, specialItems: {}},
+    items: {misc:{}, weapon: {}, armor: {}, accessory: {}, specialItem: {}},
     level: 1,
     maxAp: 10,
     maxHp: 10,
