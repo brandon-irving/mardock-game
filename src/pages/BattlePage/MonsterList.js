@@ -16,6 +16,8 @@ import DialogButton from '../../common/DialogButton';
 import { Close } from '@material-ui/icons';
 import MonsterView from './MonsterView'
 import { startBattle } from '../../firebase';
+import { useContextState } from "dynamic-context-provider";
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -25,7 +27,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MonsterList() {
-    const battle = useGetBattle('tutorialBattle1')
+    const initialBattle = useGetBattle('tutorialBattle1')
+
+    const {battle, updateContextState} = useContextState() 
     const { monsters } = battle
     const [monster, setmonster] = React.useState(null)
     function closeMonsterView(){
@@ -34,14 +38,16 @@ export default function MonsterList() {
     const classes = useStyles();
 
     React.useEffect(() => {
-        if(!battle.monsters)return
-        startBattle(battle)
-    }, [battle])
+        if(!initialBattle.monsters)return
+        updateContextState({battle: initialBattle})
+        console.log('log: initialBattle update', initialBattle)
+        startBattle(initialBattle)
+    }, [initialBattle])
     if (!monsters) return null
     return (
         <>
          {
-                monster !== null && <MonsterView monster={monster} close={closeMonsterView}/>
+                monster !== null && <MonsterView monsterName={monster.name} close={closeMonsterView}/>
             }
         <div className={classes.root}>
            

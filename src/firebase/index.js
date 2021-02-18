@@ -98,7 +98,7 @@ export const observer = (updateContextState, currentUser) => {
   });
 }
 
-export const dmObserver = () => {
+export const dmObserver = (updateContextState) => {
   // Listens for user
   firestore.collection('DM').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
@@ -107,6 +107,9 @@ export const dmObserver = () => {
 
       }
       if (change.type === 'modified') {
+        if(data.current){
+          updateContextState({battle: data.current})
+        }
         console.log('log: data', data)
       }
       if (change.type === 'removed') {

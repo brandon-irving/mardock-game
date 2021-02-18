@@ -24,7 +24,7 @@ export default function AppRouter() {
 
   useEffect(() => {
     if (appLoading) return
-    dmObserver()
+    dmObserver(updateContextState)
     observer(updateContextState, user)
   })
   if (appLoading) return null // TODO: add splash/loading screen
