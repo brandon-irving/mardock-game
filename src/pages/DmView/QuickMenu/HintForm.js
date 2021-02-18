@@ -2,8 +2,7 @@ import React from 'react'
 import { MuiFormGenerator } from 'mui-form-generator'
 import 'mui-form-generator/dist/index.css'
 import theme from '../../../core/theme'
-import { useContextState } from 'dynamic-context-provider'
-import { map } from 'lodash'
+import { useGetUserOptions } from '../hooks'
 
 const BluePrint = ({options}) => {
     return ({
@@ -67,16 +66,12 @@ const BluePrint = ({options}) => {
     })
 }
 const HintForm = () => {
-    const { users } = useContextState()
-    const userOptions = map(users, user=>{
-        return {label: user.character.name, value: user.character.name}
-    })
-    const options =  [...userOptions, {label: 'all', value: 'all'}]
+    const {options} = useGetUserOptions()
+
     function handleSubmit(values, formik) {
         window.alert(JSON.stringify(values))
         formik.resetForm()
     }
-    
     return (
         <MuiFormGenerator
             theme={theme}

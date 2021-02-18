@@ -10,6 +10,8 @@ import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { Dialog, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core';
 import HintForm from './HintForm'
+import ItemForm from './ItemForm'
+
 const useStyles = makeStyles((theme) => ({
   speedDial: {
     position: 'absolute',
@@ -62,7 +64,7 @@ export default function QuickMenu() {
 
   const dialogContent = {
     Hint: <HintForm />,
-    Item: <div>Item</div>,
+    Item: <ItemForm />,
     'Start Battle': <div>Start Battle</div>,
     Characters: <div>Characters</div>,
   }

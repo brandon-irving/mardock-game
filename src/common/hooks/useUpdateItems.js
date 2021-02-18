@@ -1,32 +1,48 @@
 import { forEach } from "lodash"
-import { giveCharacterItem } from "../../firebase"
-import { useGetMisc } from "./useGetMisc"
+import { launchToaster } from "../../core/toaster"
+import { batchUpdate, giveCharacterItem } from "../../firebase"
+import { useGetItems } from "./useGetItems"
+import { initialCharacterObject } from '../../gameData/player/initialCharacterObject'
+import { useGetUserOptions } from "../../pages/DmView/hooks"
 
-export const useUpdateItems = (user) => {
-    const { misc, items } = useGetMisc(user)
-    async function updateItems(updates = ['Potion3']){
-        const newItems = { ...misc }
+export function useBatchUpdateItems(type){
+const { options } = useGetUserOptions()
+async function updateBatchItems(){
+    console.log('log: options', {type, options})
+    await batchUpdate()
+}
+return [updateBatchItems]
+}
+export const useUpdateItems = (user, type) => {
+    const [userItemStorage, items,] = useGetItems(user, type)
+    const characterDbItems = user.character.items[type]
+    async function updateItems(updates = ['3_Potion']){
+        const newItems = { ...characterDbItems}
         forEach(updates, update => {
-            const [itemName, quantityString] = update.split(' ')
+            const [quantityString, itemName] = update.split('_')
             const quantity = Number(quantityString)
-            const item = { ...items[itemName], quantity }
-            if (misc[itemName]) {
-                let newQuantity = misc[itemName].quantity
-                if (quantity > 0) newQuantity += item.quantity
+            const itemToAdd = { ...items[itemName], quantity }
+            const itemsCharacterIsCarrying = characterDbItems[itemName]
+            console.log('log: user, newItems, type', { itemToAdd, characterDbItems, itemsCharacterIsCarrying})
+
+
+            if (itemsCharacterIsCarrying) {
+                let newQuantity = itemsCharacterIsCarrying.quantity
+                if (quantity > 0) newQuantity += itemToAdd.quantity
                 if (quantity < 0) {
-                    newQuantity -= item.quantity
+                    newQuantity -= itemToAdd.quantity
                 }
                 if (newQuantity < 0) {
                     newQuantity = 0
                 }
-                misc[itemName].quantity = newQuantity
+                itemsCharacterIsCarrying.quantity = newQuantity
     
             } else {
-                newItems[itemName] = item
+                newItems[itemName] = itemToAdd
             }
         })
-        await giveCharacterItem(user, newItems, 'misc')
-
+        await giveCharacterItem(user, newItems, type)
+        launchToaster({type: 'success', content: `Successfully given ${user.displayName} items`})
     }
     
     return [updateItems]

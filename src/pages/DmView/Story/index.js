@@ -40,7 +40,6 @@ const Story = () => {
     async function getFirstChapterData() {
         const ch = await getStoryChapter('Chapter 1')
         setselectedChapter({ label: 'Chapter 1', notes: ch.notes })
-        console.log('log: getFirstChapterData', { label: 'Chapter 1', notes: ch.notes })
         setisLoading(false)
 
     }

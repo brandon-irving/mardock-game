@@ -1,9 +1,9 @@
 import React from 'react'
-import { useGetMisc } from '../../common/hooks/useGetMisc'
+import { ITEM_TYPES, useGetItems } from '../../common/hooks/useGetItems'
 import BaseForm from './BaseForm'
 
 const ItemsForm = ({closeModal}) => {
-    const {userItems} = useGetMisc()
+    const [userItems]= useGetItems(undefined, ITEM_TYPES.misc)
     return (
        <BaseForm options={userItems} onSubmit={closeModal} type="Items" />
     )

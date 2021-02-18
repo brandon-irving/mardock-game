@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
@@ -13,19 +13,8 @@ import { MuiFormGenerator } from 'mui-form-generator'
 import theme from '../core/theme';
 import { useHistory } from 'react-router-dom';
 import BasicRoot from '../common/BasicRoot';
+import SignUpPage from './SignUpPage'
 
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://github.com/brandon-irving/mardock-game">
-                Mardock Game
-      </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -113,7 +102,7 @@ export default function SignIn() {
     const history = useHistory()
     const classes = useStyles();
     const initialValues = { email: '', password: '' }
-
+    const [signUp, setsignUp] = useState(false)
     async function handleSubmit(values) {
         const user = await signInWithEmailAndPasswordHandler(values.email, values.password)
         const route = user.character ? '/' : 'create'
@@ -123,6 +112,15 @@ export default function SignIn() {
         const user = await signInWithGoogle()
         const route = user.character ? '/' : 'create'
         history.replace(route)
+    }
+    function goToSignUp(){
+        setsignUp(true)
+    }
+    function goToSignIn(){
+        setsignUp(false)
+    }
+    if(signUp){
+        return <SignUpPage goToSignIn={goToSignIn} />
     }
     return (
         <BasicRoot>
@@ -147,7 +145,7 @@ export default function SignIn() {
     
     </Grid>
     <Grid item>
-    <Button onClick={handleGoogleSignIn}>
+    <Button onClick={goToSignUp}>
         Sign Up
         </Button>
      

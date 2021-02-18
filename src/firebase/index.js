@@ -70,7 +70,7 @@ export const signOut = async () => {
   await auth.signOut()
 };
 
-export const observer = (updateContextState) => {
+export const observer = (updateContextState, currentUser) => {
   // Listens for user
   firestore.collection('users').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
@@ -89,7 +89,7 @@ export const observer = (updateContextState) => {
           launchToaster({type: 'warning', content: `💭 ${message}`})
           updateCharacter(user, {'character.dmMessage.innerThoughts': null})
         }
-        
+        if(currentUser !== user)return
         updateContextState({ user: {...user, hint: null, innerThoughts: null} })
       }
       if (change.type === 'removed') {
@@ -115,6 +115,21 @@ export const dmObserver = () => {
   });
 }
 /******************************** Generic (used to build others) *********************************/
+  export async function batchUpdate(path, list){
+  // Get a new write batch
+  const batch = await firestore.batch();
+
+  // Set the value of 'NYC'
+  const userRef = firestore.collection('users');
+  await batch.set(userRef, {test: true});
+
+  await batch.commit();
+  // Update the population of 'SF'
+  // const sfRef = db.collection('cities').doc('SF');
+  // batch.update(sfRef, {population: 1000000});
+  }
+
+
 export async function updateDoc(path, updates, specialKey){
   const ref = firestore.doc(`${path}`);
   const snapshot = await ref.get();
@@ -133,6 +148,7 @@ export async function updateDoc(path, updates, specialKey){
     return await ref.update(updates);
   }
 }
+
 const getDocument = async (path) => {
   try {
     const doc = await firestore.doc(path).get();
@@ -143,7 +159,6 @@ const getDocument = async (path) => {
     console.error("Error fetching user", error);
   }
 };
-
 
 export async function getCollection(collectionPath=['collection', 'document']){
   let data = null
@@ -200,7 +215,10 @@ export async function getAllUsers(){
   const usersRef = await ref.get()
   const users = []
   usersRef.forEach(user => {
-    users.push(user.data())
+    if(!user.data().DM){
+      users.push(user.data())
+
+    }
   });
   return users
 }

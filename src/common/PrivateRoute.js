@@ -10,12 +10,12 @@ import DmViewResolver from '../pages/DmView'
 export const PrivateRoute = ({ children, ...rest }) => {
   const { user } = useContextState()
   const isValidLogin = user.uid ? true : false
-  console.log('log: user', user)
+  console.log('log: PrivateRoute', user)
     return(
   <Route
     {...rest}
     render={() =>{
-      if(isValidLogin && user.DM)return <DmViewResolver />
+      if(user.DM)return <DmViewResolver />
       else if(isValidLogin && user.character)return children
       else if(isValidLogin && !user.character)return <CreatePage />
       else if(!isValidLogin)return <SignInPage />
