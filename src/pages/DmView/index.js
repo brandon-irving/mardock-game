@@ -3,11 +3,11 @@ import BasicRoot from '../../common/BasicRoot'
 import { ContextStateProvider } from 'dynamic-context-provider';
 import DmView from './DmView'
 
-const DmViewResolver = () => {
+const DmViewResolver = ({dmUser}) => {
     return (
         <ContextStateProvider stateConfig={{users: [], isGlobalLoading: false}}>
         <BasicRoot maxWidth="xl">
-       <DmView />
+       <DmView dmUser={dmUser}/>
         </BasicRoot>
         </ContextStateProvider>
        

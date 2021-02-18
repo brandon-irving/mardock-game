@@ -40,7 +40,7 @@ export default function MonsterList() {
     React.useEffect(() => {
         if(!initialBattle.monsters)return
         updateContextState({battle: initialBattle})
-        console.log('log: initialBattle update', initialBattle)
+
         startBattle(initialBattle)
     }, [initialBattle])
     if (!monsters) return null

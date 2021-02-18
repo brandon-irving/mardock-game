@@ -105,7 +105,7 @@ const BluePrint = ({ options, itemTypes, availableItems, setavailableItems, allI
 }
 const ItemForm = () => {
     const {options, users} = useGetUserOptions()
-    console.log('log: user', {users})
+
     const firstUser = options[0]
     const allItems = useGetAllItemOptions(firstUser)
     const itemTypes = map(Object.keys(allItems), key=>{
@@ -119,7 +119,6 @@ const ItemForm = () => {
 
    async function handleSubmit(values, formik) {
         const reqString = `${values.quantity}_${values.availableItem.label}`
-        console.log('log: submit', {submitConfig: [values.target, values.itemType.label], reqString})     
         if(values.targetAll){
             await updateBatchItems(values)
         }else await updateItems([reqString])

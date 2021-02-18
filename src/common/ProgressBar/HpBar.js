@@ -21,8 +21,6 @@ const HpBar = ({monster}) => {
         
         
         useEffect(() => {
-            console.log('log: hp', {hp, desired})     
-
             setgaugeValue(getHp())
         }, [hp, armor, monster])   
     return (

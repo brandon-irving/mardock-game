@@ -22,7 +22,7 @@ async function updateBatchItems(values){
         newItems.push(newOption.character.items)
         return newOption
     })
-    console.log('log: options', {newUsers, values, type, options})
+
     await batchUpdate('character.items', newUsers, newItems)
 }
 return [updateBatchItems]
@@ -37,8 +37,8 @@ export const useUpdateItems = (user, type) => {
             const quantity = Number(quantityString)
             const itemToAdd = { ...items[itemName], quantity }
             const itemsCharacterIsCarrying = characterDbItems[itemName]
-            console.log('log: user, newItems, type', { itemToAdd, characterDbItems, itemsCharacterIsCarrying})
 
+            
 
             if (itemsCharacterIsCarrying) {
                 let newQuantity = itemsCharacterIsCarrying.quantity
@@ -55,7 +55,7 @@ export const useUpdateItems = (user, type) => {
                 newItems[itemName] = itemToAdd
             }
         })
-        console.log('log: newItems', {newItems, user, type})
+
         await giveCharacterItem(user, newItems, type)
         launchToaster({type: 'success', content: `Successfully given ${user.displayName} items`})
     }

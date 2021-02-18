@@ -140,10 +140,9 @@ export default function CreatePage() {
       console.error('log: error', e)
     }
 
-    console.log('log: handleSubmit', { createUserObj })
+
   }
   function checkIfCharacterExists(){
-    console.log('log: checkIfCharacterExists user', user)
     if(user.character)return history.replace('/')
     if(!user.uid)return history.replace('/sign-in')
   }

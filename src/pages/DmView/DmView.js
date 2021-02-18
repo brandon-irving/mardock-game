@@ -7,11 +7,12 @@ import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Story from './Story'
 import { useContextState } from 'dynamic-context-provider';
-import { getAllUsers, signOut } from '../../firebase';
+import { getAllUsers, observer, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
+import Battle from './Battle';
 import { useHistory } from 'react-router-dom';
 
-const DmViewResolver = ({dmUser}) => {
+const DmView = ({dmUser}) => {
   const history = useHistory()
     const { users, updateContextState } = useContextState()
     const [value, setValue] = React.useState(0);
@@ -21,7 +22,6 @@ const DmViewResolver = ({dmUser}) => {
     };
     async function loadUsers(){
         const users = await getAllUsers()
-        console.log('log: dmUser', dmUser)
         updateContextState({ users })
     }   
     function handleSignOut(){
@@ -31,13 +31,17 @@ const DmViewResolver = ({dmUser}) => {
     React.useEffect(() => {
         loadUsers()
     }, [])
+
+    React.useEffect(() => {
+      observer(updateContextState, dmUser)
+    })
     return (
         <div>
       <AppBar position="static">
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Story" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
+          <Tab label="Battle" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
         <IconButton onClick={handleSignOut}  color="inherit" aria-label="signout">
@@ -49,7 +53,7 @@ const DmViewResolver = ({dmUser}) => {
         <Story />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+       <Battle />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
@@ -59,7 +63,7 @@ const DmViewResolver = ({dmUser}) => {
     )
 }
 
-export default DmViewResolver
+export default DmView
 
 
 function TabPanel(props) {

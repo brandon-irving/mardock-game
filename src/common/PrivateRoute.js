@@ -19,7 +19,6 @@ export const PrivateRoute = ({ children, ...rest }) => {
     else if(isValidLogin && !user.character){
       route = '/create'
     }
-    console.log('log: user', {user, route})
     route && history.replace(route)
   }
 
@@ -27,7 +26,8 @@ export const PrivateRoute = ({ children, ...rest }) => {
     if(globalLoading)return
     goToRoute()
   }, [globalLoading])
-    return(
+
+  return(
   <Route
     {...rest}
     render={() =>{

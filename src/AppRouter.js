@@ -27,6 +27,7 @@ export default function AppRouter() {
     dmObserver(updateContextState)
     observer(updateContextState, user)
   })
+
   if (appLoading) return null // TODO: add splash/loading screen
   return (
     <>
@@ -63,7 +64,7 @@ export default function AppRouter() {
             <SignInPage />
           </Route>
           {user.DM && <Route path="/DM">
-            <DmViewResolver />
+            <DmViewResolver dmUser={user} />
           </Route>}
           <Route>
             <SignInPage />

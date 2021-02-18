@@ -78,7 +78,7 @@ const UpdateCharacterForm = () => {
     const characterHealthOptions = map((Object.keys(omittedCharObj)), abbr=>{
         return {label: abbr, value: abbr,}
     })
-    console.log('log: ',{targets, updateTypeOptions, characterHealthOptions, omittedCharObj, statOptions, initialCharacterObject})
+
     // dmMessage, items
     function handleSubmit(values, formik) {
         window.alert(JSON.stringify(values))

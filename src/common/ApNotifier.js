@@ -11,8 +11,8 @@ const ApNotifier = () => {
     } = useContextState()
     const weapon = useGetEquippedData('weapon')
     const accessory = useGetEquippedData('accessory')
-    const stats = useStatSheet()
-    // console.log('log: TODO-add stat modifiers', stats)
+   
+    //  const stats = useStatSheet() console.log('log: TODO-add stat modifiers', stats)
     function getAp(){
         const currentAp = ap + (armor.ap || 0) + (weapon.ap || 0) + (accessory.ap || 0)
       return currentAp

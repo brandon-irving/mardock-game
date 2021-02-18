@@ -8,8 +8,8 @@ export function useAttacks(){
     const equippedWeapon = weapons[weapon]
 
     const listOfAttacks = attacks[equippedWeapon.type]
-    console.log('log: weapon', { listOfAttacks, weapon, equippedWeapon})
 
+    
     const availableAttacks = []
     forEach(techniques.attacks, name=>{
         if(!listOfAttacks[name])return 

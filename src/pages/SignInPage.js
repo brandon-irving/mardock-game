@@ -115,7 +115,7 @@ export default function SignIn() {
         updateContextState({globalLoading: true})
         const user = await signInWithGoogle()
         const route = user.character ? '/' : 'create'
-        console.log('log: route', route)
+
         history.replace(route)
         updateContextState({globalLoading: false})
 

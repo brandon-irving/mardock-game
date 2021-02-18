@@ -35,7 +35,7 @@ const Story = () => {
     }
     async function handleNoteSave(values) {
         await updateStoryChapter(selectedChapter.label, values, 'notes')
-        console.log('log: handleNoteSave', values)
+
     }
     async function getFirstChapterData() {
         const ch = await getStoryChapter('Chapter 1')

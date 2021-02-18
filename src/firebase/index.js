@@ -81,6 +81,7 @@ export const observer = (updateContextState, currentUser) => {
 
       }
       if (change.type === 'modified') {
+        console.log('log: change', {change, currentUser, user})
         const { hint, innerThoughts } = user.character?.dmMessage || {}
         const message = hint || innerThoughts || ''
         if(hint){
@@ -111,7 +112,7 @@ export const dmObserver = (updateContextState) => {
         if(data.current){
           updateContextState({battle: data.current})
         }
-        console.log('log: data', data)
+
       }
       if (change.type === 'removed') {
       }
@@ -126,7 +127,7 @@ export const dmObserver = (updateContextState) => {
  * @returns undefined
  */
 export async function batchUpdate(path, users, updates){
-  console.log('log: batchUpdate', {path, users, updates})
+
   const batch = await firestore.batch();
   forEach(users, (user, i)=>{
     const userRef =  firestore.collection('users').doc(user.uid)
@@ -241,7 +242,7 @@ export const itemUse = async ({userGivingItem, target, item}) => {
 
 export const giveCharacterItem = async (user, updates, itemCategory) => {
   const path = `character.items.${itemCategory}`
-  console.log('log: updates', {[itemCategory]:updates})
+
   await updateCharacter(user, {[path]: updates})
 }
 
@@ -304,7 +305,7 @@ export const damageOnMonster = async (monster, amount) => {
   if (doc.exists) {
     current = doc.data()
   }
-  console.log('log: current', current)
+
   //  await userRef.update({current: {...battle}});
 }
   /*

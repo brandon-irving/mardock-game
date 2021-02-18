@@ -6,7 +6,7 @@ export const useUpdateCharacter = () => {
 
     async function updateAndGetCharacter(updates){
         const newUser = await updateCharacter(user,updates)
-        console.log('log: useUpdateCharacter', {user, updates})
+
         updateContextState({user: newUser})
     }
     

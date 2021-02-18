@@ -4,7 +4,7 @@ export function convertStatSheet(stats){
     
     const completeStats = Object.keys(statSheet).reduce((acc, abbr)=>{
         const stat = stats[abbr]
-        const statCount = stat.points
+        const statCount = stat
         let statBoost = 0
         if(statCount >= 12 && statCount<14){
             statBoost = 1
@@ -21,13 +21,12 @@ export function convertStatSheet(stats){
         if(statCount >= 20 ){
             statBoost = 5
         }
-
         return {...acc, [abbr]: {...statSheet[abbr], points:stat, abbr, statBoost}}
     },{})
     return completeStats
 }
 export function useStatSheet(manualStats){
-    const { user: {character} } = useContextState()
-    const stats = manualStats || character.stats
+    const { user } = useContextState()
+    const stats = manualStats || user?.character?.stats
     return convertStatSheet(stats)
 }
