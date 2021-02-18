@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/mardock-game/static/js/main.08a792d8.chunk.js",
-    "main.js.map": "/mardock-game/static/js/main.08a792d8.chunk.js.map",
+    "main.js": "/mardock-game/static/js/main.ad13ac4e.chunk.js",
+    "main.js.map": "/mardock-game/static/js/main.ad13ac4e.chunk.js.map",
     "runtime-main.js": "/mardock-game/static/js/runtime-main.f4602086.js",
     "runtime-main.js.map": "/mardock-game/static/js/runtime-main.f4602086.js.map",
     "static/css/2.8df867bc.chunk.css": "/mardock-game/static/css/2.8df867bc.chunk.css",
-    "static/js/2.ca63a5d5.chunk.js": "/mardock-game/static/js/2.ca63a5d5.chunk.js",
-    "static/js/2.ca63a5d5.chunk.js.map": "/mardock-game/static/js/2.ca63a5d5.chunk.js.map",
+    "static/js/2.e8ea1d6b.chunk.js": "/mardock-game/static/js/2.e8ea1d6b.chunk.js",
+    "static/js/2.e8ea1d6b.chunk.js.map": "/mardock-game/static/js/2.e8ea1d6b.chunk.js.map",
     "static/js/3.cb097955.chunk.js": "/mardock-game/static/js/3.cb097955.chunk.js",
     "static/js/3.cb097955.chunk.js.map": "/mardock-game/static/js/3.cb097955.chunk.js.map",
     "index.html": "/mardock-game/index.html",
     "static/css/2.8df867bc.chunk.css.map": "/mardock-game/static/css/2.8df867bc.chunk.css.map",
-    "static/js/2.ca63a5d5.chunk.js.LICENSE.txt": "/mardock-game/static/js/2.ca63a5d5.chunk.js.LICENSE.txt",
+    "static/js/2.e8ea1d6b.chunk.js.LICENSE.txt": "/mardock-game/static/js/2.e8ea1d6b.chunk.js.LICENSE.txt",
     "static/media/bag.74d92ec9.svg": "/mardock-game/static/media/bag.74d92ec9.svg",
     "static/media/darkRiteArmor.9c40cf0e.svg": "/mardock-game/static/media/darkRiteArmor.9c40cf0e.svg",
     "static/media/equipped.80f4d893.svg": "/mardock-game/static/media/equipped.80f4d893.svg",
@@ -27,7 +27,7 @@
   "entrypoints": [
     "static/js/runtime-main.f4602086.js",
     "static/css/2.8df867bc.chunk.css",
-    "static/js/2.ca63a5d5.chunk.js",
-    "static/js/main.08a792d8.chunk.js"
+    "static/js/2.e8ea1d6b.chunk.js",
+    "static/js/main.ad13ac4e.chunk.js"
   ]
 }
