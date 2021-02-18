@@ -8,27 +8,25 @@ import DmViewResolver from '../pages/DmView'
  
 
 export const PrivateRoute = ({ children, ...rest }) => {
-  const { user } = useContextState()
+  const { user, globalLoading } = useContextState()
   const history = useHistory()
   const isValidLogin = user.uid ? true : false
   function goToRoute(){
     let route = null
-    if(!isValidLogin){
-      route = '/sign-in'
-    }
     if(user.DM){
       route = '/DM'
     }
     else if(isValidLogin && !user.character){
       route = '/create'
     }
-
+    console.log('log: user', {user, route})
     route && history.replace(route)
   }
 
   React.useEffect(() => {
+    if(globalLoading)return
     goToRoute()
-  }, [])
+  }, [globalLoading])
     return(
   <Route
     {...rest}

@@ -30,7 +30,7 @@ export default function AppRouter() {
   if (appLoading) return null // TODO: add splash/loading screen
   return (
     <>
-      <Router>
+      <Router basename="/mardock-game">
         <Switch>
         {/* Protected Routes */}
         

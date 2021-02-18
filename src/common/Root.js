@@ -113,6 +113,7 @@ export default function Root({children}) {
     history.push( `${route}`)
   }
   async function handleLogOut(){
+    history.replace('/sign-in')
     await signOut()
   }
 

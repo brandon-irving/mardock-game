@@ -5,7 +5,7 @@ import fist from '../images/fist.svg'
 
 const routes = [
     {
-        route: '/',
+        route: '/mardock-game',
         title: 'Home',
         icon: <Home />,
     },

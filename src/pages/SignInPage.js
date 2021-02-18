@@ -98,20 +98,27 @@ function validate(values) {
     return errors
 }
 export default function SignIn() {
-    const { user } = useContextState()
+    const { updateContextState } = useContextState()
     const history = useHistory()
     const classes = useStyles();
     const initialValues = { email: '', password: '' }
     const [signUp, setsignUp] = useState(false)
     async function handleSubmit(values) {
+        updateContextState({globalLoading: true})
         const user = await signInWithEmailAndPasswordHandler(values.email, values.password)
         const route = user.character ? '/' : 'create'
-        history.push(route)
+        history.replace(route)
+        updateContextState({globalLoading: false})
+
     }
     async function handleGoogleSignIn(e) {
+        updateContextState({globalLoading: true})
         const user = await signInWithGoogle()
         const route = user.character ? '/' : 'create'
+        console.log('log: route', route)
         history.replace(route)
+        updateContextState({globalLoading: false})
+
     }
     function goToSignUp(){
         setsignUp(true)
