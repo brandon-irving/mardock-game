@@ -121,7 +121,7 @@ const ItemForm = () => {
         const reqString = `${values.quantity}_${values.availableItem.label}`
         console.log('log: submit', {submitConfig: [values.target, values.itemType.label], reqString})     
         if(values.targetAll){
-            await updateBatchItems(options)
+            await updateBatchItems(values)
         }else await updateItems([reqString])
         
         formik.resetForm()

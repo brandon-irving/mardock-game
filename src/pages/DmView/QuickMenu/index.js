@@ -11,6 +11,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import { Dialog, DialogTitle, DialogContent, DialogContentText } from '@material-ui/core';
 import HintForm from './HintForm'
 import ItemForm from './ItemForm'
+import UpdateCharacterForm from './UpdateCharacterForm'
 
 const useStyles = makeStyles((theme) => ({
   speedDial: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const actions = [
   { icon: <FileCopyIcon />, name: 'Hint' },
   { icon: <SaveIcon />, name: 'Item' },
-  { icon: <PrintIcon />, name: 'Start Battle' },
+  { icon: <PrintIcon />, name: 'Update Character' },
   { icon: <ShareIcon />, name: 'Characters' },
   { icon: <FavoriteIcon />, name: 'Like' },
 ];
@@ -65,7 +66,7 @@ export default function QuickMenu() {
   const dialogContent = {
     Hint: <HintForm />,
     Item: <ItemForm />,
-    'Start Battle': <div>Start Battle</div>,
+    'Update Character': <UpdateCharacterForm />,
     Characters: <div>Characters</div>,
   }
   return (

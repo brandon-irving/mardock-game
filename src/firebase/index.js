@@ -3,6 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
 import { launchToaster } from "../core/toaster";
+import { forEach } from "lodash";
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
   authDomain: "dnd-story-assistant.firebaseapp.com",
@@ -118,18 +119,20 @@ export const dmObserver = (updateContextState) => {
   });
 }
 /******************************** Generic (used to build others) *********************************/
-export async function batchUpdate(path, list){
-  // Get a new write batch
+/**
+ * @function batchUpdate
+ * Updates multiple users at once
+ * @params (path, users, updates) updates must match path 
+ * @returns undefined
+ */
+export async function batchUpdate(path, users, updates){
+  console.log('log: batchUpdate', {path, users, updates})
   const batch = await firestore.batch();
-
-  // Set the value of 'NYC'
-  const userRef = firestore.collection('users');
-  await batch.set(userRef, {test: true});
-
+  forEach(users, (user, i)=>{
+    const userRef =  firestore.collection('users').doc(user.uid)
+    batch.update(userRef, {[path]: updates[i]});
+  })
   await batch.commit();
-  // Update the population of 'SF'
-  // const sfRef = db.collection('cities').doc('SF');
-  // batch.update(sfRef, {population: 1000000});
   }
   
 export async function updateDoc(path, updates, specialKey){
@@ -205,6 +208,10 @@ export const updateCharacter = async (user, updates) => {
    await updateDoc(`users/${user.uid}`, updates)
    const newUser = await getUserDocument(user.uid)
    return newUser
+}
+export const damageCharacter = async (user, amount) => {
+  const newAmount = user.character.hp - amount >= 0 ? user.character.hp - amount : 0
+  await updateDoc(`users/${user.uid}`, {'character.hp':newAmount})
 }
 
 export const itemUse = async ({userGivingItem, target, item}) => {
@@ -290,6 +297,16 @@ export async function getStoryChapter(chapter){
   return res || {notes: ''}
 }
 
+export const damageOnMonster = async (monster, amount) => {
+  let current = null
+  const userRef = firestore.collection('DM').doc('battles');
+ const doc =  userRef.get()
+  if (doc.exists) {
+    current = doc.data()
+  }
+  console.log('log: current', current)
+  //  await userRef.update({current: {...battle}});
+}
   /*
   how to update nested features
   const res = await db.collection('users').doc('Frank').update({

@@ -1,4 +1,4 @@
-import { forEach } from "lodash"
+import { forEach, map } from "lodash"
 import { launchToaster } from "../../core/toaster"
 import { batchUpdate, giveCharacterItem } from "../../firebase"
 import { useGetItems } from "./useGetItems"
@@ -7,9 +7,23 @@ import { useGetUserOptions } from "../../pages/DmView/hooks"
 
 export function useBatchUpdateItems(type){
 const { options } = useGetUserOptions()
-async function updateBatchItems(){
-    console.log('log: options', {type, options})
-    await batchUpdate()
+async function updateBatchItems(values){
+    const { availableItem: item, quantity} = values
+    const newItems = []
+    const newUsers = map(options, option=>{
+        const newOption = {...option}
+        let currentItems = newOption.character.items[type][item.label]
+        if(currentItems){
+            currentItems.quantity += quantity
+        }else{
+            newOption.character.items[type][item.label] = {...item, quantity}
+        }
+        
+        newItems.push(newOption.character.items)
+        return newOption
+    })
+    console.log('log: options', {newUsers, values, type, options})
+    await batchUpdate('character.items', newUsers, newItems)
 }
 return [updateBatchItems]
 }
