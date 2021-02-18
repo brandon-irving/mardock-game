@@ -59,6 +59,7 @@ function getInitials(fullName='John Doe'){
     const equipped = useEquipped()
     const characterTitle = titles[character.title]
     const characterClass = classes[character.class]
+    
     return (
         <div>
             <Card>
@@ -69,6 +70,7 @@ function getInitials(fullName='John Doe'){
                         </Grid>
                         <Grid style={{textAlign: 'end'}} item xs={9}>
                         <Typography>{character.name}</Typography>                        
+                        <Typography>Level: {character.level}</Typography>                        
                         <Typography>{character.exp} Exp</Typography>                        
                         <Typography>{character.gil} Gil</Typography>                        
                         </Grid>

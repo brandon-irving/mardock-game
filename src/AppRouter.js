@@ -9,7 +9,6 @@ import BattlePage from "./pages/BattlePage";
 import CharacterPage from "./pages/CharacterPage";
 import { PrivateRoute } from "./common/PrivateRoute";
 import CreatePage from "./pages/CreatePage";
-import { launchToaster } from "./core/toaster";
 
 export default function AppRouter() {
   const { user, globalLoading, updateContextState } = useContextState()
@@ -19,7 +18,6 @@ export default function AppRouter() {
       const user = await generateUserDocument(userAuth) || {}
       updateContextState({ user, globalLoading: false })
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -28,7 +26,7 @@ export default function AppRouter() {
     observer(updateContextState, user)
   })
 
-  if (globalLoading) return null// TODO: add splash/loading screen
+  if (globalLoading) return null // TODO: add splash/loading screen
   return (
     <>
       <Router>
@@ -60,11 +58,12 @@ export default function AppRouter() {
             <Home />
             </Root>
           </PrivateRoute>}
-          {!user.character && <Route>
+          <Route path="/sign-in">
             <SignInPage />
-          </Route>}
+          </Route>
         </Switch>
       </Router>
+
     </>
   );
 }

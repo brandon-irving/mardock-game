@@ -46,7 +46,6 @@ export const generateUserDocument = async (user, additionalData) => {
 export const createUserWithEmailAndPasswordHandler = async (values = { email: '', password: '', displayName: '' }) => {
   let newUser = null
   const { email, password, displayName } = values
-  event.preventDefault();
   try {
     const { user } = await auth.createUserWithEmailAndPassword(email, password);
     newUser = await generateUserDocument(user, { displayName, email });
@@ -75,11 +74,13 @@ export const observer = (updateContextState, currentUser) => {
   firestore.collection('users').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
       const user = change.doc.data()
+      if(currentUser.uid !== user.uid)return
+
       if (change.type === 'added') {
 
       }
       if (change.type === 'modified') {
-        const { hint, innerThoughts } = user.character.dmMessage
+        const { hint, innerThoughts } = user.character?.dmMessage || {}
         const message = hint || innerThoughts || ''
         if(hint){
           launchToaster({type: 'info', content: `✨  ${message}`})
@@ -89,7 +90,6 @@ export const observer = (updateContextState, currentUser) => {
           launchToaster({type: 'warning', content: `💭 ${message}`})
           updateCharacter(user, {'character.dmMessage.innerThoughts': null})
         }
-        if(currentUser !== user)return
         updateContextState({ user: {...user, hint: null, innerThoughts: null} })
       }
       if (change.type === 'removed') {
@@ -171,6 +171,7 @@ export async function getCollection(collectionPath=['collection', 'document']){
   return data
 }
 
+
 /******************************** Users *********************************/
 export async function findUser(query = { key: 'name', comparison: '==', equals: 'Brandon' }) {
   let user = {}
@@ -185,7 +186,6 @@ export async function findUser(query = { key: 'name', comparison: '==', equals: 
   });
   return user
 }
-/******************************** Users *********************************/
 export const getUserDocument = async uid => {
   if (!uid) return null;
   try {
@@ -201,6 +201,8 @@ export const getUserDocument = async uid => {
 
 export const updateCharacter = async (user, updates) => {
    await updateDoc(`users/${user.uid}`, updates)
+   const newUser = await getUserDocument(user.uid)
+   return newUser
 }
 
 export const giveCharacterItem = async (user, updates, itemCategory) => {
@@ -236,3 +238,11 @@ export async function getStoryChapter(chapter){
   const res = await getCollection(['DM', chapter])
   return res || {notes: ''}
 }
+
+  /*
+  how to update nested features
+  const res = await db.collection('users').doc('Frank').update({
+  age: 13,
+  'favorites.color': 'Red'
+});
+  */

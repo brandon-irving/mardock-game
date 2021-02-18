@@ -3,9 +3,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import IconButton from '@material-ui/core/IconButton';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Story from './Story'
 import { useContextState } from 'dynamic-context-provider';
-import { getAllUsers } from '../../firebase';
+import { getAllUsers, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
 
 const DmViewResolver = () => {
@@ -26,11 +28,16 @@ const DmViewResolver = () => {
     return (
         <div>
       <AppBar position="static">
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Story" {...a11yProps(0)} />
           <Tab label="Item Two" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
+        <IconButton onClick={signOut}  color="inherit" aria-label="signout">
+      <ExitToAppIcon />
+    </IconButton>
+    </div>
       </AppBar>
       <TabPanel value={value} index={0}>
         <Story />

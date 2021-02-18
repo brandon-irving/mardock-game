@@ -22,7 +22,6 @@ import FloatingButton from './FloatingButton';
 import ImageIcon from './ImageIcon';
 import bag from '../images/bag.svg';
 import { signOut } from '../firebase';
-import { useContextState } from 'dynamic-context-provider';
 import { find } from 'lodash';
 
 const drawerWidth = 240;

@@ -124,12 +124,15 @@ export default function SignIn() {
     }
     return (
         <BasicRoot>
-        <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-            Sign in
-</Typography>
+               <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+            </div>
+            <Typography align="center" component="h1" variant="h5">
+                Sign In
+            </Typography>
+        
         <MuiFormGenerator
             theme={theme}
             manualValidate={validate}

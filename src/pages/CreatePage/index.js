@@ -111,17 +111,7 @@ export default function CreatePage() {
     setActiveStep(index);
 
   }
-// TODO: make global function
-// function getDefaultWeapon(){
-//   let weapon = 'Long Sword'
-//   forEach(Object.keys(classes), className=>{
-//     const { starterWeapon, label } = classes[className]
-//     if(label === createUserObj.class){
-//       weapon =starterWeapon
-//     }
-//   })
-//   return weapon
-// }
+
   function getStepContent(step) {
     switch (step) {
       case 0:
@@ -152,9 +142,10 @@ export default function CreatePage() {
 
     console.log('log: handleSubmit', { createUserObj })
   }
-  async function checkIfCharacterExists(){
+  function checkIfCharacterExists(){
     console.log('log: checkIfCharacterExists user', user)
     if(user.character)return history.replace('/')
+    if(!user.uid)return history.replace('/sign-in')
   }
   React.useEffect(() => {
     checkIfCharacterExists()

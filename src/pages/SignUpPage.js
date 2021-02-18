@@ -99,7 +99,7 @@ const BluePrint = () => {
                             id: 'submit',
                             name: 'submit',
                             type: 'submit',
-                            label: 'Sign in',
+                            label: 'Sign Up',
                             fullWidth: true,
                             disabled: false,
                             variant: 'outlined',
@@ -128,21 +128,25 @@ export default function SignUpPage({goToSignIn}) {
     const initialValues = { displayName: '', email: '', password: '' }
 
     async function handleSubmit(values) {
-        const user = await createUserWithEmailAndPasswordHandler(values)
-        history.push('create')
+        const newUser= await createUserWithEmailAndPasswordHandler(values)
+        console.log('log: newUser', newUser)
+        history.replace('create')
     }
     async function handleGoogleSignUp(e) {
-        const user = await signInWithGoogle()
+        await signInWithGoogle()
         history.replace('create')
     }
     return (
         <BasicRoot>
-        <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-            Sign Up
-</Typography>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+            </div>
+            <Typography align="center" component="h1" variant="h5">
+                Sign Up
+            </Typography>
+
         <MuiFormGenerator
             theme={theme}
             manualValidate={validate}

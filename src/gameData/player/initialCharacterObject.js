@@ -1,4 +1,5 @@
 export const initialCharacterObject = {
+    title: 'Novice Adventurer',
     ap: 10,
     class: 'Knight',
     equipped: {accessory: '', armor: {}, weapon: 'Long Sword', secondaryWeapon: ''},

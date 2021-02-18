@@ -1,19 +1,14 @@
 import { useContextState } from "dynamic-context-provider";
-import { firestore } from "../../firebase";
+import { updateCharacter } from "../../firebase";
 
 export const useUpdateCharacter = () => {
-    const { user } = useContextState()
-    const userRef = firestore.doc(`users/${user.uid}`);
-    async function updateCharacter(updates){
-        await userRef.update(updates);
+    const { user, updateContextState } = useContextState()
+
+    async function updateAndGetCharacter(updates){
+        const newUser = await updateCharacter(user,updates)
+        console.log('log: useUpdateCharacter', {user, updates})
+        updateContextState({user: newUser})
     }
     
-    return [updateCharacter]
+    return [updateAndGetCharacter]
   }
-  /*
-  how to update nested features
-  const res = await db.collection('users').doc('Frank').update({
-  age: 13,
-  'favorites.color': 'Red'
-});
-  */
