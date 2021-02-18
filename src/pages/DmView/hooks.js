@@ -2,11 +2,11 @@ import { useContextState } from "dynamic-context-provider";
 import { map } from 'lodash'
 
 export function useGlobalLoading(){
-    const { isGlobalLoading, updateContextState } = useContextState()
-    function updateGlobalLoading(isGlobalLoading){
-        updateContextState({isGlobalLoading})
+    const { globalLoading, updateContextState } = useContextState()
+    function updateGlobalLoading(globalLoading){
+        updateContextState({globalLoading})
     }
-    return [isGlobalLoading, updateGlobalLoading]
+    return [globalLoading, updateGlobalLoading]
 }
 
 export function useGetUserOptions(){

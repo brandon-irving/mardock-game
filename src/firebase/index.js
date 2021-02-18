@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
 import { launchToaster } from "../core/toaster";
-import { forEach } from "lodash";
+import { forEach, map } from "lodash";
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
   authDomain: "dnd-story-assistant.firebaseapp.com",
@@ -70,18 +70,20 @@ export const signOut = async () => {
   await auth.signOut()
 };
 
-export const observer = (updateContextState, currentUser) => {
+export const observer = (updateContextState, currentUser, users) => {
   // Listens for user
   firestore.collection('users').onSnapshot(querySnapshot => {
     querySnapshot.docChanges().forEach(change => {
       const user = change.doc.data()
-      if(currentUser.uid !== user.uid)return
+
 
       if (change.type === 'added') {
 
       }
       if (change.type === 'modified') {
-        console.log('log: change', {change, currentUser, user})
+
+        console.log('log: change', {users, currentUser, user})
+
         const { hint, innerThoughts } = user.character?.dmMessage || {}
         const message = hint || innerThoughts || ''
         if(hint){
@@ -92,7 +94,17 @@ export const observer = (updateContextState, currentUser) => {
           launchToaster({type: 'warning', content: `💭 ${message}`})
           updateCharacter(user, {'character.dmMessage.innerThoughts': null})
         }
-        updateContextState({ user: {...user, hint: null, innerThoughts: null} })
+        if(currentUser.uid === user.uid){
+          updateContextState({ user: {...user, hint: null, innerThoughts: null} })
+
+        }
+        if(users){
+          const newUsers = map(users, oldUser=>{
+            if(oldUser.uid === user.uid)return {...oldUser, character: user.character}
+            return oldUser
+          })
+          updateContextState({ users: newUsers })
+        }
       }
       if (change.type === 'removed') {
       }
@@ -109,6 +121,8 @@ export const dmObserver = (updateContextState) => {
 
       }
       if (change.type === 'modified') {
+        console.log('log: change', {change})
+
         if(data.current){
           updateContextState({battle: data.current})
         }

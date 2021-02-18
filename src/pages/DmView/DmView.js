@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Story from './Story'
 import { useContextState } from 'dynamic-context-provider';
-import { getAllUsers, observer, signOut } from '../../firebase';
+import { dmObserver, getAllUsers, observer, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
 import Battle from './Battle';
 import { useHistory } from 'react-router-dom';
@@ -33,7 +33,8 @@ const DmView = ({dmUser}) => {
     }, [])
 
     React.useEffect(() => {
-      observer(updateContextState, dmUser)
+      observer(updateContextState, dmUser, users)
+      dmObserver(updateContextState)
     })
     return (
         <div>

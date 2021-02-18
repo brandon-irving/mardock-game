@@ -5,7 +5,7 @@ import DmView from './DmView'
 
 const DmViewResolver = ({dmUser}) => {
     return (
-        <ContextStateProvider stateConfig={{users: [], isGlobalLoading: false}}>
+        <ContextStateProvider stateConfig={{users: [], globalLoading: false}}>
         <BasicRoot maxWidth="xl">
        <DmView dmUser={dmUser}/>
         </BasicRoot>
