@@ -9,8 +9,10 @@ import Story from './Story'
 import { useContextState } from 'dynamic-context-provider';
 import { getAllUsers, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
+import { useHistory } from 'react-router-dom';
 
-const DmViewResolver = () => {
+const DmViewResolver = ({dmUser}) => {
+  const history = useHistory()
     const { users, updateContextState } = useContextState()
     const [value, setValue] = React.useState(0);
 
@@ -19,9 +21,13 @@ const DmViewResolver = () => {
     };
     async function loadUsers(){
         const users = await getAllUsers()
+        console.log('log: dmUser', dmUser)
         updateContextState({ users })
     }   
-
+    function handleSignOut(){
+      signOut()
+      history.replace('/sign-in')
+    }
     React.useEffect(() => {
         loadUsers()
     }, [])
@@ -34,7 +40,7 @@ const DmViewResolver = () => {
           <Tab label="Item Two" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
-        <IconButton onClick={signOut}  color="inherit" aria-label="signout">
+        <IconButton onClick={handleSignOut}  color="inherit" aria-label="signout">
       <ExitToAppIcon />
     </IconButton>
     </div>

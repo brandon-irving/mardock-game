@@ -14,23 +14,23 @@ export function useGetSpecificItem(user, itemType){
         armor: armors,
         accessory: accessories
     }
-    const itemRepo = repo[itemType]
+    const itemsGameData = repo[itemType]
     const { character: {items} } = user // { misc, weapon, }
     const itemStorage = items[itemType] // {Potion,}
 
     const userItems = Object.keys(itemStorage).reduce((acc,name)=>{
         const newItems = [...acc]
-        const item = {...itemRepo[name], ...itemStorage[name], label: name, value: name}
+        const item = {...itemsGameData[name], ...itemStorage[name], label: name, value: name}
         newItems.push(item)
         return newItems
     },[])
     
-    return [userItems, itemRepo, items, itemStorage ] 
+    return [userItems, itemsGameData, items, itemStorage ] 
 }
 export function useGetItems(manualUser, itemType){
     const { user } =  useContextState()
     const desiredUser = manualUser ? manualUser : user
-    const [userItems, items, dbItems, itemStorage] = useGetSpecificItem(desiredUser, itemType)
-    return [userItems, items, dbItems[itemType], itemStorage]
+    const [userItems, itemsGameData, dbItems] = useGetSpecificItem(desiredUser, itemType)
+    return [userItems, itemsGameData, dbItems[itemType]]
 }
 

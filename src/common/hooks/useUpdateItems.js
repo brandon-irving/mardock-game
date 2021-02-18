@@ -41,6 +41,7 @@ export const useUpdateItems = (user, type) => {
                 newItems[itemName] = itemToAdd
             }
         })
+        console.log('log: newItems', {newItems, user, type})
         await giveCharacterItem(user, newItems, type)
         launchToaster({type: 'success', content: `Successfully given ${user.displayName} items`})
     }

@@ -1,5 +1,5 @@
 export const globalStateConfig = {
     user: null,
-    globalLoading: true,
+    globalLoading: false,
     users: [],
 }

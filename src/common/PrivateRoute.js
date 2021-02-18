@@ -13,16 +13,19 @@ export const PrivateRoute = ({ children, ...rest }) => {
   const isValidLogin = user.uid ? true : false
   function goToRoute(){
     let route = null
+    if(!isValidLogin){
+      route = '/sign-in'
+    }
     if(user.DM){
       route = '/DM'
     }
     else if(isValidLogin && !user.character){
       route = '/create'
     }
-    console.log('log: PrivateRoute', {route, user})
 
     route && history.replace(route)
   }
+
   React.useEffect(() => {
     goToRoute()
   }, [])
@@ -30,7 +33,7 @@ export const PrivateRoute = ({ children, ...rest }) => {
   <Route
     {...rest}
     render={() =>{
-      if(user.DM)return <DmViewResolver />
+      if(user.DM)return <DmViewResolver dmUser={user} />
       else if(isValidLogin && user.character)return children
       else if(isValidLogin && !user.character)return <CreatePage />
       else if(!isValidLogin)return <SignInPage />

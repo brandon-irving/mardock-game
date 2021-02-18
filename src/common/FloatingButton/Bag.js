@@ -69,19 +69,19 @@ export default function Bag() {
           {map(bagLabels, (label, i)=><Tab key={label} label={label} {...a11yProps(i)} />)}
       </Tabs>
       <TabPanel value={value} index={0}>
-        <UseBaseForm type="use" options={options.misc} />
+        <UseBaseForm type="misc" options={options.misc} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <EquipBaseForm type="equip" options={options.weapons} />
+      <EquipBaseForm type="weapon" />
       </TabPanel>
       <TabPanel value={value} index={2}>
-      <EquipBaseForm type="equip" options={options.armor} />
+      <EquipBaseForm type="armor"  />
       </TabPanel>
       <TabPanel value={value} index={3}>
-      <EquipBaseForm type="accessory" options={options.accessories} />
+      <EquipBaseForm type="accessory" />
       </TabPanel>
       <TabPanel value={value} index={4}>
-      <EquipBaseForm type="specialItems" options={options.specialItems} />
+      <UseBaseForm type="specialItem" options={options.specialItem} />
       </TabPanel>
 
     </div>

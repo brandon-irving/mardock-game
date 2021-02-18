@@ -1,94 +1,93 @@
-import React from 'react'
-import { MuiFormGenerator } from 'mui-form-generator'
-import 'mui-form-generator/dist/index.css'
-import theme from '../../../core/theme'
-import { Typography } from '@material-ui/core'
+import React, { useEffect, useState} from 'react'
+import { Grid, TextField, Typography, MenuItem, Button } from '@material-ui/core'
+import { useContextState } from 'dynamic-context-provider'
+import { useGetItems } from '../../hooks/useGetItems'
+import { useGetTargets } from '../../hooks/useGetTargets'
+import { itemUse } from '../../../firebase'
+import { find, map } from 'lodash'
 
-const BluePrint = ({ values, type = 'base', options = [{ label: '', value: '' }], targets = [{ label: '', value: '' }] }) => {
-    return ({
-        Rows: [
-            {
-                Cols: [
-                    {
-                        Input: {
-                            id: type,
-                            name: type,
-                            type: 'select',
-                            options,
-                            helperText: <>
-                                <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Description</Typography>
-                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type].description}</Typography>
-                            </>
-                        }
-                    },
-                ]
-            },
-            {
-                Cols: [
-                    {
-                        Input: {
-                            id: 'target',
-                            name: 'target',
-                            type: 'select',
-                            label: 'Target',
-                            options: targets
 
-                        }
-                    }
-                ]
-            },
-            {
-                Cols: [
-                    {
-                        style: { display: 'flex', justifyContent: 'flex-end' },
-                        Button: {
-                            id: 'submit',
-                            name: 'submit',
-                            type: 'submit',
-                            label: 'Submit',
-                            disabled: false,
-                        }
-                    },
-                ]
-            },
-        ]
-    })
-}
-const defaultOptions = []
-const defaultTargets = []
 
-export default function UseBaseForm({ type = '', options = defaultOptions, targets = defaultTargets, onSubmit = () => { } }) {
+export default function UseBaseForm({ type = '' }) {
+    const { user, updateContextState } = useContextState()
+    const [options, itemsGameData, dbItems] = useGetItems(undefined, type)
+    const [targets, loading] = useGetTargets()
+    const [target, settarget] = useState('')
+    const [item, setitem] = useState(options[0] ? options[0] : '')
 
-    const initialValues = { [type]: options[0], target: targets[0] }
-    const [values, setvalues] = React.useState(initialValues)
-
-    if(!options.length)return 'None'
-
-    function validate(values) {
-        const errors = {}
-        Object.keys(values).forEach(field => {
-            const isEmpty = (!values[field]) || (typeof values[field] === 'string' && !values[field].length)
-            if (isEmpty) {
-                errors[field] = 'required'
-            }
-        })
-        setvalues(values)
-        return errors
+    function handleItemChange(event) {
+        const item = find(options, {label: event.target.value})
+        settarget(item);
     }
-    
-    function handleSubmit(values, formik) {
-        window.alert(JSON.stringify(values))
-        onSubmit()
-        formik.resetForm()
+
+    function handleTargetChange(event) {
+        const target = find(targets, {label: event.target.value})
+        settarget(target);
     }
+    async function handleSubmit() {
+        updateContextState({globalLoading: true})
+        await itemUse({ userGivingItem: user, type, target, item })
+        updateContextState({globalLoading: false})
+
+    }
+
+    useEffect(() => {
+        settarget(targets[0])
+    }, [loading])
+    useEffect(() => {
+        const selectedItem = find(options, {label: item.label})
+        const selectedTarget = find(targets, {label: target.label})
+
+        setitem(selectedItem)
+        settarget(selectedTarget)
+    }, [user])
+
+    if (!target) return null
     return (
-        <MuiFormGenerator
-            theme={theme}
-            manualValidate={validate}
-            blueprint={BluePrint({ values, type, options, targets })}
-            initialValues={initialValues}
-            handleSubmit={handleSubmit}
-        />
+        <div>
+            {options.length === 0 && <Typography align="center">No items available</Typography>}
+            {options.length !== 0 &&
+                <Grid style={{ marginTop: '30px' }} container>
+                    <Grid style={{ marginBottom: '30px' }} item xs={12}>
+                        <TextField
+                            fullWidth
+                            id='item'
+                            select
+                            value={item.label}
+                            onChange={handleItemChange}
+                        >
+                            {map(options, (option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <Typography>Quantity: {item.quantity}</Typography>
+                    </Grid>
+                    <Grid style={{ marginBottom: '30px' }} item xs={12}>
+                        <TextField
+                            fullWidth
+                            id='target'
+                            select
+                            value={target.label}
+                            onChange={handleTargetChange}
+                        >
+                            {map(targets, (option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button variant="outlined" fullWidth onClick={handleSubmit}>Use Item</Button>
+                    </Grid>
+
+                </Grid>
+            }
+
+        </div>
+
     )
 }
 

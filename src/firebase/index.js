@@ -115,7 +115,7 @@ export const dmObserver = () => {
   });
 }
 /******************************** Generic (used to build others) *********************************/
-  export async function batchUpdate(path, list){
+export async function batchUpdate(path, list){
   // Get a new write batch
   const batch = await firestore.batch();
 
@@ -128,8 +128,7 @@ export const dmObserver = () => {
   // const sfRef = db.collection('cities').doc('SF');
   // batch.update(sfRef, {population: 1000000});
   }
-
-
+  
 export async function updateDoc(path, updates, specialKey){
   const ref = firestore.doc(`${path}`);
   const snapshot = await ref.get();
@@ -205,9 +204,57 @@ export const updateCharacter = async (user, updates) => {
    return newUser
 }
 
+export const itemUse = async ({userGivingItem, target, item}) => {
+  const userGivingItemPath = `character.items`
+  const targetPath = `character`
+  // Increase targets stat
+  const { maxHp, maxMp} = target.character
+  target.character.hp += item.hp
+  target.character.mp += item.mp
+  if(target.character.hp > maxHp){
+    target.character.hp = maxHp
+  }
+  if(target.character.mp > maxMp){
+    target.character.mp = maxMp
+  }
+  
+  // Decrease users quantity
+  userGivingItem.character.items[item.type][item.label].quantity -=1
+  const batch = await firestore.batch();
+  const targetRef = firestore.collection('users').doc(target.uid);
+  const userGivingItemRef = firestore.collection('users').doc(userGivingItem.uid);
+  batch.update(targetRef, { [targetPath]: target.character });
+  batch.update(userGivingItemRef, { [userGivingItemPath]: userGivingItem.character.items });
+  await batch.commit();
+
+}
+
 export const giveCharacterItem = async (user, updates, itemCategory) => {
   const path = `character.items.${itemCategory}`
+  console.log('log: updates', {[itemCategory]:updates})
   await updateCharacter(user, {[path]: updates})
+}
+
+export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) => {
+  const equippedPath = `character.equipped.${type}`
+  const itemsPath = `character.items`
+  const oldEquipped = Object.keys(user.character.equipped[type]).length ? user.character.equipped[type] : null
+  const newItems = { ...items }
+  delete newItems[type][newEquip]
+  if(oldEquipped){
+    newItems[type][oldEquipped] = itemsGameData[oldEquipped]
+  }
+
+  // // Get a new write batch
+  const batch = await firestore.batch();
+  const userRef = firestore.collection('users').doc(user.uid);
+  batch.update(userRef, { [itemsPath]: newItems });
+  batch.update(userRef, { [equippedPath]: newEquip });
+  await batch.commit();
+
+  // const newUser = await getUserDocument(user.uid)
+  console.log('log: equipItem user', { oldEquipped, newItems })
+  return oldEquipped
 }
 
 /******************************** DM *********************************/
@@ -217,8 +264,9 @@ export async function getAllUsers(){
   const usersRef = await ref.get()
   const users = []
   usersRef.forEach(user => {
-    if(!user.data().DM){
-      users.push(user.data())
+    const desiredUser = user.data()
+    if(!desiredUser.DM){
+      users.push({...desiredUser, label: desiredUser.displayName, value: desiredUser.displayName})
 
     }
   });
