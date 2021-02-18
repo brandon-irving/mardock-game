@@ -43,7 +43,7 @@ export const generateUserDocument = async (user, additionalData) => {
   return getUserDocument(user.uid);
 };
 
-export const createUserWithEmailAndPasswordHandler = async (event, values = { email: '', password: '', displayName: '' }) => {
+export const createUserWithEmailAndPasswordHandler = async (values = { email: '', password: '', displayName: '' }) => {
   let newUser = null
   const { email, password, displayName } = values
   event.preventDefault();
