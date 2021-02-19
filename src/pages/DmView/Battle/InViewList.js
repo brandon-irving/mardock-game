@@ -154,6 +154,15 @@ export default function InViewList({targets}) {
           >
             ≪
           </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            className={classes.button}
+            onClick={updateCharacterVision}
+            aria-label="updateCharacterVision"
+          >
+            Add
+          </Button>
         </Grid>
       </Grid>
       <Grid item>
@@ -161,11 +170,6 @@ export default function InViewList({targets}) {
       <Divider />
           {customList(right)}
           </Grid>
-      <Button onClick={updateCharacterVision} fullWidth variant="outlined">Update Character Line Of Vision</Button>
-      
-      <Grid container>
-      <Typography>Demo Monster</Typography>
-      </Grid>
     </Grid>
   );
 }

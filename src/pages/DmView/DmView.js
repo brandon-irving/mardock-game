@@ -11,10 +11,13 @@ import { dmObserver, getAllUsers, observer, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
 import Battle from './Battle';
 import { useHistory } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core/styles";
+import { Backdrop, CircularProgress } from '@material-ui/core';
 
 const DmView = ({dmUser}) => {
+  const classes = useStyles()
   const history = useHistory()
-    const { users, updateContextState } = useContextState()
+    const { users, globalLoading, updateContextState } = useContextState()
     const [value, setValue] = React.useState(0);
 
     const handleChange = (_, newValue) => {
@@ -60,12 +63,20 @@ const DmView = ({dmUser}) => {
         Item Three
       </TabPanel>
 {users.length > 0 && <QuickMenu />}
+<Backdrop className={classes.backdrop} open={globalLoading} >
+  <CircularProgress color="inherit" />
+</Backdrop>
     </div>
     )
 }
 
 export default DmView
-
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 100000,
+    color: '#fff',
+  },
+}));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

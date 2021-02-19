@@ -14,6 +14,7 @@
     "dynamic-context-provider": "^1.0.0",
     "firebase": "^8.2.5",
     "lodash": "^4.17.20",
+    "material-table": "^1.69.2",
     "mui-form-generator": "^2.1.0",
     "mui-rte": "^1.26.2",
     "react": "^17.0.1",

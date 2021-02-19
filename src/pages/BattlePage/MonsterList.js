@@ -38,7 +38,7 @@ export default function MonsterList() {
     const classes = useStyles();
 
     React.useEffect(() => {
-        if(!initialBattle.monsters)return
+        if(!initialBattle.monsters.length)return
         updateContextState({battle: initialBattle})
 
         startBattle(initialBattle)

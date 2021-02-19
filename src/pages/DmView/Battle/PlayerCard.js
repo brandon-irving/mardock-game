@@ -20,7 +20,6 @@ export default function PlayerCard({ character, targets }) {
   const stats = useStatSheet(character.stats)
   const classes = useStyles();
   const { gil, name, level, exp, hp, maxHp, mp, maxMp } = character
-  console.log('log: targets', targets)
   if (!character.name) return null
   return (
     <Card className={classes.root}>
@@ -75,9 +74,9 @@ export default function PlayerCard({ character, targets }) {
         </Grid>
 
       </CardContent>
-      <CardActions>
+      {/* <CardActions>
         <Button size="small">Learn More</Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 }

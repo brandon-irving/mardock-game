@@ -14,6 +14,7 @@ export const useGetBattle = (battleName="") => {
 useEffect(() => {
     getData()
 }, [])
-return data || { battle: {}}
+const desiredReturnObj = data && data.monsters ? data : { monsters: []}
+return desiredReturnObj
 }
 
