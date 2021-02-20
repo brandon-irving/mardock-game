@@ -1,45 +1,40 @@
 import React from 'react'
 import PlayerCard from './PlayerCard'
 import { useContextState } from 'dynamic-context-provider';
-import { Button, Grid } from '@material-ui/core';
+import {  Grid } from '@material-ui/core';
 import { map } from 'lodash';
-// import { useGetBattle } from '../../../common/hooks/useGetBattle'
+import { useGetBattle } from '../../../common/hooks/useGetBattle'
 import BattleTable from './BattleTable'
-import LoadingContainer from '../../../common/LoadingContainer';
-import { battles } from '../../../gameData/battles';
+import SelectBattleForm from './SelectBattleForm';
+
 const Battle = () => {
-    const initialBattle = battles['tutorialBattle1']
+    const [battle, loading] = useGetBattle('tutorialBattle1')
     const { users } = useContextState()
-console.log('log: initialBattle', initialBattle)
+    
+    if(loading)return null
     return (
-        <div>
-            <Grid spacing={3} container>
-         
+            <Grid justify="center" spacing={3} container>
+          {!battle && <SelectBattleForm />}
+               {battle &&  <>
                 <Grid style={{maxHeight: '75vh', overflow: 'scroll'}} item xs={12} md={6}>
-                <LoadingContainer loading={!initialBattle.monsters?.length}>
                 {
                     map(users, (user, i)=>{
                         return (
                             
                         <Grid style={{marginBottom: '20px'}} key={i} item xs={12}>
-                        <PlayerCard targets={initialBattle?.monsters}  user={user} />
+                        <PlayerCard targets={battle.monsters}  user={user} />
                         </Grid>
                        
                         )
                     })
                 }
-             </LoadingContainer>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <LoadingContainer loading={!initialBattle.monsters?.length}>
-                    <BattleTable />
-                    </LoadingContainer>
+                    <BattleTable battle={battle} />
                 </Grid>
-                
+                </>}
             </Grid>
-            
-        </div>
-    )
+                )
 }
 
 export default Battle

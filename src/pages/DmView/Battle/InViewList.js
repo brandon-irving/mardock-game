@@ -180,7 +180,6 @@ const [initialNotInView, initialInView] = initialViewList(user.character.inView,
             className={classes.button}
             onClick={addMonstersToUserSight}
             aria-label="addMonstersToUserSight"
-            disabled={inView.length === 0}
           >
             Add
           </Button>

@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useContextState } from 'dynamic-context-provider';
-import { useGetBattle } from '../../../common/hooks/useGetBattle';
 import { columnHeaders } from './columns'
-import { map } from 'lodash';
-import { updateMonsters } from '../../../firebase';
-import { battles } from '../../../gameData/battles';
+import { find, map } from 'lodash';
+import { updateCharacter, updateMonsters, giveUserRewards } from '../../../firebase';
+import { Button } from '@material-ui/core';
+import { launchToaster } from '../../../core/toaster';
 
-export default function BattleTable() {
-  // const battle = useGetBattle['tutorialBattle1']
-  const battle = useGetBattle('tutorialBattle1')
+export default function BattleTable({battle}) {
 
-  const { users=[], updateContextState } = useContextState()
+  const { users=[] } = useContextState()
   const participants = map([...battle.monsters, ...users], participant=>{
     if(participant.character)return participant.character
     return participant
@@ -20,30 +18,39 @@ export default function BattleTable() {
     const [data, setData] = useState(participants);
 
   async function updateParticipant({newData, oldData}){
-    // updateContextState({globalLoading: true})
-    try{
+    if(newData.title){
+      const user = find(users, {displayName: newData.name})
+      user && await updateCharacter(user,{'character': newData}, true)
+
+    }else{
+      let updateDb = false
       const newMonsters = map(battle.monsters, monster =>{
         let newMon = monster
         if(newData.name === monster.name){
           newMon = newData
+          updateDb= true
         }
         return newMon
       })
-      const dataUpdate = [...data];
-      const index = oldData.tableData.id;
-      dataUpdate[index] = newData;
-      setData([...dataUpdate]);
-      await updateMonsters(newMonsters)
-    }catch(e){
+      updateDb && await updateMonsters(newMonsters)
 
     }
-    // updateContextState({globalLoading: false})
+
+    const dataUpdate = [...data];
+    const index = oldData.tableData.id;
+    dataUpdate[index] = newData;
+    setData([...dataUpdate]);
   }
 
+  async function giveReward(){
+    await giveUserRewards(users, battle.rewards)
+  }
     useEffect(() => {
       setData(participants)
     }, [battle])
+    if(!battle.monsters.length)return null
     return (
+      <div>
       <MaterialTable
         title="Battle Table"
         columns={columns}
@@ -54,6 +61,8 @@ export default function BattleTable() {
           onRowUpdate: async(newData, oldData)=>updateParticipant({newData, oldData}),
         }}
       />
+      <Button fullWidth onClick={giveReward}>Give Reward</Button>
+      </div>
     )
   }
   

@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
 import { launchToaster } from "../core/toaster";
-import { forEach, map } from "lodash";
+import { cloneDeep, forEach, isEqual, map } from "lodash";
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
   authDomain: "dnd-story-assistant.firebaseapp.com",
@@ -108,7 +108,7 @@ export const observer = async(updateContextState, currentUser, users) => {
             return oldUser
           })
 
-          updateContextState({ users: newUsers })
+          updateUsers && updateContextState({ users: newUsers })
         }
       }
       if (change.type === 'removed') {
@@ -120,18 +120,21 @@ export const observer = async(updateContextState, currentUser, users) => {
 
 }
 
-export const dmObserver = (updateContextState) => {
+export const dmObserver = (updateContextState, users, battle) => {
   // Listens for user
   firestore.collection('DM').onSnapshot(querySnapshot => {
+
     querySnapshot.docChanges().forEach(change => {
       const data = change.doc.data()
-      if (change.type === 'added') {
+      const isBattleDoc = data.current
 
+      if (change.type === 'added') {
+        
       }
       if (change.type === 'modified') {
-
-        if(data.current){
-          // updateContextState({battle: data.current})
+        const battleChange =  !isEqual(battle, data.current)
+        if(isBattleDoc && battleChange){
+          updateContextState({battle: data.current, users}) 
         }
 
       }
@@ -202,15 +205,22 @@ export async function getCollection(collectionPath=['collection', 'document']){
 /******************************** Users *********************************/
 export async function findUser(query = { key: 'name', comparison: '==', equals: 'Brandon' }) {
   let user = {}
-  const { key, comparison, equals } = query
-  const snapshot = await firestore.collection(`users`).where(key, comparison, equals).get();
-  if (snapshot.empty) {
-    console.log('No matching documents.');
-    return;
+
+  try{
+    const { key, comparison, equals } = query
+    const snapshot = await firestore.collection(`users`).where(key, comparison, equals).get();
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+    snapshot.forEach(doc => {
+      user = doc.data()
+    });
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
   }
-  snapshot.forEach(doc => {
-    user = doc.data()
-  });
+  
   return user
 }
 export const getUserDocument = async uid => {
@@ -227,107 +237,200 @@ export const getUserDocument = async uid => {
 };
 
 export const updateCharacter = async (user, updates, dontGetUser) => {
-   await updateDoc(`users/${user.uid}`, updates)
-   const newUser = dontGetUser ? {} : await getUserDocument(user.uid)
+  let newUser = {}
+
+  try{
+    await updateDoc(`users/${user.uid}`, updates)
+    newUser = dontGetUser ? {} : await getUserDocument(user.uid)
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  } 
+
    return newUser
 }
 
 export const damageCharacter = async (user, amount) => {
-  const newAmount = user.character.hp - amount >= 0 ? user.character.hp - amount : 0
-  await updateDoc(`users/${user.uid}`, {'character.hp':newAmount})
+  try{
+    const newAmount = user.character.hp - amount >= 0 ? user.character.hp - amount : 0
+    await updateDoc(`users/${user.uid}`, {'character.hp':newAmount})
+  
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
 }
 
 export const itemUse = async ({userGivingItem, target, item}) => {
-  const userGivingItemPath = `character.items`
-  const targetPath = `character`
-  // Increase targets stat
-  const { maxHp, maxMp} = target.character
-  target.character.hp += item.hp
-  target.character.mp += item.mp
-  if(target.character.hp > maxHp){
-    target.character.hp = maxHp
+  try{
+    const userGivingItemPath = `character.items`
+    const targetPath = `character`
+    // Increase targets stat
+    const { maxHp, maxMp} = target.character
+    target.character.hp += item.hp
+    target.character.mp += item.mp
+    if(target.character.hp > maxHp){
+      target.character.hp = maxHp
+    }
+    if(target.character.mp > maxMp){
+      target.character.mp = maxMp
+    }
+    
+    // Decrease users quantity
+    userGivingItem.character.items[item.type][item.label].quantity -=1
+    const batch = await firestore.batch();
+    const targetRef = firestore.collection('users').doc(target.uid);
+    const userGivingItemRef = firestore.collection('users').doc(userGivingItem.uid);
+    batch.update(targetRef, { [targetPath]: target.character });
+    batch.update(userGivingItemRef, { [userGivingItemPath]: userGivingItem.character.items });
+    await batch.commit();
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
   }
-  if(target.character.mp > maxMp){
-    target.character.mp = maxMp
-  }
-  
-  // Decrease users quantity
-  userGivingItem.character.items[item.type][item.label].quantity -=1
-  const batch = await firestore.batch();
-  const targetRef = firestore.collection('users').doc(target.uid);
-  const userGivingItemRef = firestore.collection('users').doc(userGivingItem.uid);
-  batch.update(targetRef, { [targetPath]: target.character });
-  batch.update(userGivingItemRef, { [userGivingItemPath]: userGivingItem.character.items });
-  await batch.commit();
-
 }
 
 export const giveCharacterItem = async (user, updates, itemCategory) => {
-  const path = `character.items.${itemCategory}`
-
-  await updateCharacter(user, {[path]: updates})
+  try{
+    const path = `character.items.${itemCategory}`
+    await updateCharacter(user, {[path]: updates})
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
 }
 
 export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) => {
-  const equippedPath = `character.equipped.${type}`
-  const itemsPath = `character.items`
-  const oldEquipped = Object.keys(user.character.equipped[type]).length ? user.character.equipped[type] : null
-  const newItems = { ...items }
-  delete newItems[type][newEquip]
-  if(oldEquipped){
-    newItems[type][oldEquipped] = itemsGameData[oldEquipped]
+  let oldEquipped = null
+
+  try{
+    const equippedPath = `character.equipped.${type}`
+    const itemsPath = `character.items`
+    oldEquipped = Object.keys(user.character.equipped[type]).length ? user.character.equipped[type] : null
+    const newItems = { ...items }
+    delete newItems[type][newEquip]
+    if(oldEquipped){
+      newItems[type][oldEquipped] = itemsGameData[oldEquipped]
+    }
+  
+    // // Get a new write batch
+    const batch = await firestore.batch();
+    const userRef = firestore.collection('users').doc(user.uid);
+    batch.update(userRef, { [itemsPath]: newItems });
+    batch.update(userRef, { [equippedPath]: newEquip });
+    await batch.commit();
+
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
   }
 
-  // // Get a new write batch
-  const batch = await firestore.batch();
-  const userRef = firestore.collection('users').doc(user.uid);
-  batch.update(userRef, { [itemsPath]: newItems });
-  batch.update(userRef, { [equippedPath]: newEquip });
-  await batch.commit();
-
-  // const newUser = await getUserDocument(user.uid)
-  console.log('log: equipItem user', { oldEquipped, newItems })
   return oldEquipped
 }
 
 /******************************** DM *********************************/
 
 export async function getAllUsers(){
-  const ref = await firestore.collection(`users`)
-  const usersRef = await ref.get()
   const users = []
-  usersRef.forEach(user => {
-    const desiredUser = user.data()
-    if(!desiredUser.DM){
-      users.push({...desiredUser, label: desiredUser.displayName, value: desiredUser.displayName})
 
-    }
-  });
+  try{
+    const ref = await firestore.collection(`users`)
+    const usersRef = await ref.get()
+    usersRef.forEach(user => {
+      const desiredUser = user.data()
+      if(!desiredUser.DM){
+        users.push({...desiredUser, label: desiredUser.displayName, value: desiredUser.displayName})
+  
+      }
+    });
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
+
   return users
 }
 
 export const updateStoryChapter = async (chapter, updates, specialKey) => {
-  await updateDoc(`DM/${chapter}`, updates, specialKey)
+  try{
+    await updateDoc(`DM/${chapter}`, updates, specialKey)
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
 }
 
 export const startBattle = async (battle) => {
-  const userRef = firestore.collection('DM').doc('battles');
-   await userRef.update({current: {...battle}});
+  try{
+    const userRef = firestore.collection('DM').doc('battles');
+    await userRef.update({current: {...battle}});
+ 
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
 }
 
 export async function getStoryChapter(chapter){
-  const res = await getCollection(['DM', chapter])
-  return res || {notes: ''}
+  let res = {notes: ''}
+  try{
+    res = await getCollection(['DM', chapter])
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
+  return res
 }
 
 export const updateMonsters = async (monsters) => {
-  const dmRef = firestore.collection('DM').doc('battles');
-  await dmRef.update({'current.monsters': monsters});
+  try{
+    const dmRef = firestore.collection('DM').doc('battles');
+    await dmRef.update({'current.monsters': monsters});
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
+ 
 }
+export const giveUserRewards = async (users, rewards) => {
+  try{
+    const characterUpdates = []
+    forEach(users, user=>{
+      const newUser = cloneDeep(user)
+      const { character } = newUser
+      character.exp += rewards.exp
+      forEach(rewards.items, item=>{
+        const itemInBag = character.items[item.type][item.label]
+        if(itemInBag){
+          itemInBag.quantity += item.quantity
+        }else{
+          character.items[item.label] = item
+        }
+      })
+      characterUpdates.push(character)
+    })
+    console.log('log: characterUpdates', {users, characterUpdates})
+    await batchUpdate('character', users, characterUpdates)
+    const dmRef = firestore.collection('DM').doc('battles');
+    await dmRef.update({'current': {}});
+    }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
+
+}
+
   /*
   how to update nested features
   const res = await db.collection('users').doc('Frank').update({
   age: 13,
   'favorites.color': 'Red'
 });
+
+  try{
+
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
   */

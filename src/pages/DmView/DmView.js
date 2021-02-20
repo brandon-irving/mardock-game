@@ -17,7 +17,7 @@ import { Backdrop, CircularProgress } from '@material-ui/core';
 const DmView = ({dmUser}) => {
   const classes = useStyles()
   const history = useHistory()
-    const { users, globalLoading, updateContextState } = useContextState()
+    const { users, battle, updateContextState } = useContextState()
     const [value, setValue] = React.useState(0);
 
     const handleChange = (_, newValue) => {
@@ -37,7 +37,7 @@ const DmView = ({dmUser}) => {
 
     React.useEffect(() => {
       observer(updateContextState, dmUser, users)
-      dmObserver(updateContextState)
+      dmObserver(updateContextState, users, battle)
     })
     return (
         <div>
@@ -63,9 +63,7 @@ const DmView = ({dmUser}) => {
         Item Three
       </TabPanel>
 {users?.length > 0 && <QuickMenu />}
-<Backdrop className={classes.backdrop} open={globalLoading} >
-  <CircularProgress color="inherit" />
-</Backdrop>
+
     </div>
     )
 }

@@ -2,21 +2,24 @@ import { useContextState } from 'dynamic-context-provider'
 import { useState, useEffect } from 'react'
 import { getCollection } from '../../firebase'
 
-export const useGetBattle = (battleName="") => {
-    const { updateContextState } = useContextState()  
+export const useGetBattle = () => {
+    const { battle } = useContextState()
+    const [loading, setloading] = useState(true)
     const [data, setdata] = useState({})
-   async function getData(){
-        
+   async function getData(){ 
         const battles = await getCollection(['DM', 'battles'])
-        const battle = battles.current
-        console.log('log: battle',battle)
+        const battle = battles.current.monsters ? battles.current : null
         setdata(battle)
-
+        setloading(false)
     }
+
 useEffect(() => {
     getData()
 }, [])
-const desiredReturnObj = data && data.monsters ? data : { monsters: []}
-return desiredReturnObj
+useEffect(() => {
+    setdata(battle?.monsters ? battle : null)
+}, [battle])
+
+return [data, loading]
 }
 
