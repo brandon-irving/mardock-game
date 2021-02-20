@@ -1,11 +1,11 @@
 import React from 'react'
-import { ITEM_TYPES, useGetItems } from '../../common/hooks/useGetItems'
-import BaseForm from './BaseForm'
+import UseBaseForm from '../../common/FloatingButton/forms/UseBaseForm'
+import { useGetBagOptions } from '../../common/hooks/useGetBagOptions'
 
 const ItemsForm = ({closeModal}) => {
-    const [userItems]= useGetItems(undefined, ITEM_TYPES.misc)
+    const options = useGetBagOptions()
     return (
-       <BaseForm options={userItems} onSubmit={closeModal} type="Items" />
+        <UseBaseForm onSubmit={closeModal} type="misc" options={options.misc} />
     )
 }
 

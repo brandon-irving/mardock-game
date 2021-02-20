@@ -8,12 +8,12 @@ import { find, map } from 'lodash'
 
 
 
-export default function UseBaseForm({ type = '' }) {
+export default function UseBaseForm({ type = '' , onSubmit=()=>null}) {
     const { user, updateContextState } = useContextState()
     const [options, itemsGameData, dbItems] = useGetItems(undefined, type)
     const [targets, loading] = useGetTargets()
     const [target, settarget] = useState('')
-    const [item, setitem] = useState(options[0] ? options[0] : '')
+    const [item, setitem] = useState(options[0] || {})
 
     function handleItemChange(event) {
         const item = find(options, {label: event.target.value})
@@ -23,24 +23,22 @@ export default function UseBaseForm({ type = '' }) {
     function handleTargetChange(event) {
         const target = find(targets, {label: event.target.value})
         settarget(target);
+        
     }
     async function handleSubmit() {
         updateContextState({globalLoading: true})
         await itemUse({ userGivingItem: user, type, target, item })
         updateContextState({globalLoading: false})
-
+        onSubmit()
     }
 
     useEffect(() => {
         settarget(targets[0])
     }, [loading])
-    useEffect(() => {
-        const selectedItem = find(options, {label: item.label})
-        const selectedTarget = find(targets, {label: target.label})
 
-        setitem(selectedItem)
-        settarget(selectedTarget)
-    }, [user])
+    // useEffect(() => {
+    //     setitem(options[0] || {})
+    // }, [options])
 
     if (!target) return null
     return (

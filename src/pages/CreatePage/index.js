@@ -22,6 +22,7 @@ import { launchToaster } from '../../core/toaster';
 import { useUpdateCharacter } from '../../common/hooks/useUpdateCharacter';
 import { useHistory } from 'react-router-dom';
 import BasicRoot from '../../common/BasicRoot';
+import { convertStatSheet } from '../../common/hooks/useStatSheet';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +52,7 @@ export default function CreatePage() {
   const classStyles = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
-  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: statSheet})
+  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: convertStatSheet(statSheet)})
   const [availablePoints, setavailablePoints] = useState(10)
   const [updateFireBaseCharacter] = useUpdateCharacter()
 

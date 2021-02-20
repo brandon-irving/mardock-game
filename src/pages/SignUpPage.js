@@ -129,7 +129,6 @@ export default function SignUpPage({goToSignIn}) {
 
     async function handleSubmit(values) {
         const newUser= await createUserWithEmailAndPasswordHandler(values)
-        console.log('log: newUser', newUser)
         history.replace('create')
     }
     async function handleGoogleSignUp(e) {

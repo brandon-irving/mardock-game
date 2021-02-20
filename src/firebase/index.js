@@ -70,79 +70,6 @@ export const signOut = async () => {
   await auth.signOut()
 };
 
-export const observer = async(updateContextState, currentUser, users) => {
-  const batch = await firestore.batch();
-
-  // Listens for user
-  firestore.collection('users').onSnapshot(querySnapshot => {
-    querySnapshot.docChanges().forEach(async(change) => {
-      const user = change.doc.data()
-      const userRef =  firestore.collection('users').doc(user.uid)
-
-      if (change.type === 'added') {
-
-      }
-
-      if (change.type === 'modified') {
-        const { hint, innerThoughts } = user.character?.dmMessage || {}
-        const message = hint || innerThoughts || ''
-        if(currentUser.uid === user.uid){
-          if(hint){
-            launchToaster({type: 'info', content: `✨  ${message}`})
-            batch.update(userRef, {'character.dmMessage.hint': null});
-          }
-          if(innerThoughts){
-            launchToaster({type: 'warning', content: `💭 ${message}`})
-            batch.update(userRef, {'character.dmMessage.innerThoughts': null});
-          }
-          updateContextState({ user: {...user, hint: null, innerThoughts: null} })
-
-        }
-        if(users){
-          let updateUsers = false
-          const newUsers = map(users, oldUser=>{
-            if(oldUser.uid === user.uid){
-              updateUsers = true
-              return {...oldUser, character: user.character}
-            }
-            return oldUser
-          })
-
-          updateUsers && updateContextState({ users: newUsers })
-        }
-      }
-      if (change.type === 'removed') {
-      }
-
-    });
-  });
-  await batch.commit();
-
-}
-
-export const dmObserver = (updateContextState, users, battle) => {
-  // Listens for user
-  firestore.collection('DM').onSnapshot(querySnapshot => {
-
-    querySnapshot.docChanges().forEach(change => {
-      const data = change.doc.data()
-      const isBattleDoc = data.current
-
-      if (change.type === 'added') {
-        
-      }
-      if (change.type === 'modified') {
-        const battleChange =  !isEqual(battle, data.current)
-        if(isBattleDoc && battleChange){
-          updateContextState({battle: data.current, users}) 
-        }
-
-      }
-      if (change.type === 'removed') {
-      }
-    });
-  });
-}
 /******************************** Generic (used to build others) *********************************/
 /**
  * @function batchUpdate
@@ -278,6 +205,9 @@ export const itemUse = async ({userGivingItem, target, item}) => {
     
     // Decrease users quantity
     userGivingItem.character.items[item.type][item.label].quantity -=1
+    if(!userGivingItem.character.items[item.type][item.label].quantity){
+      delete userGivingItem.character.items[item.type][item.label]
+    }
     const batch = await firestore.batch();
     const targetRef = firestore.collection('users').doc(target.uid);
     const userGivingItemRef = firestore.collection('users').doc(userGivingItem.uid);
@@ -392,6 +322,7 @@ export const updateMonsters = async (monsters) => {
   }
  
 }
+
 export const giveUserRewards = async (users, rewards) => {
   try{
     const characterUpdates = []
@@ -418,6 +349,17 @@ export const giveUserRewards = async (users, rewards) => {
     launchToaster({type: 'error', content: 'There was an error'})
   }
 
+}
+export const sendUserAMessage = async (user, dmMessage) => {
+  try{
+    console.log('log: user, dmMessage', {user, dmMessage})
+    await updateCharacter(user, {[`character.dmMessage`]: dmMessage})
+
+  }catch(e){
+    console.log('log: error', e)
+    launchToaster({type: 'error', content: 'There was an error'})
+  }
+ 
 }
 
   /*

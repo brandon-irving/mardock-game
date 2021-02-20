@@ -5,12 +5,9 @@ import DmView from './DmView'
 
 const DmViewResolver = ({dmUser}) => {
     return (
-        <ContextStateProvider stateConfig={{users: [], globalLoading: false, battle: null}}>
         <BasicRoot maxWidth="xl">
        <DmView dmUser={dmUser}/>
-        </BasicRoot>
-        </ContextStateProvider>
-       
+        </BasicRoot>       
     )
 }
 

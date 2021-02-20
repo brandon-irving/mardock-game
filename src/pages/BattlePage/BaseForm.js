@@ -3,6 +3,8 @@ import { MuiFormGenerator } from 'mui-form-generator'
 import 'mui-form-generator/dist/index.css'
 import theme from '../../core/theme'
 import { Typography } from '@material-ui/core'
+import { useContextState } from 'dynamic-context-provider'
+import { itemUse } from '../../firebase'
 
 const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '' }], targets = [{ label: '', value: '' }] }) => {
     return ({
@@ -13,15 +15,17 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
                         Input: {
                             id: type,
                             name: type,
-                            type: 'select',
+                            type: 'selectNative',
                             options,
-                            helperText: <>
+                            subscript: <>
                                 <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Description</Typography>
-                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type].description}</Typography>
+                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type]?.description}</Typography>
                                {type !== 'Items' &&<> <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>How to use</Typography>
                                 <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type].rule}</Typography>
                                 <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Cost</Typography>
                                 <Typography style={{ fontSize: '10pt' }}>{values[type].useDescription}</Typography></>}
+                                {type === 'Items' && <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Quantity: {values[type].quantity}</Typography>}
+
                             </>
                         }
                     },
@@ -65,7 +69,7 @@ const errorMessageMap = {
 }
 const defaultOptions = [{ description: 'This is a description', label: 'Long Sword', value: 'Long Sword' }, { description: 'This is another description', label: 'Short Sword', value: 'Short Sword' }]
 const defaultTargets = [{ label: 'Monster 1', value: 'Monster 1' }, { label: 'Monster 2', value: 'Monster 2' }]
-export default function BaseForm({ type = '', options = defaultOptions, targets = defaultTargets, onSubmit = () => { } }) {
+export default function BaseForm({ user, type = '', options = defaultOptions, targets = defaultTargets }) {
     const initialValues = { [type]: options[0], target: targets[0] }
     const [values, setvalues] = React.useState(initialValues)
 
@@ -81,11 +85,13 @@ export default function BaseForm({ type = '', options = defaultOptions, targets 
         setvalues(values)
         return errors
     }
-    function handleSubmit(values, formik) {
-        window.alert(JSON.stringify(values))
-        onSubmit()
-        formik.resetForm()
+    async function handleSubmit(values, formik) {
+        const item = values.Items
+        console.log('log: values',  values.Items, values[type])
+        setvalues({...values, Items: {...item, quantity: item.quantity-=1}})
+        await itemUse({ userGivingItem: user, type, target: values.target, item })
     }
+    // TODO: replace with normal form for auto updates
     return (
         <MuiFormGenerator
             theme={theme}

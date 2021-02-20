@@ -3,6 +3,7 @@ import { MuiFormGenerator } from 'mui-form-generator'
 import 'mui-form-generator/dist/index.css'
 import theme from '../../../core/theme'
 import { useGetUserOptions } from '../hooks'
+import { sendUserAMessage } from '../../../firebase'
 
 const BluePrint = ({options}) => {
     return ({
@@ -68,9 +69,8 @@ const BluePrint = ({options}) => {
 const HintForm = () => {
     const {options} = useGetUserOptions()
 
-    function handleSubmit(values, formik) {
-        window.alert(JSON.stringify(values))
-        formik.resetForm()
+    async function handleSubmit(values, formik) {
+        await sendUserAMessage(values.target, {innerThoughts: values.innerThoughts, hint: values.hint})
     }
     return (
         <MuiFormGenerator

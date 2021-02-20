@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -7,65 +7,82 @@ import IconButton from '@material-ui/core/IconButton';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Story from './Story'
 import { useContextState } from 'dynamic-context-provider';
-import { dmObserver, getAllUsers, observer, signOut } from '../../firebase';
+import { dmObserver, firestore, getAllUsers, observer, signOut } from '../../firebase';
 import QuickMenu from './QuickMenu';
 import Battle from './Battle';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { Backdrop, CircularProgress } from '@material-ui/core';
 
-const DmView = ({dmUser}) => {
+const DmView = ({ dmUser }) => {
   const classes = useStyles()
   const history = useHistory()
-    const { users, battle, updateContextState } = useContextState()
-    const [value, setValue] = React.useState(0);
+  const { users, battle, updateContextState } = useContextState()
+  const [value, setValue] = React.useState(0);
 
-    const handleChange = (_, newValue) => {
-      setValue(newValue);
-    };
-    async function loadUsers(){
-        const users = await getAllUsers()
-        updateContextState({ users })
-    }   
-    function handleSignOut(){
-      signOut()
-      history.replace('/sign-in')
-    }
-    React.useEffect(() => {
-        loadUsers()
-    }, [])
+  const handleChange = (_, newValue) => {
+    setValue(newValue);
+  };
+  async function loadUsers() {
+    const users = await getAllUsers()
+    updateContextState({ users })
+  }
+  function handleSignOut() {
+    signOut()
+    history.replace('/sign-in')
+  }
+  useEffect(() => {
+    loadUsers()
+  }, [])
 
-    React.useEffect(() => {
-      observer(updateContextState, dmUser, users)
-      dmObserver(updateContextState, users, battle)
-    })
-    return (
-        <div>
+  // useEffect(() => {
+
+  //   const unsubscribe = firestore.collection('DM').onSnapshot(
+  //     querySnapshot => {
+  //       querySnapshot.docChanges().forEach((change) => {
+  //         const data = change.doc.data()
+  //         if (change.type === 'modified') {
+  //           if (data.current) {
+  //             updateContextState({ battle: data.current })
+
+  //           }
+  //         }
+  //       })
+  //     }
+  //   )
+
+
+  //   return () => {
+  //     unsubscribe()
+  //   }
+  // }, [firestore])
+  return (
+    <div>
       <AppBar position="static">
-        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Story" {...a11yProps(0)} />
-          <Tab label="Battle" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-        </Tabs>
-        <IconButton onClick={handleSignOut}  color="inherit" aria-label="signout">
-      <ExitToAppIcon />
-    </IconButton>
-    </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab label="Story" {...a11yProps(0)} />
+            <Tab label="Battle" {...a11yProps(1)} />
+            <Tab label="Item Three" {...a11yProps(2)} />
+          </Tabs>
+          <IconButton onClick={handleSignOut} color="inherit" aria-label="signout">
+            <ExitToAppIcon />
+          </IconButton>
+        </div>
       </AppBar>
       <TabPanel value={value} index={0}>
         <Story />
       </TabPanel>
       <TabPanel value={value} index={1}>
-       <Battle />
+        <Battle />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
       </TabPanel>
-{users?.length > 0 && <QuickMenu />}
+      {users?.length > 0 && <QuickMenu />}
 
     </div>
-    )
+  )
 }
 
 export default DmView

@@ -7,9 +7,10 @@ import { updateCharacter, updateMonsters, giveUserRewards } from '../../../fireb
 import { Button } from '@material-ui/core';
 import { launchToaster } from '../../../core/toaster';
 
-export default function BattleTable({battle}) {
+export default function BattleTable({battle={monsters:[]}}) {
 
   const { users=[] } = useContextState()
+  
   const participants = map([...battle.monsters, ...users], participant=>{
     if(participant.character)return participant.character
     return participant

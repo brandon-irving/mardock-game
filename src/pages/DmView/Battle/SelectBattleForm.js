@@ -25,7 +25,6 @@ const SelectBattleForm = () => {
     }
     async function handleClick(){
         const battleInfo = battles[battle]
-        console.log('log: battleInfo', battleInfo)
         await startBattle(battleInfo)
     }
     return (

@@ -7,7 +7,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { map } from 'lodash';
 import NumericInput from 'react-numeric-input';
-import { convertStatSheet } from '../../common/hooks/useStatSheet';
+import { convertStatSheet, useStatSheet } from '../../common/hooks/useStatSheet';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,8 +24,8 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
     const maxStatIncrease = 5
     const [statPoint, setstatPoints] = useState(stat.points - 10)
     const textColor = statPoint >=3 ? 'green' : 'red'
-    function handleStateChange(value){
 
+    function handleStateChange(value){
         setstatPoints((oldValue)=>{
             let newAvailablePoints = availablePoints - 1
             let updateValue = 1
@@ -38,6 +38,7 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
             return value
         })
     }
+
     const max = !availablePoints ? statPoint : maxStatIncrease
     const rollBonusText = stat.statBoost ? `(Roll +${stat.statBoost})` : ''
     return(
@@ -66,21 +67,22 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
 }
 
 
-export default function StatsForm({updateCharacter, createUserObj, availablePoints, setavailablePoints}) {
+export default function StatsForm({
+  updateCharacter, createUserObj, availablePoints, setavailablePoints}) {
   const classes = useStyles();
-  const statObj = convertStatSheet(createUserObj.stats)
-
+const desiredStats = useStatSheet(createUserObj.stats)
   function updateCharacterStat(key, value){
-    const newCharStats = {...statObj}
+    const newCharStats = {...desiredStats}
     newCharStats[key].points = newCharStats[key].points + value
-    updateCharacter({stats: convertStatSheet(newCharStats)})
+    updateCharacter({stats: newCharStats})
   }
+  
   return (
     <List className={classes.root}>
         <p>{availablePoints}</p>
         {
-            map(Object.keys(statObj), (abbr, i)=>{
-                const stat = {...createUserObj.stats[abbr], abbr}
+            map(Object.keys(desiredStats), (abbr, i)=>{
+                const stat = {...desiredStats[abbr], abbr}
                return <Stat key={i} updateCharacterStat={updateCharacterStat} stat={stat} availablePoints={availablePoints} setavailablePoints={setavailablePoints}/>
             })
         }

@@ -42,13 +42,13 @@ export const useUpdateItems = (user, type) => {
 
             if (itemsCharacterIsCarrying) {
                 let newQuantity = itemsCharacterIsCarrying.quantity
-                if (quantity > 0) newQuantity += itemToAdd.quantity
-                if (quantity < 0) {
-                    newQuantity -= itemToAdd.quantity
-                }
+                newQuantity += itemToAdd.quantity
+
                 if (newQuantity < 0) {
                     newQuantity = 0
                 }
+                console.log('log: quantity', quantity)
+                
                 itemsCharacterIsCarrying.quantity = newQuantity
     
             } else {

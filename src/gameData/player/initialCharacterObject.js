@@ -2,6 +2,7 @@ export const initialCharacterObject = {
     title: 'Novice Adventurer',
     ap: 10,
     class: 'Knight',
+    inView: null,
     equipped: {accessory: '', armor: {}, weapon: 'Long Sword', secondaryWeapon: ''},
     exp: 0,
     gil: 0,

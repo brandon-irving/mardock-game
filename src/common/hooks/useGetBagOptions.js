@@ -7,6 +7,7 @@ export function useGetBagOptions(){
     const options = Object.keys(items).reduce((acc, type)=>{
         const itemsMap = {...acc}
         const itemType = items[type]
+        if(!itemType)return {...itemsMap}
         const repoMapper = {
             misc: itemsRepo,
             weapon: weaponsRepo,

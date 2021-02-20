@@ -4,6 +4,7 @@ import { useContextState } from 'dynamic-context-provider';
 import { normalise } from '../../gameData/helpers'
 // import { useStatSheet } from '../hooks/useStatSheet'
 import { useGetEquippedData } from '../hooks/useGetEquippedData'
+import { Typography } from '@material-ui/core';
 
 const HpBar = ({monster}) => {
     const { user } = useContextState()
@@ -23,8 +24,10 @@ const HpBar = ({monster}) => {
         useEffect(() => {
             setgaugeValue(getHp())
         }, [hp, armor, monster])   
+        if(monster)return null // TODO: conditionally show users
     return (
         <div style={{marginTop: '10px', marginBottom: '10px'}}>
+            <Typography>HP: {hp}/{maxHp}</Typography>
 {getHp() > 100 && <ProgressBar progress={gaugeValue - 100} color='teal' backgroundColor='green'/>}
  {getHp() <= 100 && <ProgressBar progress={gaugeValue} color='green' backgroundColor='black'/>}
         </div>

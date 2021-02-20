@@ -5,13 +5,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-// import { useGetBattle } from '../../common/hooks/useGetBattle'
 import { map } from 'lodash';
 import ImageIcon from '../../common/ImageIcon'
 import MonsterView from './MonsterView'
-import { startBattle } from '../../firebase';
 import { useContextState } from "dynamic-context-provider";
-import { battles } from '../../gameData/battles'
+import { useGetBattle } from '../../common/hooks/useGetBattle'
+import { Typography } from '@material-ui/core';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -21,33 +21,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MonsterList() {
-    const initialBattle = battles['tutorialBattle1']
-    
-    const {battle, updateContextState} = useContextState() 
-    const { monsters } = battle
+    const { user } = useContextState()
+    const [initialBattle, loading] = useGetBattle(user)
     const [monster, setmonster] = React.useState(null)
     function closeMonsterView(){
         setmonster(null)
     }
     const classes = useStyles();
-
-    React.useEffect(() => {
-        if(!initialBattle.monsters?.length)return
-        updateContextState({battle: initialBattle})
-
-        startBattle(initialBattle)
-    }, [initialBattle])
-    if (!monsters) return null
     return (
         <>
          {
-                monster !== null && <MonsterView monsterName={monster.name} close={closeMonsterView}/>
+                monster !== null && <MonsterView battle={initialBattle} monsterName={monster.name} close={closeMonsterView}/>
             }
         <div className={classes.root}>
            
-            {!monster && <List component="nav" aria-label="monster-list">
+            { !monster && initialBattle?.monsters.length > 0 &&
+            <List component="nav" aria-label="monster-list">
                 {
-                    map(monsters, (monster, i) => {
+                    map(initialBattle.monsters, (monster, i) => {
                         return (
                             <React.Fragment key={i}>
                                <ListItem button onClick={()=>setmonster(monster)}>
@@ -57,12 +48,13 @@ export default function MonsterList() {
                                         <ListItemText primary={monster.name} />
                                     </ListItem>
 
-                                {monsters[i + 1] !== undefined && <Divider />}
+                                {initialBattle.monsters[i + 1] !== undefined && <Divider />}
                             </React.Fragment>
                         )
                     })
                 }
-            </List>}
+            </List> }
+            { !initialBattle?.monsters.length > 0 && !loading && <Typography>No Monsters Within Striking Range</Typography>}
         </div>
         </>
     );

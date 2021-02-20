@@ -9186,10 +9186,10 @@ mui-autocomplete@^2.0.1:
   resolved "https://registry.npmjs.org/mui-autocomplete/-/mui-autocomplete-2.0.1.tgz"
   integrity sha512-wW1qFEo24G+uLhnvQYYe3CBbsYd12tQ8q5BYVSFLKhDx2PPeSMZ8EF/PmlRbVDFcNzMUs90cYIxwkheCTj97SQ==
 
-mui-form-generator@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/mui-form-generator/-/mui-form-generator-2.1.0.tgz"
-  integrity sha512-fuj/7PTTDOGzCjCvkgCOgwfz3Yrv3NIZtz9jwHfrGUl0cd35dA2WGzQtohzrJFEgm90F3ks/cTNzwfuDXJFOaQ==
+mui-form-generator@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/mui-form-generator/-/mui-form-generator-2.2.0.tgz#e750ec01db13b17e4605bd184eaaea863f438680"
+  integrity sha512-BSE/R3P0s0kd0K1BGTMS195zp0EycspNWGzKLTzacaDnUjzTOJPmTN3cdrQNYOOpOpFNZxg0k4rTBGAEAyycEA==
   dependencies:
     "@date-io/moment" "^1.3.13"
     "@material-ui/core" "^4.11.0"
