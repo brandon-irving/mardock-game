@@ -5,19 +5,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import { useGetBattle } from '../../common/hooks/useGetBattle'
-import { flatMap, forEach, map } from 'lodash';
+// import { useGetBattle } from '../../common/hooks/useGetBattle'
+import { map } from 'lodash';
 import ImageIcon from '../../common/ImageIcon'
-import monsters from '../../gameData/monsters';
-import { buildMonster, generateMonsters } from '../../gameData/monsters/builders';
-import DialogButton from '../../common/DialogButton';
-import { Close } from '@material-ui/icons';
 import MonsterView from './MonsterView'
 import { startBattle } from '../../firebase';
 import { useContextState } from "dynamic-context-provider";
-
+import { battles } from '../../gameData/battles'
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -27,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MonsterList() {
-    const initialBattle = useGetBattle('tutorialBattle1')
-
+    const initialBattle = battles['tutorialBattle1']
+    
     const {battle, updateContextState} = useContextState() 
     const { monsters } = battle
     const [monster, setmonster] = React.useState(null)
@@ -38,7 +32,7 @@ export default function MonsterList() {
     const classes = useStyles();
 
     React.useEffect(() => {
-        if(!initialBattle.monsters.length)return
+        if(!initialBattle.monsters?.length)return
         updateContextState({battle: initialBattle})
 
         startBattle(initialBattle)

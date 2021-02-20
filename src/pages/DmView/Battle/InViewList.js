@@ -8,8 +8,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import { map } from 'lodash';
+import { filter, find, map } from 'lodash';
 import { Divider, Typography } from '@material-ui/core';
+import { updateCharacter } from '../../../firebase';
+import { useContextState } from 'dynamic-context-provider';
+import LoadingContainer from '../../../common/LoadingContainer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,14 +36,20 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function InViewList({targets}) {
+function initialViewList(userInView, targets){
+    const inView = userInView ? userInView : []
+    const notInView =  filter(targets, target=>!find(userInView, {name: target.name}))
+    return [notInView, inView]
+}
+export default function InViewList({user, targets}) {
+const [initialNotInView, initialInView] = initialViewList(user.character.inView, targets)
   const classes = useStyles();
+  const [loading, setloading] = React.useState(false);
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState(targets);
-  const [right, setRight] = React.useState([]);
-
-  const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
+  const [notInView, setLeft] = React.useState(initialNotInView);
+  const [inView, setRight] = React.useState(initialInView);
+  const leftChecked = intersection(checked, notInView);
+  const rightChecked = intersection(checked, inView);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -56,24 +65,24 @@ export default function InViewList({targets}) {
   };
 
   const handleAllRight = () => {
-    setRight(right.concat(left));
+    setRight(inView.concat(notInView));
     setLeft([]);
   };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
+    setRight(inView.concat(leftChecked));
+    setLeft(not(notInView, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
+    setLeft(notInView.concat(rightChecked));
+    setRight(not(inView, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
   const handleAllLeft = () => {
-    setLeft(left.concat(right));
+    setLeft(notInView.concat(inView));
     setRight([]);
   };
 
@@ -102,15 +111,26 @@ export default function InViewList({targets}) {
       </List>
     </Paper>
   );
-  async function updateCharacterVision(){
-    console.log('log: updateCharacterVision', {left, right})
-  }
+
+  async function addMonstersToUserSight(){
+    setloading(true)
+    let addInView = null
+    if(inView.length){
+        addInView = map(inView, monster=>{
+            return { name: monster.name}
+        })
+    }
+   await updateCharacter(user,{'character.inView': addInView}, true)
+   setloading(false)
+
+}
   return (
-    <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
+    <LoadingContainer loading={loading}>
+    <Grid  container spacing={2} justify="center" alignItems="center" className={classes.root}>
       <Grid item>
           <Typography>Not in view</Typography>
           <Divider />
-          {customList(left)}
+          {customList(notInView)}
           </Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
@@ -119,8 +139,8 @@ export default function InViewList({targets}) {
             size="small"
             className={classes.button}
             onClick={handleAllRight}
-            disabled={left.length === 0}
-            aria-label="move all right"
+            disabled={notInView.length === 0}
+            aria-label="move all inView"
           >
             ≫
           </Button>
@@ -130,7 +150,7 @@ export default function InViewList({targets}) {
             className={classes.button}
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
-            aria-label="move selected right"
+            aria-label="move selected inView"
           >
             &gt;
           </Button>
@@ -140,7 +160,7 @@ export default function InViewList({targets}) {
             className={classes.button}
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}
-            aria-label="move selected left"
+            aria-label="move selected notInView"
           >
             &lt;
           </Button>
@@ -149,8 +169,8 @@ export default function InViewList({targets}) {
             size="small"
             className={classes.button}
             onClick={handleAllLeft}
-            disabled={right.length === 0}
-            aria-label="move all left"
+            disabled={inView.length === 0}
+            aria-label="move all notInView"
           >
             ≪
           </Button>
@@ -158,8 +178,9 @@ export default function InViewList({targets}) {
             variant="outlined"
             size="small"
             className={classes.button}
-            onClick={updateCharacterVision}
-            aria-label="updateCharacterVision"
+            onClick={addMonstersToUserSight}
+            aria-label="addMonstersToUserSight"
+            disabled={inView.length === 0}
           >
             Add
           </Button>
@@ -168,8 +189,9 @@ export default function InViewList({targets}) {
       <Grid item>
       <Typography>In view</Typography>
       <Divider />
-          {customList(right)}
+          {customList(inView)}
           </Grid>
     </Grid>
+    </LoadingContainer>
   );
 }

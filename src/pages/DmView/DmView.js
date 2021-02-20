@@ -62,7 +62,7 @@ const DmView = ({dmUser}) => {
       <TabPanel value={value} index={2}>
         Item Three
       </TabPanel>
-{users.length > 0 && <QuickMenu />}
+{users?.length > 0 && <QuickMenu />}
 <Backdrop className={classes.backdrop} open={globalLoading} >
   <CircularProgress color="inherit" />
 </Backdrop>

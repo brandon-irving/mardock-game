@@ -16,7 +16,8 @@ const useStyles = makeStyles({
   },
 });
 
-export default function PlayerCard({ character, targets }) {
+export default function PlayerCard({ user, targets }) {
+  const { character } = user
   const stats = useStatSheet(character.stats)
   const classes = useStyles();
   const { gil, name, level, exp, hp, maxHp, mp, maxMp } = character
@@ -70,7 +71,7 @@ export default function PlayerCard({ character, targets }) {
           </AccordionDetails>
         </Accordion>
         <Grid container>
-          {targets && <InViewList targets={targets} />}
+          <InViewList user={user} targets={targets} />
         </Grid>
 
       </CardContent>

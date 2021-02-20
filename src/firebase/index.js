@@ -70,46 +70,54 @@ export const signOut = async () => {
   await auth.signOut()
 };
 
-export const observer = (updateContextState, currentUser, users) => {
+export const observer = async(updateContextState, currentUser, users) => {
+  const batch = await firestore.batch();
+
   // Listens for user
   firestore.collection('users').onSnapshot(querySnapshot => {
-    querySnapshot.docChanges().forEach(change => {
+    querySnapshot.docChanges().forEach(async(change) => {
       const user = change.doc.data()
-
+      const userRef =  firestore.collection('users').doc(user.uid)
 
       if (change.type === 'added') {
 
       }
+
       if (change.type === 'modified') {
-
-        console.log('log: change', {users, currentUser, user})
-
         const { hint, innerThoughts } = user.character?.dmMessage || {}
         const message = hint || innerThoughts || ''
-        if(hint){
-          launchToaster({type: 'info', content: `✨  ${message}`})
-          updateCharacter(user, {'character.dmMessage.hint': null})
-        }
-        if(innerThoughts){
-          launchToaster({type: 'warning', content: `💭 ${message}`})
-          updateCharacter(user, {'character.dmMessage.innerThoughts': null})
-        }
         if(currentUser.uid === user.uid){
+          if(hint){
+            launchToaster({type: 'info', content: `✨  ${message}`})
+            batch.update(userRef, {'character.dmMessage.hint': null});
+          }
+          if(innerThoughts){
+            launchToaster({type: 'warning', content: `💭 ${message}`})
+            batch.update(userRef, {'character.dmMessage.innerThoughts': null});
+          }
           updateContextState({ user: {...user, hint: null, innerThoughts: null} })
 
         }
         if(users){
+          let updateUsers = false
           const newUsers = map(users, oldUser=>{
-            if(oldUser.uid === user.uid)return {...oldUser, character: user.character}
+            if(oldUser.uid === user.uid){
+              updateUsers = true
+              return {...oldUser, character: user.character}
+            }
             return oldUser
           })
+
           updateContextState({ users: newUsers })
         }
       }
       if (change.type === 'removed') {
       }
+
     });
   });
+  await batch.commit();
+
 }
 
 export const dmObserver = (updateContextState) => {
@@ -121,10 +129,9 @@ export const dmObserver = (updateContextState) => {
 
       }
       if (change.type === 'modified') {
-        console.log('log: change', {change})
 
         if(data.current){
-          updateContextState({battle: data.current})
+          // updateContextState({battle: data.current})
         }
 
       }
@@ -219,11 +226,12 @@ export const getUserDocument = async uid => {
   }
 };
 
-export const updateCharacter = async (user, updates) => {
+export const updateCharacter = async (user, updates, dontGetUser) => {
    await updateDoc(`users/${user.uid}`, updates)
-   const newUser = await getUserDocument(user.uid)
+   const newUser = dontGetUser ? {} : await getUserDocument(user.uid)
    return newUser
 }
+
 export const damageCharacter = async (user, amount) => {
   const newAmount = user.character.hp - amount >= 0 ? user.character.hp - amount : 0
   await updateDoc(`users/${user.uid}`, {'character.hp':newAmount})
@@ -312,15 +320,9 @@ export async function getStoryChapter(chapter){
   return res || {notes: ''}
 }
 
-export const damageOnMonster = async (monster, amount) => {
-  let current = null
-  const userRef = firestore.collection('DM').doc('battles');
- const doc =  userRef.get()
-  if (doc.exists) {
-    current = doc.data()
-  }
-
-  //  await userRef.update({current: {...battle}});
+export const updateMonsters = async (monsters) => {
+  const dmRef = firestore.collection('DM').doc('battles');
+  await dmRef.update({'current.monsters': monsters});
 }
   /*
   how to update nested features
