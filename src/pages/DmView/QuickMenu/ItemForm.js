@@ -6,6 +6,7 @@ import { useGetUserOptions } from '../hooks'
 import { useGetAllItemOptions } from '../../../common/hooks/useGetBagOptions'
 import { find, map } from 'lodash'
 import { useUpdateItems, useBatchUpdateItems } from '../../../common/hooks/useUpdateItems'
+import { useContextState } from 'dynamic-context-provider'
 
 const BluePrint = ({ options, itemTypes, availableItems, setavailableItems, allItems}) => {
     return ({
@@ -104,6 +105,7 @@ const BluePrint = ({ options, itemTypes, availableItems, setavailableItems, allI
     })
 }
 const ItemForm = () => {
+    const { updateContextState } = useContextState()
     const {options, users} = useGetUserOptions()
 
     const firstUser = options[0]
@@ -118,12 +120,12 @@ const ItemForm = () => {
     const [updateBatchItems] = useBatchUpdateItems(values.itemType.label)
 
    async function handleSubmit(values, formik) {
+    updateContextState({globalLoading: true})
         const reqString = `${values.quantity}_${values.availableItem.label}`
         if(values.targetAll){
             await updateBatchItems(values)
         }else await updateItems([reqString])
-        
-        formik.resetForm()
+        updateContextState({globalLoading: false})
     }
 
     return (

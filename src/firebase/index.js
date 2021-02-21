@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
-import { launchToaster } from "../core/toaster";
+import { launchErrorToaster } from '../core/toaster';
 import { cloneDeep, forEach, isEqual, map } from "lodash";
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
@@ -137,15 +137,14 @@ export async function findUser(query = { key: 'name', comparison: '==', equals: 
     const { key, comparison, equals } = query
     const snapshot = await firestore.collection(`users`).where(key, comparison, equals).get();
     if (snapshot.empty) {
-      console.log('No matching documents.');
       return;
     }
     snapshot.forEach(doc => {
       user = doc.data()
     });
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
   
   return user
@@ -170,8 +169,8 @@ export const updateCharacter = async (user, updates, dontGetUser) => {
     await updateDoc(`users/${user.uid}`, updates)
     newUser = dontGetUser ? {} : await getUserDocument(user.uid)
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   } 
 
    return newUser
@@ -183,8 +182,8 @@ export const damageCharacter = async (user, amount) => {
     await updateDoc(`users/${user.uid}`, {'character.hp':newAmount})
   
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 }
 
@@ -215,8 +214,8 @@ export const itemUse = async ({userGivingItem, target, item}) => {
     batch.update(userGivingItemRef, { [userGivingItemPath]: userGivingItem.character.items });
     await batch.commit();
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 }
 
@@ -225,8 +224,8 @@ export const giveCharacterItem = async (user, updates, itemCategory) => {
     const path = `character.items.${itemCategory}`
     await updateCharacter(user, {[path]: updates})
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 }
 
@@ -251,8 +250,8 @@ export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) 
     await batch.commit();
 
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 
   return oldEquipped
@@ -274,8 +273,8 @@ export async function getAllUsers(){
       }
     });
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 
   return users
@@ -285,8 +284,8 @@ export const updateStoryChapter = async (chapter, updates, specialKey) => {
   try{
     await updateDoc(`DM/${chapter}`, updates, specialKey)
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 }
 
@@ -296,8 +295,8 @@ export const startBattle = async (battle) => {
     await userRef.update({current: {...battle}});
  
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 }
 
@@ -306,8 +305,8 @@ export async function getStoryChapter(chapter){
   try{
     res = await getCollection(['DM', chapter])
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
   return res
 }
@@ -317,10 +316,15 @@ export const updateMonsters = async (monsters) => {
     const dmRef = firestore.collection('DM').doc('battles');
     await dmRef.update({'current.monsters': monsters});
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
  
+}
+
+export async function updateDMDocs(updates){
+  const dmRef = firestore.collection('DM').doc('battles');
+  await dmRef.update(updates);
 }
 
 export const giveUserRewards = async (users, rewards) => {
@@ -333,31 +337,31 @@ export const giveUserRewards = async (users, rewards) => {
       forEach(rewards.items, item=>{
         const itemInBag = character.items[item.type][item.label]
         if(itemInBag){
-          itemInBag.quantity += item.quantity
+          character.items[item.type][item.label].quantity += item.quantity
         }else{
-          character.items[item.label] = item
+          character.items[item.type][item.label] = item
         }
+
       })
+
       characterUpdates.push(character)
     })
-    console.log('log: characterUpdates', {users, characterUpdates})
     await batchUpdate('character', users, characterUpdates)
     const dmRef = firestore.collection('DM').doc('battles');
-    await dmRef.update({'current': {}});
+    await dmRef.update({'current': {success: true, rewards}});
     }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
 
 }
 export const sendUserAMessage = async (user, dmMessage) => {
   try{
-    console.log('log: user, dmMessage', {user, dmMessage})
     await updateCharacter(user, {[`character.dmMessage`]: dmMessage})
 
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
  
 }
@@ -372,7 +376,7 @@ export const sendUserAMessage = async (user, dmMessage) => {
   try{
 
   }catch(e){
-    console.log('log: error', e)
-    launchToaster({type: 'error', content: 'There was an error'})
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
   }
   */

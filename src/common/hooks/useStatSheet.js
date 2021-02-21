@@ -4,6 +4,8 @@ import { statSheet } from '../../gameData/constants'
 export function convertStatSheet(stats){
     
     const completeStats = Object.keys(statSheet).reduce((acc, abbr)=>{
+        // if isManual stat is full obj
+        // if not, stat is just the number
         const stat = stats[abbr]
         const statCount = stat.points
         let statBoost = 0
@@ -22,7 +24,6 @@ export function convertStatSheet(stats){
         if(statCount >= 20 ){
             statBoost = 5
         }
-
         return {...acc, [abbr]: {...stat, abbr, statBoost}}
     },{})
 
@@ -31,5 +32,6 @@ export function convertStatSheet(stats){
 export function useStatSheet(manualStats){
     const { user: {character} } = useContextState()
     const stats = manualStats || character.stats
-    return convertStatSheet(stats)
+    
+    return convertStatSheet(stats, manualStats)
 }

@@ -26,8 +26,8 @@ export const initialCharacterObject = {
         spells: []
     },
     dmMessage: {
-        hint: null,
-        innerThoughts: null
+        hint: '',
+        innerThoughts: ''
     }
 
 }

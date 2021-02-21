@@ -1,5 +1,5 @@
 import { useContextState } from "dynamic-context-provider";
-import { forEach, map } from "lodash";
+import { forEach } from "lodash";
 import { weapons } from "../../gameData/items";
 import { attacks } from "../../gameData/player/attacks";
 

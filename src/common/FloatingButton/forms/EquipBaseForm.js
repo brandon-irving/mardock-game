@@ -5,25 +5,24 @@ import { useGetItems } from '../../hooks/useGetItems'
 import { equipItem } from '../../../firebase'
 import { map, find } from 'lodash'
 import { checkIfSkilledEnoughToEquip } from '../../helpers/checkIfSkilledEnoughToEquip.js'
-import { launchToaster } from '../../../core/toaster'
+import { launchErrorToaster } from '../../../core/toaster'
 
 
 export default function EquipBaseForm({ type = '' }) {
     const { user, globalLoading, updateContextState } = useContextState()
-    const [options, itemsGameData, dbItems] = useGetItems(undefined, type)
+    const [options, itemsGameData] = useGetItems(undefined, type)
     const { character: { items, equipped } } = user
     const [value, setvalue] = React.useState(options[0])
 
     const equippedFullInfo = itemsGameData[equipped[type]] || {}
-    const desiredSwapFullInfo = itemsGameData[value?.label] || {}
+    
     async function handleSubmit() {
-        const isSkilledEnough = checkIfSkilledEnoughToEquip(itemsGameData[value.label], user)
-        if (!isSkilledEnough) return launchToaster({ type: 'error', content: 'Not skilled enough to use this weapon' })
+        const isSkilledEnough = checkIfSkilledEnoughToEquip(itemsGameData[value?.label], user)
+        if (!isSkilledEnough) return launchErrorToaster()
         updateContextState({ globalLoading: true })
-        const newInitialEquipInBag = await equipItem({ user, items, newEquip: value.label, type, itemsGameData })
+        const newInitialEquipInBag = await equipItem({ user, items, newEquip: value?.label, type, itemsGameData })        
         setvalue({ label: newInitialEquipInBag })
         updateContextState({ globalLoading: false })
-
     }
 
 
@@ -34,16 +33,20 @@ export default function EquipBaseForm({ type = '' }) {
     }
 
     useEffect(() => {
-        if (!value) return
-        const selectedEquip = find(options, { label: value.label })
+        let selectedEquip = find(options, { label: value?.label })
+        if (!value) {
+            selectedEquip = find(options, { label: equipped })
+        }
+        
         setvalue(selectedEquip)
-    }, [globalLoading])
-    console.log('log: itemsGameData', {equipped,value, itemsGameData})
+    }, [globalLoading, user])
+
+    if(globalLoading)return null
     return (
         <div>
             <Typography variant="h5" align="center">{Object.keys(equipped[type]).length > 0 ? `Equipped: ${equipped[type]}` : `Nothing Equipped`}</Typography>            
            {
-           Object.keys(equipped[type]).length > 0 && <> 
+           Object.keys(equipped[type]).length > 0 && type === 'weapon' && <> 
            <Typography align="center">
             Attack Roll: {equippedFullInfo.roll}    
             </Typography>   
@@ -64,7 +67,7 @@ export default function EquipBaseForm({ type = '' }) {
                             fullWidth
                             id={type}
                             select
-                            value={value.label}
+                            value={value?.label}
                             onChange={handleChange}
                         >
                             {map(options, (option) => (

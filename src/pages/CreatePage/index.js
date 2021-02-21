@@ -5,8 +5,6 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import { initialCharacterObject } from '../../gameData/player/initialCharacterObject';
 import { forEach } from 'lodash';
 import ClassForm from './ClassForm';
@@ -17,8 +15,7 @@ import CompleteCreateForm from './CompleteCreateForm';
 import { statSheet } from '../../gameData/constants';
 import { useContextState } from 'dynamic-context-provider';
 import weapons from '../../gameData/items/weapons';
-import {classes} from '../../gameData/player/classes';
-import { launchToaster } from '../../core/toaster';
+import { launchErrorToaster } from '../../core/toaster';
 import { useUpdateCharacter } from '../../common/hooks/useUpdateCharacter';
 import { useHistory } from 'react-router-dom';
 import BasicRoot from '../../common/BasicRoot';
@@ -96,7 +93,7 @@ export default function CreatePage() {
 
   const handleNext = () => {
     if(isInvalidateCharacerObj() && activeStep === 2){
-      return launchToaster({type: 'error', content: isInvalidateCharacerObj()})
+      return launchErrorToaster({content: isInvalidateCharacerObj()})
     } 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -107,7 +104,7 @@ export default function CreatePage() {
 
   function goToStep(index){
     if(isInvalidateCharacerObj() && index === 3){
-      return launchToaster({type: 'error', content: isInvalidateCharacerObj()})
+      return launchErrorToaster({content: isInvalidateCharacerObj()})
     } 
     setActiveStep(index);
 
@@ -129,12 +126,7 @@ export default function CreatePage() {
   }
   async function handleSubmit(){
     try{
-      const character = {
-        ...createUserObj,
-        stats: Object.keys(createUserObj.stats).reduce((acc,statKey)=>{
-          return {...acc, [statKey]: createUserObj.stats[statKey].points}
-        },{})
-      }
+      const character = {...createUserObj,}
       await updateFireBaseCharacter({character})
       history.replace('/')
     }catch(e){

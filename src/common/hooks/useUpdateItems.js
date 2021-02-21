@@ -1,8 +1,7 @@
 import { forEach, map } from "lodash"
-import { launchToaster } from "../../core/toaster"
+import { launchSuccussToaster } from "../../core/toaster"
 import { batchUpdate, giveCharacterItem } from "../../firebase"
 import { useGetItems } from "./useGetItems"
-import { initialCharacterObject } from '../../gameData/player/initialCharacterObject'
 import { useGetUserOptions } from "../../pages/DmView/hooks"
 
 export function useBatchUpdateItems(type){
@@ -47,7 +46,6 @@ export const useUpdateItems = (user, type) => {
                 if (newQuantity < 0) {
                     newQuantity = 0
                 }
-                console.log('log: quantity', quantity)
                 
                 itemsCharacterIsCarrying.quantity = newQuantity
     
@@ -57,7 +55,7 @@ export const useUpdateItems = (user, type) => {
         })
 
         await giveCharacterItem(user, newItems, type)
-        launchToaster({type: 'success', content: `Successfully given ${user.displayName} items`})
+        launchSuccussToaster({content: `Successfully given ${user.displayName} items`})
     }
     
     return [updateItems]

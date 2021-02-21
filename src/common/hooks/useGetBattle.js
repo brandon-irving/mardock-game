@@ -18,7 +18,7 @@ export const useGetBattle = (user=null) => {
    async function getData(){ 
         const battles = await getCollection(['DM', 'battles'])
         let battle = null
-        if(battles.current.monsters){
+        if(battles.current?.monsters){
             battle = battles.current
             if(user){
                 battle.monsters = filterMonstersInSight(user, battle.monsters)

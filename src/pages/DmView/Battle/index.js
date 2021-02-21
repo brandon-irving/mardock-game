@@ -10,7 +10,6 @@ import SelectBattleForm from './SelectBattleForm';
 const Battle = () => {
     const [battle, loading] = useGetBattle()
     const { users } = useContextState()
-    console.log('log: Battle users', users)
     
     if(loading)return null
     return (

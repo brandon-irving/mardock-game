@@ -128,12 +128,12 @@ export default function SignUpPage({goToSignIn}) {
     const initialValues = { displayName: '', email: '', password: '' }
 
     async function handleSubmit(values) {
-        const newUser= await createUserWithEmailAndPasswordHandler(values)
-        history.replace('create')
+        await createUserWithEmailAndPasswordHandler(values)
+        history.replace('/')
     }
     async function handleGoogleSignUp(e) {
         await signInWithGoogle()
-        history.replace('create')
+        history.replace('/')
     }
     return (
         <BasicRoot>

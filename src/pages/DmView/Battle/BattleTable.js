@@ -5,7 +5,6 @@ import { columnHeaders } from './columns'
 import { find, map } from 'lodash';
 import { updateCharacter, updateMonsters, giveUserRewards } from '../../../firebase';
 import { Button } from '@material-ui/core';
-import { launchToaster } from '../../../core/toaster';
 
 export default function BattleTable({battle={monsters:[]}}) {
 

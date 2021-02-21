@@ -87,7 +87,6 @@ export default function BaseForm({ user, type = '', options = defaultOptions, ta
     }
     async function handleSubmit(values, formik) {
         const item = values.Items
-        console.log('log: values',  values.Items, values[type])
         setvalues({...values, Items: {...item, quantity: item.quantity-=1}})
         await itemUse({ userGivingItem: user, type, target: values.target, item })
     }

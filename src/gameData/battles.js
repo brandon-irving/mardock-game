@@ -6,14 +6,17 @@ export const battles = {
         monsters: generateMonsters({ wolf: 4}).monsters,
         rewards: {
             exp: generateMonsters({ wolf: 4}).exp,
-            items: generateItems(['2Potion'])
+            items: generateItems(['2Potion', '2Mana Cubes']),
+            consequence: 'You know a little bit more now!'
         }
     },
     tutorialBattle2: {
         monsters: generateMonsters({ wolf: 2, special: ['Grand Dire Wolf']}).monsters,
         rewards: {
             exp: generateMonsters({ wolf: 2, special: ['Grand Dire Wolf']}).exp,
-            items: generateItems(['2Potion'])
+            items: generateItems(['2Potion']),
+            consequence: ''
+
         }
     },
   
