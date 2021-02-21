@@ -28,7 +28,7 @@ const BluePrint = (options, helperText) => {
 const WeaponForm = ({initialValues, createUserObj, updateCharacter}) => {
     const weaponData = weapons[createUserObj.equipped.weapon]
     const statAbbr = `${Object.keys(weaponData.requirement)[0]}`
-    const requiredText = `Minimum stat needed to use (${statAbbr}: ${weaponData.requirement[statAbbr]})`
+    const requiredText = `Minimum stat needed to use (${statAbbr ? `${statAbbr}: ${weaponData.requirement[statAbbr]}` : 'None'})`
     const options = Object.keys(weapons).map(weaponName=>{
         return { label: weaponName, value: weaponName}
     })

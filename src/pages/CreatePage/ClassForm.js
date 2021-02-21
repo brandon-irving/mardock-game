@@ -53,7 +53,7 @@ const ClassForm = ({createUserObj, updateCharacter}) => {
 
                 updateCharacter({
                     class: field.label,
-                    stats: {...createUserObj.stats, [stat]: {...statObj, points: baseStat + statBoost}} 
+                    // stats: {...createUserObj.stats, [stat]: {...statObj, points: baseStat + statBoost}} 
                 })
             }
 

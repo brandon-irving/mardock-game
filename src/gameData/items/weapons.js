@@ -1,16 +1,19 @@
 import sword from '../../images/sword.svg'
 const weapons = {
     'Long Sword': {
-        type: 'weapon', requirement: {str: 12}, type: 'sword', hp: 0, mp:0, roll: 'd8', label: 'Long Sword', description: '', src: sword
+        price: 500, type: 'weapon', requirement: {str: 12}, hp: 0, mp:0, roll: 'd8', label: 'Long Sword', range: '1 square', description: 'A standard 4ft long steel sword. Requires 2 hands to weild and can strike enemies near you', src: sword
     },
     'Dagger': {
-        type: 'weapon', requirement: {dex: 12}, type: 'dagger', hp: 0, mp:0, roll: 'd4', label: 'Dagger', description: '', src: sword
+        price: 500, type: 'weapon', requirement: {dex: 12},  hp: 0, mp:0, roll: 'd4', label: 'Dagger', range: '1 square', description: 'A small and crafty blade. Requires acute handling and can strike enemies near you', src: sword
     },
     'Short Sword': {
-        type: 'weapon', requirement: {}, type: 'sword', hp: 0, mp:0, roll: 'd6', label: 'Short Sword', description: '', src: sword
+        price: 500, type: 'weapon', requirement: {}, hp: 0, mp:0, roll: 'd6', label: 'Short Sword', range: '1 square', description: 'A standard 2ft long sword. Any one can weild it with ease and can strike enemies near you', src: sword
     },
     'Bow': {
-        type: 'weapon', requirement: {dex: 12}, type: 'bow', hp: 0, mp:0, roll: 'd4', label: 'Bow', description: '', src: sword
+        price: 500, type: 'weapon', requirement: {dex: 14},  hp: 0, mp:0, roll: 'd4', label: 'Bow', range: '5 squares', description: 'A common bow and arrow. Requires some dexterity but allows you to shoot enemies within sight', src: sword
+    },
+    'Bear Claw': {
+        price: 1000, type: 'weapon', requirement: {str: 14, dex: 12}, hp: 0, mp:0, roll: 'd6', label: 'Bear Claw', range: '1 square', description: '3 one ft metal claws on each hand. You can attack the enemy twice', src: sword
     },
 }
 export default weapons

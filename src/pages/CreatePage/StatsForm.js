@@ -7,7 +7,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { map } from 'lodash';
 import NumericInput from 'react-numeric-input';
-import { convertStatSheet, useStatSheet } from '../../common/hooks/useStatSheet';
+import { useStatSheet } from '../../common/hooks/useStatSheet';
 
 const useStyles = makeStyles((theme) => ({
   root: {

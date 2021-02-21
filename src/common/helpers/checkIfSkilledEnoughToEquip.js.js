@@ -4,8 +4,8 @@ import { launchErrorToaster } from "../../core/toaster"
 export function checkIfSkilledEnoughToEquip(value={requirement: {}}, user){
     let skilledEnough = false
     const { character } = user
-
-    if(value?.requirement?.length === 0)return true
+  
+    if(value?.requirement?.length === 0 || !value?.requirement)return true
     try{
       forEach(Object.keys(character.stats), statName=>{
         const  {points} = character.stats[statName]

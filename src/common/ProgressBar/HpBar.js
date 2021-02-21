@@ -24,6 +24,7 @@ const HpBar = ({monster}) => {
         useEffect(() => {
             setgaugeValue(getHp())
         }, [hp, armor, monster])   
+        
         if(monster)return null // TODO: conditionally show users
     return (
         <div style={{marginTop: '10px', marginBottom: '10px'}}>

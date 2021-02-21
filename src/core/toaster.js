@@ -11,7 +11,7 @@ const defaultOptions = {
     draggable: true,
     progress: undefined,
 }
-export function launchToaster({ options = defaultOptions, type = 'dark', content = '' }) {
+export function launchToaster({ options = {}, type = 'dark', content = '' }) {
     return toast[type](content, { ...defaultOptions, ...options })
 }
 export function launchErrorToaster({ options = {}, content = '' }) {

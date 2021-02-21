@@ -1,14 +1,6 @@
 import wolf from '../../images/wolf.svg'
 import kingDireWolf from '../../images/kingDireWolf.svg'
 const monsters = {
-    wolf: {
-        'Young Dire Wolf': { src: wolf,name: 'Young Dire Wolf', type: 'wolf', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
-        'Dire Wolf': { src: wolf,name: 'Dire Wolf', type: 'wolf', description: '', level: 9, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
-        special: {
-            'Grand Dire Wolf': { src: wolf,name: 'Grand Dire Wolf', type: 'wolf', description: '', level: 14, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Grand Slash', 'Dark Bite'] } },
-            'King Dire Wolf': { src: kingDireWolf,name: 'King Dire Wolf', type: 'wolf', description: '', level: 25, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Grand Slash', 'Monster Howl', 'Dark Bite', 'Shadow Ball']} },    
-        },
-    },
     bear: {
         'Cub Soldier': { src: wolf,name: 'Cub Soldier', type: 'bear', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
         'Bear Scout': { src: wolf,name: 'Bear Scout', type: 'bear', description: '', level: 8, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
@@ -20,6 +12,15 @@ const monsters = {
            
         }
     },
+    wolf: {
+        'Young Dire Wolf': { src: wolf,name: 'Young Dire Wolf', type: 'wolf', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        'Dire Wolf': { src: wolf,name: 'Dire Wolf', type: 'wolf', description: '', level: 9, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        special: {
+            'Grand Dire Wolf': { src: wolf,name: 'Grand Dire Wolf', type: 'wolf', description: '', level: 14, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Grand Slash', 'Dark Bite'] } },
+            'King Dire Wolf': { src: kingDireWolf,name: 'King Dire Wolf', type: 'wolf', description: '', level: 25, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Grand Slash', 'Monster Howl', 'Dark Bite', 'Shadow Ball']} },    
+        },
+    },
+
     snake: {
         'Aba Cobra': { src: wolf,name: 'Aba Cobra', type: 'snake', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 1 } },
         'Abdu Cobra': { src: wolf,name: 'Abdu Cobra', type: 'snake', description: '', level: 10, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 1 } },

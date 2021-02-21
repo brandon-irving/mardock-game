@@ -13,12 +13,12 @@ export default function EquipBaseForm({ type = '' }) {
     const [options, itemsGameData] = useGetItems(undefined, type)
     const { character: { items, equipped } } = user
     const [value, setvalue] = React.useState(options[0])
-
+    
     const equippedFullInfo = itemsGameData[equipped[type]] || {}
     
     async function handleSubmit() {
         const isSkilledEnough = checkIfSkilledEnoughToEquip(itemsGameData[value?.label], user)
-        if (!isSkilledEnough) return launchErrorToaster()
+        if (!isSkilledEnough) return launchErrorToaster({content: 'Not skilled enough to use this item'})
         updateContextState({ globalLoading: true })
         const newInitialEquipInBag = await equipItem({ user, items, newEquip: value?.label, type, itemsGameData })        
         setvalue({ label: newInitialEquipInBag })
@@ -78,7 +78,7 @@ export default function EquipBaseForm({ type = '' }) {
                         </TextField>
                     </Grid>
                     <Grid item xs={12}>
-                        <Button variant="outlined" fullWidth onClick={handleSubmit}>Swap Equipped</Button>
+                        <Button disabled={value === undefined} variant="outlined" fullWidth onClick={handleSubmit}>Swap Equipped</Button>
                     </Grid>
 
                 </Grid>
