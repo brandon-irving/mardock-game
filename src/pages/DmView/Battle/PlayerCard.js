@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 
 export default function PlayerCard({ user, targets }) {
   const { character } = user
-  const stats = useStatSheet(character.stats)
+  const stats = useStatSheet(character.stats, character.class)
   const classes = useStyles();
   const { gil, name, level, exp, hp, maxHp, mp, maxMp } = character
   if (!character.name) return null

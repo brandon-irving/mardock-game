@@ -5,7 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { map } from 'lodash';
+import { cloneDeep, map } from 'lodash';
 import NumericInput from 'react-numeric-input';
 import { useStatSheet } from '../../common/hooks/useStatSheet';
 
@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) => {
     const maxStatIncrease = 5
+    const [initialStatPoint] = useState(stat.points - 10)
     const [statPoint, setstatPoints] = useState(stat.points - 10)
     const textColor = statPoint >=3 ? 'green' : 'red'
 
@@ -29,13 +30,14 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
         setstatPoints((oldValue)=>{
             let newAvailablePoints = availablePoints - 1
             let updateValue = 1
-            if(availablePoints <= 0 || oldValue > value ){
+            if(availablePoints <= 0 || oldValue > value){
                 newAvailablePoints = availablePoints + 1
                 updateValue = -1
             }
+  
             setavailablePoints(newAvailablePoints)
             updateCharacterStat(stat.abbr, updateValue)
-            return value
+            return oldValue + updateValue
         })
     }
 
@@ -57,7 +59,7 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
                 onChange={handleStateChange} 
                 style={{input: {fontSize: '14pt',color: textColor, width: '100px', height: '40px'}}} 
                 mobile={true} 
-                min={0}
+                min={initialStatPoint}
                 max={max} 
                 value={statPoint}
             />

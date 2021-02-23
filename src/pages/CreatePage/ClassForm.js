@@ -26,7 +26,7 @@ const BluePrint = (options) => {
     })
 }
 
-const ClassForm = ({createUserObj, updateCharacter}) => {
+const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
     const initialValues= { class: createUserObj.class }
     const options = map(Object.keys(classes), className=>{
         const classOption = classes[className]
@@ -40,6 +40,7 @@ const ClassForm = ({createUserObj, updateCharacter}) => {
             if (isEmpty) {
                 updateCharacter({ class: null})
                 errors[fieldName] = 'required'
+                setavailablePoints(10)
             }else if(fieldName === 'class'){  
                 // default all stats before class modification  
                 forEach(Object.keys(createUserObj.stats),(statName) => {
@@ -50,7 +51,7 @@ const ClassForm = ({createUserObj, updateCharacter}) => {
                 const statBoost = field.statBoost[stat] // 2
                 const statObj = createUserObj.stats[stat] // {label: 'Strength'}
                 const baseStat = statObj.points // 10
-
+                setavailablePoints(10)
                 updateCharacter({
                     class: field.label,
                     // stats: {...createUserObj.stats, [stat]: {...statObj, points: baseStat + statBoost}} 

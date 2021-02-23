@@ -19,7 +19,7 @@ import { launchErrorToaster } from '../../core/toaster';
 import { useUpdateCharacter } from '../../common/hooks/useUpdateCharacter';
 import { useHistory } from 'react-router-dom';
 import BasicRoot from '../../common/BasicRoot';
-import { convertStatSheet } from '../../common/hooks/useStatSheet';
+import { convertStatSheet, useStatSheet } from '../../common/hooks/useStatSheet';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +49,9 @@ export default function CreatePage() {
   const classStyles = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
-  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats: convertStatSheet(statSheet)})
+  const [characterClass, setcharacterClass] = useState('Knight')
+  const stats = useStatSheet(statSheet, characterClass, true)
+  const [createUserObj, setcreateUserObj] = useState({...initialCharacterObject, name: user.displayName, stats})
   const [availablePoints, setavailablePoints] = useState(10)
   const [updateFireBaseCharacter] = useUpdateCharacter()
 
@@ -83,13 +85,20 @@ export default function CreatePage() {
     return invalid
   }
 
+
   function updateCharacter(fields={}){
       const newObj = {...createUserObj}
       forEach(Object.keys(fields), fieldName=>{
+        if(fieldName === 'class'){
+          setcharacterClass(fields[fieldName])
+        }
         newObj[fieldName] = fields[fieldName]
       })
       setcreateUserObj(newObj)
   }
+  React.useEffect(() => {
+    updateCharacter({stats})
+  }, [characterClass])
 
   const handleNext = () => {
     if(isInvalidateCharacerObj() && activeStep === 2){
@@ -113,7 +122,7 @@ export default function CreatePage() {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <ClassForm createUserObj={createUserObj} updateCharacter={updateCharacter} />
+        return <ClassForm createUserObj={{...createUserObj, stats}} setavailablePoints={setavailablePoints}updateCharacter={updateCharacter} />
       case 1:
         return <StatsForm createUserObj={createUserObj} updateCharacter={updateCharacter} availablePoints={availablePoints} setavailablePoints={setavailablePoints} />;
       case 2:

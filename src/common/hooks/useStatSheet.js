@@ -1,6 +1,7 @@
 import { useContextState } from "dynamic-context-provider";
+import { forEach } from "lodash";
 import { statSheet } from '../../gameData/constants'
-
+import { classes } from '../../gameData/player/classes'
 export function convertStatSheet(stats){
     
     const completeStats = Object.keys(statSheet).reduce((acc, abbr)=>{
@@ -27,10 +28,21 @@ export function convertStatSheet(stats){
 
     return completeStats
 }
-export function useStatSheet(manualStats){
-    const { user: {character} } = useContextState()
+export function applyClassBoost(stats, characterClass){
+    const appliedStats = {...stats}
+    const classStats = classes[characterClass]
+    if(classStats){
+        forEach(Object.keys(classStats.statBoost), abbr=>{            
+            appliedStats[abbr].points += classStats.statBoost[abbr]
+        })
+    }    
+    return appliedStats
+}
+export function useStatSheet(manualStats, characterClass, applyClass= false){
+    const { user: {character={}} } = useContextState()
     const stats = manualStats || character.stats
-    console.log('log: character', character)
+    const desiredClass = characterClass || character.class
+    const finalStats = convertStatSheet(stats, manualStats)
     
-    return convertStatSheet(stats, manualStats)
+    return !applyClass ? finalStats : applyClassBoost(convertStatSheet(stats, manualStats), desiredClass)
 }
