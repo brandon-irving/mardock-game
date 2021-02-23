@@ -101,6 +101,7 @@ function getInitials(fullName='John Doe'){
              />
                <InfoCard 
              title={characterClass.label}
+             topText={characterClass.statDescription}
              text={characterClass.description}
              imgSrc={characterClass.src}
              />

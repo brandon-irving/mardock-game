@@ -38,6 +38,14 @@ export function applyClassBoost(stats, characterClass){
     }    
     return appliedStats
 }
+export function applyStatBoostToHpAnsMp(character){
+    const newCharacter = {...character}
+    newCharacter.hp += character.stats.vit.points
+    newCharacter.maxHp += character.stats.vit.points
+    newCharacter.mp += character.stats.int.points
+    newCharacter.maxMp += character.stats.int.points
+    return newCharacter
+}
 export function useStatSheet(manualStats, characterClass, applyClass= false){
     const { user: {character={}} } = useContextState()
     const stats = manualStats || character.stats

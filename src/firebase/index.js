@@ -229,6 +229,38 @@ export const giveCharacterItem = async (user, updates, itemCategory) => {
   }
 }
 
+export const activateSpell = async (user, mp) => {
+  const newMp = user.character.mp - mp
+
+  if(newMp < 0) {
+    launchErrorToaster({content: 'Not enough MP'})
+    return false
+  }
+  try{
+    await updateCharacter(user, {'character.mp': newMp}, true)
+  }catch(e){
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
+  }
+  return true
+
+}
+export const activateAbility = async (user, ap) => {
+  const newAp = user.character.ap - ap
+
+  if(newAp < 0) {
+    launchErrorToaster({content: 'Not enough AP'})
+    return false
+  }
+  try{
+    await updateCharacter(user, {'character.ap': newAp}, true)
+  }catch(e){
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
+  }
+  return true
+}
+
 export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) => {
   let oldEquipped = null
 

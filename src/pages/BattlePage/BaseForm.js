@@ -4,9 +4,13 @@ import 'mui-form-generator/dist/index.css'
 import theme from '../../core/theme'
 import { Typography } from '@material-ui/core'
 import { useContextState } from 'dynamic-context-provider'
-import { itemUse } from '../../firebase'
+import { activateAbility, activateSpell } from '../../firebase'
+import { find } from 'lodash'
+
+const defaultTargets = [{ label: 'No Targets', value: 'No Targets' }]
 
 const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '' }], targets = [{ label: '', value: '' }] }) => {
+    const foundValue = find(options, {label: values[type]}) || {}
     return ({
         Rows: [
             {
@@ -16,15 +20,16 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
                             id: type,
                             name: type,
                             type: 'selectNative',
+                            value: values[type],
                             options,
                             subscript: <>
                                 <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Description</Typography>
-                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type]?.description}</Typography>
+                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{foundValue?.description}</Typography>
                                {type !== 'Items' &&<> <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>How to use</Typography>
-                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{values[type].rule}</Typography>
+                                <Typography style={{ fontSize: '10pt', marginBottom: '10px' }}>{foundValue.rule}</Typography>
                                 <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Cost</Typography>
-                                <Typography style={{ fontSize: '10pt' }}>{values[type].useDescription}</Typography></>}
-                                {type === 'Items' && <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Quantity: {values[type].quantity}</Typography>}
+                                <Typography style={{ fontSize: '10pt' }}>{foundValue.useDescription}</Typography></>}
+                                {type === 'Items' && <Typography style={{ fontWeight: 'bold', fontSize: '10pt' }}>Quantity: {foundValue.quantity}</Typography>}
 
                             </>
                         }
@@ -37,8 +42,9 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
                         Input: {
                             id: 'target',
                             name: 'target',
-                            type: 'select',
                             label: 'Target',
+                            type: 'selectNative',
+                            value: values.target.value,
                             options: targets
 
                         }
@@ -54,7 +60,7 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
                             name: 'submit',
                             type: 'submit',
                             label: 'Submit',
-                            disabled: false,
+                            disabled: targets[0].label === 'No Targets',
                         }
                     },
                 ]
@@ -64,15 +70,14 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
 }
 const errorMessageMap = {
     Attack: 'You dont know any specials with this weapon',
-    Items: 'No items',
     Spell: "You don't know any spells" 
 }
-const defaultOptions = [{ description: 'This is a description', label: 'Long Sword', value: 'Long Sword' }, { description: 'This is another description', label: 'Short Sword', value: 'Short Sword' }]
-const defaultTargets = [{ label: 'Monster 1', value: 'Monster 1' }, { label: 'Monster 2', value: 'Monster 2' }]
-export default function BaseForm({ user, type = '', options = defaultOptions, targets = defaultTargets }) {
-    const initialValues = { [type]: options[0], target: targets[0] }
-    const [values, setvalues] = React.useState(initialValues)
 
+export default function BaseForm({ onSubmit=()=>{}, type = '', options, targets = defaultTargets }) {
+    const { user } = useContextState()
+    const initialValues = { [type]: options[0] ? options[0].value : '', target: targets ? targets[0].value : defaultTargets[0].value }
+    const [values, setvalues] = React.useState(initialValues)
+    
     if(!options.length) return errorMessageMap[type]
     function validate(values) {
         const errors = {}
@@ -85,17 +90,23 @@ export default function BaseForm({ user, type = '', options = defaultOptions, ta
         setvalues(values)
         return errors
     }
-    async function handleSubmit(values, formik) {
-        const item = values.Items
-        setvalues({...values, Items: {...item, quantity: item.quantity-=1}})
-        await itemUse({ userGivingItem: user, type, target: values.target, item })
+    async function handleSubmit(values) {
+        const foundItem = find(options, { label: values[type]})
+        console.log('log: user', {foundItem, character: user.character})
+        let success = false
+        if(type !== 'Spell'){            
+            success = await activateAbility(user, foundItem.ap)
+        }else{
+            success = await activateSpell(user, foundItem.mp)
+        }
+        if(!success)return
+        await onSubmit()
     }
-    // TODO: replace with normal form for auto updates
     return (
         <MuiFormGenerator
             theme={theme}
             manualValidate={validate}
-            blueprint={BaseBluePrint({ values, type, options, targets })}
+            blueprint={BaseBluePrint({ values, type, options, targets: targets || defaultTargets })}
             initialValues={initialValues}
             handleSubmit={handleSubmit}
         />

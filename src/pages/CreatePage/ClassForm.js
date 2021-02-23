@@ -2,7 +2,8 @@ import React from 'react'
 import { MuiFormGenerator } from 'mui-form-generator'
 import theme from '../../core/theme'
 import { classes } from '../../gameData/player/classes'
-import { forEach, map } from 'lodash'
+import { map } from 'lodash'
+import { Typography } from '@material-ui/core'
 
 const BluePrint = (options) => {
     return ({
@@ -27,11 +28,14 @@ const BluePrint = (options) => {
 }
 
 const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
+    const { description, spells, attacks, starterWeapon } = classes[createUserObj.class]
     const initialValues= { class: createUserObj.class }
     const options = map(Object.keys(classes), className=>{
         const classOption = classes[className]
         return {...classOption, value:classOption.label}
     })
+
+
     function validate(values) {
         const errors = {}
         Object.keys(values).forEach(fieldName => {
@@ -41,27 +45,14 @@ const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
                 updateCharacter({ class: null})
                 errors[fieldName] = 'required'
                 setavailablePoints(10)
-            }else if(fieldName === 'class'){  
-                // default all stats before class modification  
-                forEach(Object.keys(createUserObj.stats),(statName) => {
-                    createUserObj.stats[statName].points = 10
-                });     
-                       
-                const stat = Object.keys(field.statBoost)[0] // str
-                const statBoost = field.statBoost[stat] // 2
-                const statObj = createUserObj.stats[stat] // {label: 'Strength'}
-                const baseStat = statObj.points // 10
+            }else if(fieldName === 'class'){    
                 setavailablePoints(10)
-                updateCharacter({
-                    class: field.label,
-                    // stats: {...createUserObj.stats, [stat]: {...statObj, points: baseStat + statBoost}} 
-                })
+                updateCharacter({class: field.label})
             }
 
         })
         return errors
     }
-
     return (
         <div>
           <MuiFormGenerator
@@ -70,6 +61,10 @@ const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
             blueprint={BluePrint(options)}
             initialValues={initialValues}
         />   
+        <Typography>Description:</Typography>
+        <Typography style={{marginBottom: '20px'}}>{description}</Typography>
+        { spells && <Typography >Learned Spell: {spells[0]}</Typography>}
+        { attacks && <Typography>Learned Attack: {attacks[0]}</Typography>}
         </div>
     )
 }

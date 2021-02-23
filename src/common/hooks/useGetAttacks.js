@@ -3,7 +3,7 @@ import { forEach } from "lodash";
 import { weapons } from "../../gameData/items";
 import { attacks } from "../../gameData/player/attacks";
 
-export function useAttacks(){
+export function useGetAttacks(){
     const { user: {character: {techniques, equipped: { weapon }}} } = useContextState()
     const equippedWeapon = weapons[weapon]
 

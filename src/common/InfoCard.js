@@ -18,6 +18,7 @@ const useStyles = makeStyles(styles);
 const InfoCard = ({ 
     title='Knight', 
     text="The knight is a real nigga",
+    topText="",
     imgSrc="",
     noBox=false,
 }) => {
@@ -33,7 +34,7 @@ const InfoCard = ({
             </CardIcon>
           </div>}
           <p style={{color: 'white', fontSize: '15pt', textAlign: 'center'}} className={classes.cardCategory}>{title}</p>
-          {/* <Typography style={{color: 'white', textAlign: 'center'}} variant="subtitle1">{text}</Typography> */}
+          <Typography variant="subtitle1" style={{color: 'white', textAlign: 'center'}} variant="subtitle1">{topText}</Typography>
           <CardFooter stats>
           <Typography style={{color: 'white', textAlign: 'center'}} variant="subtitle1">{text}</Typography>
           </CardFooter>

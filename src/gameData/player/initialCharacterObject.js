@@ -6,13 +6,13 @@ export const initialCharacterObject = {
     equipped: {accessory: '', armor: {}, weapon: 'Long Sword', secondaryWeapon: ''},
     exp: 0,
     gil: 0,
-    hp: 10,
-    mp: 10,
+    hp: 20,
+    mp: 20,
     items: {misc:{}, weapon: {}, armor: {}, accessory: {}, specialItem: {}},
     level: 1,
-    maxAp: 10,
-    maxHp: 10,
-    maxMp: 10,
+    maxAp: 20,
+    maxHp: 20,
+    maxMp: 20,
     stats: {},
     techniques: {
         attacks: {
@@ -23,7 +23,8 @@ export const initialCharacterObject = {
             projectile: [],
             gun: []
         },
-        spells: []
+        spells: [],
+        skills: [],
     },
     dmMessage: {
         hint: '',

@@ -19,7 +19,8 @@ import { launchErrorToaster } from '../../core/toaster';
 import { useUpdateCharacter } from '../../common/hooks/useUpdateCharacter';
 import { useHistory } from 'react-router-dom';
 import BasicRoot from '../../common/BasicRoot';
-import { convertStatSheet, useStatSheet } from '../../common/hooks/useStatSheet';
+import { applyStatBoostToHpAnsMp, useStatSheet } from '../../common/hooks/useStatSheet';
+import { classes } from '../../gameData/player/classes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -135,7 +136,14 @@ export default function CreatePage() {
   }
   async function handleSubmit(){
     try{
-      const character = {...createUserObj,}
+      const character = applyStatBoostToHpAnsMp({...createUserObj})
+      const characterClass = classes[character.class]
+      if(characterClass.spells){
+        character.techniques.spells = characterClass.spells
+      }
+      if(characterClass.attacks){
+        character.techniques.attacks.sword = characterClass.attacks
+      }
       await updateFireBaseCharacter({character})
       history.replace('/')
     }catch(e){

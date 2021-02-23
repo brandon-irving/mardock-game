@@ -20,10 +20,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function MonsterList() {
+export default function MonsterList({monster, setmonster}) {
     const { user } = useContextState()
     const [initialBattle, loading] = useGetBattle(user)
-    const [monster, setmonster] = React.useState(null)
     function closeMonsterView(){
         setmonster(null)
     }

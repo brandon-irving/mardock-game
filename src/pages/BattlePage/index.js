@@ -6,6 +6,8 @@ import MpBar from '../../common/ProgressBar/MpBar'
 import AttackForm from './AttackForm'
 import ItemsForm from './ItemsForm'
 import SpellForm from './SpellForm'
+import SkillForm from './SkillForm'
+
 import ApNotifier from '../../common/ApNotifier'
 import MonsterList from './MonsterList'
 
@@ -13,17 +15,21 @@ const BattlePage = () => {
     const [aopen, setaopen] = React.useState(false)
     const [sopen, setsopen] = React.useState(false)
     const [iopen, setiopen] = React.useState(false)
+    const [skopen, setskopen] = React.useState(false)
+    const [monster, setmonster] = React.useState(null)
+
     return (
         <div>
-            <MonsterList />
+            <MonsterList monster={monster} setmonster={setmonster}/>
             <Grid style={{ textAlign: 'center', marginTop: '50vw' }} container >
                 <Grid item xs={6}>
                     <DialogButton
+                    disabled={!monster}
                         dialog={{
                             open: aopen,
                             setopen: setaopen,
                             title: 'Attacks',
-                            content: <AttackForm closeModal={()=>setaopen(false)} />,
+                            content: <AttackForm monster={monster} closeModal={()=>setaopen(false)} />,
                         }}
 
                         fullWidth
@@ -32,11 +38,12 @@ const BattlePage = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <DialogButton
+                    disabled={!monster}
                         dialog={{
                             open: sopen,
                             setopen: setsopen,
                             title: 'Spells',
-                            content: <SpellForm closeModal={()=>setsopen(false)}/>,
+                            content: <SpellForm monster={monster} closeModal={()=>setsopen(false)}/>,
                         }}
 
                         fullWidth
@@ -44,7 +51,22 @@ const BattlePage = () => {
                     >Spell</DialogButton>
                 </Grid>
                 <Grid item xs={6}>
+                <DialogButton
+                    disabled={!monster}
+                        dialog={{
+                            title: 'Skills',
+                            content: <SkillForm closeModal={()=>setskopen(false)}/>,
+                            open: skopen,
+                            setopen: setskopen
+                        }}
+
+                        fullWidth
+                        variant="outlined"
+                    >Skills</DialogButton>
+                </Grid>
+                <Grid item xs={6}>
                     <DialogButton
+                    disabled={!monster}
                         dialog={{
                             title: 'Items',
                             content: <ItemsForm closeModal={()=>setiopen(false)}/>,
@@ -55,10 +77,6 @@ const BattlePage = () => {
                         fullWidth
                         variant="outlined"
                     >Items</DialogButton>
-                </Grid>
-                <Grid item xs={6}>
-                    <DialogButton
-                        fullWidth variant="outlined">Evade</DialogButton>
                 </Grid>
             </Grid>
             <div>

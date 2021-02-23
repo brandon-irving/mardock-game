@@ -1,5 +1,5 @@
 const ballSpell = (element)=>{
-    const spell = { useDescription: 'Mp: 4',label: `${element} Ball`, description: `A sphere made of ${element}, hurled at an enemy 3 meters in the users line of vision`, element: element.toLowerCase(), rule:'Roll a d8 dice and deal damage equal to that result + elemental damage', mp: 4}
+    const spell = { useDescription: 'Mp: 4',label: `${element} Ball`, description: `A sphere made of ${element}, hurled at an enemy 3 meters in the users line of vision`, element: element.toLowerCase(), rule:`Roll a d8 damage dice (and a d4 elemental dice if the target is weak to ${element})`, mp: 4}
     return spell
 }
 const healSpell = (stat='hp+10',mp=10, description='')=>{

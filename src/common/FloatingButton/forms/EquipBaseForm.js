@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Button, Grid, MenuItem, TextField, Typography } from '@material-ui/core'
+import { Button, Divider, Grid, MenuItem, TextField, Typography } from '@material-ui/core'
 import { useContextState } from 'dynamic-context-provider'
 import { useGetItems } from '../../hooks/useGetItems'
 import { equipItem } from '../../../firebase'
@@ -55,7 +55,7 @@ export default function EquipBaseForm({ type = '' }) {
             </Typography>    
             </>
              }           
-            
+            <Divider style={{marginTop: '10px', marginBottom: '20px'}}/>
             {
                 options.length === 0 && <Typography align="center">No other {type}s</Typography>
             }

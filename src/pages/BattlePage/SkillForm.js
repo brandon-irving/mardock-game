@@ -1,11 +1,11 @@
 import { useContextState } from 'dynamic-context-provider'
 import { map } from 'lodash'
 import React from 'react'
-import { useGetAttacks } from '../../common/hooks/useGetAttacks'
+import { useGetSkills } from '../../common/hooks/useGetSkills'
 import BaseForm from './BaseForm'
 
-const AttackForm = ({closeModal}) => {
-    const attacks = useGetAttacks()
+const SkillForm = ({closeModal}) => {
+    const skills = useGetSkills()
     function onSubmit(){        
         closeModal()
     }
@@ -15,8 +15,8 @@ const AttackForm = ({closeModal}) => {
     }) : null
     
     return (
-       <BaseForm targets={targets} onSubmit={onSubmit} type="Attack" options={attacks} />
+       <BaseForm targets={targets} onSubmit={onSubmit} type="Skill" options={skills} />
     )
 }
 
-export default AttackForm
+export default SkillForm
