@@ -55,7 +55,7 @@ export function generateMonsters(monsterConfig={ wolf: 3, bear: 2, special: ['Gr
                 })
             })
         }else{
-            for(let i = 0; i<amountOfMonster; i++){
+            for(let i = 0; i < amountOfMonster; i++){
                 const randomInt = randomIntFromInterval(0, (monsterList.length - 1)) // removes the special field
                 const randomMonsterKey = monsterList[randomInt]
                 const randomMonster = ({...monsterData[randomMonsterKey],name: `${monsterData[randomMonsterKey].name} ${i}`, ...buildMonster(monsterData[randomMonsterKey]) })

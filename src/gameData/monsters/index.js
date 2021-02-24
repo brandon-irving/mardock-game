@@ -1,15 +1,29 @@
 import wolf from '../../images/wolf.svg'
 import kingDireWolf from '../../images/kingDireWolf.svg'
+
 const monsters = {
     bear: {
-        'Cub Soldier': { src: wolf,name: 'Cub Soldier', type: 'bear', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
-        'Bear Scout': { src: wolf,name: 'Bear Scout', type: 'bear', description: '', level: 8, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        'Cub Soldier': { src: wolf,name: 'Cub Soldier', type: 'bear', description: '', level: 5, hp: 20, maxHp: 20, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        'Bear Scout': { src: wolf,name: 'Bear Scout', type: 'bear', description: '', level: 8, hp: 20, maxHp: 20, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
         'Bear Soldier': { src: wolf,name: 'Bear Soldier', type: 'bear', description: '', level: 12, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 1} },
         special: {
-            'Bear Leutinant': { src: wolf,name: 'Bear Leutinant', type: 'bear', description: '', level: 16, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 2} },
-            'Bear Captain': { src: wolf,name: 'Bear Captain', type: 'bear', description: '', level: 20, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Force Claw', 'Power Slash', 'Grand Blade'] } },
-            'Bear General': { src: wolf,name: 'Bear General', type: 'bear', description: '', level: 25, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { attacks: ['Force Claw', 'Ferocious Fury', 'Grand Blade', 'Earth Blast'] } },
+            'Bear Leutinant': { src: wolf,name: 'Bear Leutinant', type: 'bear', description: '', level: 16, hp: 30, maxHp: 30, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 2} },
+            'Bear Captain': { src: wolf,name: 'Bear Captain', type: 'bear', description: '', level: 20, hp: 35, maxHp: 35, mp: 20, maxMp: 20, attackConfig: { attacks: ['Force Claw', 'Power Slash', 'Grand Blade'] } },
+            'Bear General': { src: wolf,name: 'Bear General', type: 'bear', description: '', level: 25, hp: 45, maxHp: 45, mp: 20, maxMp: 20, attackConfig: { attacks: ['Force Claw', 'Ferocious Fury', 'Grand Blade', 'Earth Blast'] } },
            
+        }
+    },
+    garvinKnight: {
+        'Basic Knight': { src: wolf,name: 'Basic Knight', type: 'garvinKnight', description: '', level: 5, hp: 15, maxHp: 15, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        special: {
+            'Royal Guard': { src: wolf, name: 'Royal Guard', type: 'garvinKnight', description: '', level: 25, hp: 35, maxHp: 35, mp: 20, maxMp: 20, attackConfig: { attacks: ['Wide Slash', 'Imperial Thrust'] } },
+            'Knight Ardius': { src: wolf, name: 'Knight Ardius', type: 'garvinKnight', description: '', level: 25, hp: 55, maxHp: 55, mp: 20, maxMp: 20, attackConfig: { attacks: ['Imperial Thrust', 'Wind Cutter', 'Blow Away'] } },
+        }
+    },
+    pirate: {
+        'Pirate': { src: wolf,name: 'Pirate', type: 'pirate', description: '', level: 5, hp: 25, maxHp: 25, mp: 20, maxMp: 20, attackConfig: { common: 2, special: 0} },
+        special: {
+            'Pirate Captain': { src: wolf, name: 'Pirate Captain', type: 'pirate', description: '', level: 25, hp: 55, maxHp: 55, mp: 20, maxMp: 20, attackConfig: { attacks: ['Sneaky Slash', 'Mini Bombs', 'Straight Shot', 'Dabloon Slice'] } },
         }
     },
     wolf: {

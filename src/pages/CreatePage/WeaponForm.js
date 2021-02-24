@@ -30,7 +30,7 @@ const WeaponForm = ({initialValues, createUserObj, updateCharacter}) => {
     const statAbbr = Object.keys(weaponData.requirement)[0]
     
     const requiredText = `Minimum stat needed to use (${statAbbr ? `${statAbbr}: ${weaponData.requirement[statAbbr]}` : 'None'})`
-    const options = Object.keys(weapons).map(weaponName=>{
+    const options = Object.keys(['Long Sword', 'Short Sword', 'Dagger', 'Bow']).map(weaponName=>{
         return { label: weaponName, value: weaponName}
     })
     

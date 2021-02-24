@@ -1,4 +1,14 @@
 import {randomIntFromInterval} from '../helpers'
+import { attacks } from '../player/attacks'
+import spells from '../player/spells'
+const humanEnemyAttacks = (type, attack)=>{
+    const mainAttack = attacks[type][attack]
+    return mainAttack
+}
+const humanEnemySpells = (attack)=>{
+    const mainSpell = spells[attack]
+    return mainSpell
+}
 
 const monsterAttacks = {
     wolf: {
@@ -69,6 +79,28 @@ const monsterAttacks = {
             'Fire Ball': { label: 'Fire Ball', damage: randomIntFromInterval(0, 0), description: '', element: 'normal', mp: 0},
         },
     },
-
+    garvinKnight: {
+        common: {
+            'Slash': { label: 'Slash', damage: randomIntFromInterval(1, 4), description: '', element: 'normal', mp: 0},
+            'Strike': { label: 'Strike', damage: randomIntFromInterval(1, 4), description: '', element: 'normal', mp: 0},
+        },
+        special: {
+            'Wide Slash': humanEnemyAttacks('sword', 'Wide Slash'),
+            'Imperial Thrust': humanEnemyAttacks('sword', 'Imperial Thrust'),
+            'Blow Away': humanEnemyAttacks('sword', 'Blow Away'),
+            'Wind Cutter': humanEnemySpells('Wind Cutter'),
+        },
+    },
+    pirate: {
+        common: {
+            'Strike': { label: 'Strike', damage: randomIntFromInterval(1, 4), description: '', element: 'normal', mp: 0},
+        },
+        special: {
+            'Mini Bombs': { label: 'Mini Bombs', damage: randomIntFromInterval(8,12), description: '', element: 'normal', mp: 0},
+            'Sneaky Slash': { label: 'Sneaky Slash', damage: randomIntFromInterval(8, 12), description: '', element: 'normal', mp: 0},
+            'Straight Shot': { label: 'Straight Shot', damage: randomIntFromInterval(8, 12), description: '', element: 'normal', mp: 0},
+            'Dabloon Slice': { label: 'Dabloon Slice', damage: randomIntFromInterval(12, 16), description: '', element: 'normal', mp: 0},
+        },
+    },
 }
 export default monsterAttacks

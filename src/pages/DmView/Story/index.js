@@ -55,13 +55,10 @@ const Story = () => {
                         map(Object.keys(story), chapter => {
                             return (
                                 <ListItem key={chapter}>
-                                    <Card style={{ margin: '25px' }}>
+                                    <Card style={{ margin: '25px', width: '100%' }}>
                                         <CardContent>
                                             <Typography align="center" variant="h5" component="h2">
                                                 {chapter}
-                                            </Typography>
-                                            <Typography variant="h5" color="textSecondary">
-                                                Story
                                             </Typography>
                                             <Divider />
                                             <Typography variant="h6"  >

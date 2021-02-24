@@ -10,7 +10,7 @@ import ImageIcon from '../../common/ImageIcon'
 import MonsterView from './MonsterView'
 import { useContextState } from "dynamic-context-provider";
 import { useGetBattle } from '../../common/hooks/useGetBattle'
-import { Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,12 +29,13 @@ export default function MonsterList({monster, setmonster}) {
     const classes = useStyles();
     return (
         <>
-         {
-                monster !== null && <MonsterView battle={initialBattle} monsterName={monster.name} close={closeMonsterView}/>
-            }
-        <div className={classes.root}>
+         {monster !== null && <MonsterView battle={initialBattle} monsterName={monster.name} close={closeMonsterView}/>}
+        
            
             { !monster && initialBattle?.monsters.length > 0 &&
+            <Grid container>
+            <Grid item xs={12}><Typography>Enemies in View</Typography></Grid>
+            <div className={classes.root}>
             <List component="nav" aria-label="monster-list">
                 {
                     map(initialBattle.monsters, (monster, i) => {
@@ -52,9 +53,11 @@ export default function MonsterList({monster, setmonster}) {
                         )
                     })
                 }
-            </List> }
+            </List>
+            </div>
+            </Grid> 
+            }
             { !initialBattle?.monsters.length > 0 && !loading && <Typography>No Monsters Within Striking Range</Typography>}
-        </div>
         </>
     );
 }

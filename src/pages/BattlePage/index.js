@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
+import { Grid, Typography } from '@material-ui/core'
 import DialogButton from '../../common/DialogButton'
 import HpBar from '../../common/ProgressBar/HpBar'
 import MpBar from '../../common/ProgressBar/MpBar'
@@ -10,18 +10,33 @@ import SkillForm from './SkillForm'
 
 import ApNotifier from '../../common/ApNotifier'
 import MonsterList from './MonsterList'
+import { useStatSheet } from '../../common/hooks/useStatSheet'
+import { forEach, map } from 'lodash'
+import RollBoosts from '../../common/RollBoosts'
 
 const BattlePage = () => {
-    const [aopen, setaopen] = React.useState(false)
-    const [sopen, setsopen] = React.useState(false)
-    const [iopen, setiopen] = React.useState(false)
-    const [skopen, setskopen] = React.useState(false)
-    const [monster, setmonster] = React.useState(null)
+    const stats = useStatSheet()
+    const [aopen, setaopen] = useState(false)
+    const [sopen, setsopen] = useState(false)
+    const [iopen, setiopen] = useState(false)
+    const [skopen, setskopen] = useState(false)
+    const [monster, setmonster] = useState(null)
 
+    const battleRollBoosts = []
+    forEach(Object.keys(stats), (abbr, i)=>{
+        const stat = stats[abbr]
+        let statMessage = `${abbr.toUpperCase()}: ${stat.points}`
+        if(stat.statBoost > 0){
+            battleRollBoosts.push( statMessage + ` +${stat.statBoost}`)
+        }
+     })
     return (
         <div>
             <MonsterList monster={monster} setmonster={setmonster}/>
-            <Grid style={{ textAlign: 'center', marginTop: '50vw' }} container >
+        <div>
+            <Grid style={{ textAlign: 'center', marginTop: '20vw' }} container>
+                <RollBoosts />
+                <Grid container>
                 <Grid item xs={6}>
                     <DialogButton
                     disabled={!monster}
@@ -66,7 +81,7 @@ const BattlePage = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <DialogButton
-                    disabled={!monster}
+                        disabled={!monster}
                         dialog={{
                             title: 'Items',
                             content: <ItemsForm closeModal={()=>setiopen(false)}/>,
@@ -78,12 +93,15 @@ const BattlePage = () => {
                         variant="outlined"
                     >Items</DialogButton>
                 </Grid>
+                </Grid>
+
             </Grid>
             <div>
                 <HpBar />
                 <MpBar />
                 <ApNotifier />
                
+            </div>
             </div>
         </div>
 

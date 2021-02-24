@@ -38,12 +38,21 @@ export function applyClassBoost(stats, characterClass){
     }    
     return appliedStats
 }
-export function applyStatBoostToHpAnsMp(character){
+export function applyStatBoostToHpAnsMp(character, isInitial){
     const newCharacter = {...character}
-    newCharacter.hp += character.stats.vit.points
-    newCharacter.maxHp += character.stats.vit.points
-    newCharacter.mp += character.stats.int.points
-    newCharacter.maxMp += character.stats.int.points
+    if(!isInitial){
+        newCharacter.stats = Object.keys(newCharacter.stats).reduce((acc, key)=>{
+            const stat = newCharacter.stats[key]
+            stat.points += Math.round(character.stats[key].points/10)
+            return {...acc, [key]: stat}
+        },{})
+    }
+
+    newCharacter.hp += Math.round(newCharacter.stats.vit.statBoost)
+    newCharacter.maxHp += Math.round(newCharacter.stats.vit.statBoost)
+    newCharacter.mp += Math.round(newCharacter.stats.int.statBoost)
+    newCharacter.maxMp +=  Math.round(newCharacter.stats.int.statBoost)
+    
     return newCharacter
 }
 export function useStatSheet(manualStats, characterClass, applyClass= false){
@@ -52,5 +61,5 @@ export function useStatSheet(manualStats, characterClass, applyClass= false){
     const desiredClass = characterClass || character.class
     const finalStats = convertStatSheet(stats, manualStats)
     
-    return !applyClass ? finalStats : applyClassBoost(convertStatSheet(stats, manualStats), desiredClass)
+    return !applyClass ? finalStats : applyClassBoost(finalStats, desiredClass)
 }

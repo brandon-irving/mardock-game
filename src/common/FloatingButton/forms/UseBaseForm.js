@@ -27,7 +27,7 @@ export default function UseBaseForm({ type = '' , onSubmit=()=>null}) {
     }
     async function handleSubmit() {
         updateContextState({globalLoading: true})
-        await itemUse({ userGivingItem: user, type, target, item })
+        await itemUse({ userGivingItem: user, type, target, item })        
         updateContextState({globalLoading: false})
         onSubmit()
     }

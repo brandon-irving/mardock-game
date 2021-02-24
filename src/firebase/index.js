@@ -4,6 +4,8 @@ import "firebase/firestore";
 import "firebase/database";
 import { launchErrorToaster } from '../core/toaster';
 import { cloneDeep, forEach, isEqual, map } from "lodash";
+import { levelingSystem } from "../gameData/player/levels";
+import { applyStatBoostToHpAnsMp } from "../common/hooks/useStatSheet";
 const firebaseConfig = {
   apiKey: "AIzaSyBuehaOKFHvHfNbcfwSy2SNnO_iURlxl6k",
   authDomain: "dnd-story-assistant.firebaseapp.com",
@@ -289,6 +291,19 @@ export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) 
   return oldEquipped
 }
 
+export const handleLevelUp = (character) => {
+  if(!character) return 
+  let leveledCharacter = {...character}
+  try{
+    leveledCharacter = applyStatBoostToHpAnsMp(levelingSystem(character))      
+  }catch(e){
+    console.error('log: error', e)
+    launchErrorToaster({content: 'There was an error'})
+  }
+
+ return leveledCharacter
+}
+
 /******************************** DM *********************************/
 
 export async function getAllUsers(){
@@ -323,6 +338,7 @@ export const updateStoryChapter = async (chapter, updates, specialKey) => {
 
 export const startBattle = async (battle) => {
   try{
+    
     const userRef = firestore.collection('DM').doc('battles');
     await userRef.update({current: {...battle}});
  
@@ -365,6 +381,7 @@ export const giveUserRewards = async (users, rewards) => {
     forEach(users, user=>{
       const newUser = cloneDeep(user)
       const { character } = newUser
+      newUser.inView = null
       character.exp += rewards.exp
       forEach(rewards.items, item=>{
         const itemInBag = character.items[item.type][item.label]
@@ -375,8 +392,7 @@ export const giveUserRewards = async (users, rewards) => {
         }
 
       })
-
-      characterUpdates.push(character)
+      characterUpdates.push((handleLevelUp(character)))
     })
     await batchUpdate('character', users, characterUpdates)
     const dmRef = firestore.collection('DM').doc('battles');
@@ -387,6 +403,7 @@ export const giveUserRewards = async (users, rewards) => {
   }
 
 }
+
 export const sendUserAMessage = async (user, dmMessage) => {
   try{
     await updateCharacter(user, {[`character.dmMessage`]: dmMessage})

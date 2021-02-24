@@ -1,10 +1,11 @@
 import { Typography } from '@material-ui/core';
 import { forEach } from 'lodash';
 import { toast } from 'react-toastify';
+import RollBoosts from '../common/RollBoosts';
 import { updateCharacter, updateDMDocs } from '../firebase';
 const defaultOptions = {
     position: "top-center",
-    autoClose: 5000,
+    autoClose: false,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -30,10 +31,10 @@ export function launchWarningToaster({ options = {}, content = '' }) {
 export function handleDmMessage(user) {
     const { hint, innerThoughts } = user.character.dmMessage
     if (hint.length > 0) {
-        launchInfoToaster({ options: { autoClose: false }, content: `✨  ${hint}` })
+        launchInfoToaster({ content: `✨  ${hint}` })
     }
     if (innerThoughts.length > 0) {
-        launchWarningToaster({ options: { autoClose: false }, content: `💭 ${innerThoughts}` })
+        launchWarningToaster({ content: `💭 ${innerThoughts}` })
     }
     updateCharacter(user, { 'character.dmMessage': { hint: '', innerThoughts: '' } })
 }
@@ -82,8 +83,16 @@ export function handleBattleSuccess(battle) {
             <Typography variant="h6">Outcome:</Typography>
             <Typography variant="body1">{battle.rewards.consequence}</Typography>
         </div>)
-        launchInfoToaster({ options: { autoClose: false }, content })
+        launchInfoToaster({ content })
         updateDMDocs({ 'current': null })
 
+    }
+}
+
+export function handleLevelUpMessage(newUser, oldUser) {
+    
+    const content = (<RollBoosts isLevelUp oldStats={oldUser.character.stats} manualStats={newUser.character.stats} />)
+    if (newUser.character.level > oldUser.character.level) {
+        launchSuccussToaster({ content })
     }
 }

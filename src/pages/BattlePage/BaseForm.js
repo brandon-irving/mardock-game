@@ -92,7 +92,6 @@ export default function BaseForm({ onSubmit=()=>{}, type = '', options, targets 
     }
     async function handleSubmit(values) {
         const foundItem = find(options, { label: values[type]})
-        console.log('log: user', {foundItem, character: user.character})
         let success = false
         if(type !== 'Spell'){            
             success = await activateAbility(user, foundItem.ap)

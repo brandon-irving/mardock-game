@@ -1,7 +1,7 @@
 import { useContextState } from "dynamic-context-provider";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link, useHistory } from "react-router-dom";
-import { auth, generateUserDocument, observer, dmObserver, firestore, updateCharacter } from "./firebase";
+import { auth, generateUserDocument, firestore, handleLevelUp } from "./firebase";
 import SignInPage from "./pages/SignInPage";
 import Home from "./pages/Home";
 import Root from "./common/Root";
@@ -10,17 +10,17 @@ import CharacterPage from "./pages/CharacterPage";
 import { PrivateRoute } from "./common/PrivateRoute";
 import CreatePage from "./pages/CreatePage";
 import DmViewResolver from "./pages/DmView/DmViewResolver";
-import { handleDmMessage, handleNewItemMessage, handleBattleSuccess } from "./core/toaster";
+import { handleDmMessage, handleNewItemMessage, handleBattleSuccess, handleLevelUpMessage } from "./core/toaster";
 import { find } from "lodash";
 
-function handleDbSync(newUser, oldUser, updateContextState){
+async function handleDbSync(newUser, oldUser, updateContextState){
   updateContextState({user: newUser})
   handleNewItemMessage(newUser, oldUser,)
   handleDmMessage(newUser)
-  
+  handleLevelUpMessage(newUser, oldUser)
 }
 export default function AppRouter() {
-  const { user, users, battle, updateContextState } = useContextState()
+  const { user, users, updateContextState } = useContextState()
   const [appLoading, setappLoading] = useState(true)
   
   useEffect(() => {
@@ -42,6 +42,7 @@ export default function AppRouter() {
         updateContextState({users})
       }
      )
+
      const dMnsubscribe = firestore.collection('DM').onSnapshot(
       querySnapshot=>{
         let battle = {}
@@ -54,10 +55,11 @@ export default function AppRouter() {
             handleBattleSuccess(battle)
           }
         })        
-        
+
         updateContextState({battle})
       }
      )
+     
   return () => {
     usersUnsubscribe()
       dMnsubscribe()
@@ -70,11 +72,6 @@ export default function AppRouter() {
     newUser && handleDbSync(newUser, user, updateContextState)
   }, [users])
 
-  useEffect(() => {
-    if(!battle?.current?.success)return
-    
-  }, [battle])
-  
   if (appLoading) return null // TODO: add splash/loading screen
   return (
     <>

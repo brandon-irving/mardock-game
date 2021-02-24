@@ -12,7 +12,6 @@ const SpellForm = ({monster, closeModal}) => {
     const targets = map([monster], monster=>{
         return {label: monster.name, value: monster.name}
     }) 
-    console.log('log: targets', targets)
     
     return (
        <BaseForm targets={targets} onSubmit={onSubmit} type="Spell" options={spells} />

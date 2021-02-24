@@ -136,7 +136,7 @@ export default function CreatePage() {
   }
   async function handleSubmit(){
     try{
-      const character = applyStatBoostToHpAnsMp({...createUserObj})
+      const character = applyStatBoostToHpAnsMp({...createUserObj}, true)
       const characterClass = classes[character.class]
       if(characterClass.spells){
         character.techniques.spells = characterClass.spells
@@ -144,6 +144,7 @@ export default function CreatePage() {
       if(characterClass.attacks){
         character.techniques.attacks.sword = characterClass.attacks
       }
+      
       await updateFireBaseCharacter({character})
       history.replace('/')
     }catch(e){

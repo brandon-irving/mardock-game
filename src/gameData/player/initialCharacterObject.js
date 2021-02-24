@@ -1,3 +1,5 @@
+import { statSheet } from "../constants";
+
 export const initialCharacterObject = {
     title: 'Novice Adventurer',
     ap: 10,
@@ -6,14 +8,14 @@ export const initialCharacterObject = {
     equipped: {accessory: '', armor: {}, weapon: 'Long Sword', secondaryWeapon: ''},
     exp: 0,
     gil: 0,
-    hp: 20,
-    mp: 20,
+    hp: 30,
+    mp: 30,
     items: {misc:{}, weapon: {}, armor: {}, accessory: {}, specialItem: {}},
     level: 1,
-    maxAp: 20,
-    maxHp: 20,
-    maxMp: 20,
-    stats: {},
+    maxAp: 30,
+    maxHp: 30,
+    maxMp: 30,
+    stats: statSheet,
     techniques: {
         attacks: {
             sword: [],

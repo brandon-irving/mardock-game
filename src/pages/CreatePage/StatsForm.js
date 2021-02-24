@@ -76,6 +76,7 @@ const desiredStats = useStatSheet(createUserObj.stats)
   function updateCharacterStat(key, value){
     const newCharStats = {...desiredStats}
     newCharStats[key].points = newCharStats[key].points + value
+    
     updateCharacter({stats: newCharStats})
   }
   
