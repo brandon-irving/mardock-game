@@ -1,7 +1,12 @@
 import React from 'react'
-const ImageIcon = ({ src, alt='', width="25vw" }) => {
+const ImageIcon = ({ size="large", src, alt='', width="25vw" }) => {
+    const sizeMapper = {
+        small: '25px',
+        medium: '50px',
+        large: '100px'
+    }
     return (
-        <img style={{ width, maxWidth: '100px', height: 'inherit' }} src={src} alt={alt} />
+        <img style={{ width, maxWidth: sizeMapper[size], height: 'inherit' }} src={src} alt={alt} />
     )
 }
 

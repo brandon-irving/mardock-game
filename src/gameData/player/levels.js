@@ -8,7 +8,9 @@ export const levelingSystem = (character)=>{
     if(exp >= nextLevel){
         newCharacter.level = level + 1
         newCharacter.stats = Object.keys(newCharacter.stats).reduce((acc, statKey)=>{
-            return {...acc, [statKey]: {...newCharacter.stats[statKey]}}
+            const stat = newCharacter.stats[statKey]
+            stat.points += Math.round(character.stats[statKey].points/10)
+            return {...acc, [statKey]: {...stat}}
         },{})
     }
 

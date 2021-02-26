@@ -393,9 +393,9 @@ export const giveUserRewards = async (users, rewards) => {
         }
 
       })
+      console.log('log: handleLevelUp(character)', handleLevelUp(character))
       
       characterUpdates.push((handleLevelUp(character)))
-      characterUpdates.push(character)
     })
     await batchUpdate('character', users, characterUpdates)
     const dmRef = firestore.collection('DM').doc('battles');

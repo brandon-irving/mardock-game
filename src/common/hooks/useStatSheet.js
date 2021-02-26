@@ -40,13 +40,6 @@ export function applyClassBoost(stats, characterClass){
 }
 export function applyStatBoostToHpAnsMp(character, isInitial){
     const newCharacter = {...character}
-    if(!isInitial){
-        newCharacter.stats = Object.keys(newCharacter.stats).reduce((acc, key)=>{
-            const stat = newCharacter.stats[key]
-            stat.points += Math.round(character.stats[key].points/10)
-            return {...acc, [key]: stat}
-        },{})
-    }
 
     newCharacter.hp += Math.round(newCharacter.stats.vit.statBoost)
     newCharacter.maxHp += Math.round(newCharacter.stats.vit.statBoost)

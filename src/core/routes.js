@@ -17,7 +17,7 @@ const routes = [
     {
         route: '/Battle',
         title: 'Battle',
-        icon: <ImageIcon width='7vw' src={fist} alt="battle" />,
+        icon: <ImageIcon size="small" width='7vw' src={fist} alt="battle" />,
     },
     {
         route: '/Store',
