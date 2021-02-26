@@ -293,7 +293,8 @@ export const equipItem = async ({ user, items, newEquip, type, itemsGameData }) 
 
 export const handleLevelUp = (character) => {
   if(!character) return 
-  let leveledCharacter = {...character}
+  let leveledCharacter = cloneDeep({...character})
+  
   try{
     leveledCharacter = applyStatBoostToHpAnsMp(levelingSystem(character))      
   }catch(e){
@@ -392,7 +393,9 @@ export const giveUserRewards = async (users, rewards) => {
         }
 
       })
+      
       characterUpdates.push((handleLevelUp(character)))
+      characterUpdates.push(character)
     })
     await batchUpdate('character', users, characterUpdates)
     const dmRef = firestore.collection('DM').doc('battles');

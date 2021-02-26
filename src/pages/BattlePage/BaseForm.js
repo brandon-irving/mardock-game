@@ -70,7 +70,8 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
 }
 const errorMessageMap = {
     Attack: 'You dont know any specials with this weapon',
-    Spell: "You don't know any spells" 
+    Spell: "You don't know any spells" ,
+    Skill: "You don't know any skills"
 }
 
 export default function BaseForm({ onSubmit=()=>{}, type = '', options, targets = defaultTargets }) {

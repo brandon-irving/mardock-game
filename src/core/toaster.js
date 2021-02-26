@@ -66,7 +66,7 @@ export function handleNewItemMessage(newUser, oldUser) {
 
 }
 
-export function handleBattleSuccess(battle) {
+export function handleBattleSuccess(battle, updateContextState) {
 
     if (battle?.success) {
         const content = (<div>

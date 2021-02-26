@@ -1,10 +1,11 @@
 import React from 'react'
-import {battles} from '../../../gameData/battles'
+import {battles, convertToBattle} from '../../../gameData/battles'
 import convertToOptions  from '../../../common/helpers/convertToOptions' 
 import { TextField, MenuItem, Card, Grid, Button } from '@material-ui/core'
 import { map } from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import { startBattle } from '../../../firebase'
+import { useContextState } from 'dynamic-context-provider'
 
 const useStyles = makeStyles({
     container: {
@@ -17,6 +18,7 @@ const useStyles = makeStyles({
     },
   });
 const SelectBattleForm = () => {
+  const { users } = useContextState() 
     const classes = useStyles()
     const battleOptions = convertToOptions(battles, true)
     const [battle, setbattle] = React.useState(battleOptions[0].label)
@@ -25,7 +27,8 @@ const SelectBattleForm = () => {
     }
     async function handleClick(){
         const battleInfo = battles[battle]
-        
+        // const createPvpBattle = convertToBattle(users)
+        // console.log('log: battleInfo', {battleInfo, createPvpBattle})
         await startBattle(battleInfo)
     }
     return (
@@ -44,6 +47,9 @@ const SelectBattleForm = () => {
               {option.label}
             </MenuItem>
           ))}
+           <MenuItem value='PVP'>
+           PVP
+            </MenuItem>
         </TextField>
         
         </Card>

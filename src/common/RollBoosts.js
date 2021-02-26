@@ -9,9 +9,11 @@ const RollBoosts = ({isLevelUp, manualStats, oldStats}) => {
     const title = isLevelUp ? `You Leveled Up!` : 'Roll Boosts'
     forEach(Object.keys(stats), (abbr, i)=>{
         const stat = stats[abbr]
-        const oldStat = oldStats[abbr]
-        let statMessage = `${abbr.toUpperCase()}: ${oldStat.points}`
+        let statMessage = `${abbr.toUpperCase()}: ${stat.points}`
+        
         if(isLevelUp){
+            const oldStat = oldStats[abbr]
+            statMessage = `${abbr.toUpperCase()}: ${oldStat.points}`
             battleRollBoosts.push( statMessage + ` -> ${stat.points}`)
         }else if(stat.statBoost > 0){
             battleRollBoosts.push( statMessage + ` +${stat.statBoost}`)

@@ -49,9 +49,9 @@ export default function AppRouter() {
         querySnapshot.docChanges().forEach((change) => {
           const dmData = change.doc.data()
           if(dmData.current){
-            battle = dmData.current
+            battle = Object.keys(dmData.current).length ? dmData.current : null
           }
-          if(change.type==='modified'){
+          if(change.type==='modified'){            
             handleBattleSuccess(battle)
           }
         })        

@@ -32,11 +32,12 @@ useEffect(() => {
     getData()
 }, [])
 useEffect(() => {
+    const isDm = !user
     if(user) {
         getData()
-    }else if(battle?.monsters){
+    }else if(battle?.monsters || isDm){
         setdata(battle)
-    }
+    }    
 }, [battle, user])
 
 return [data, loading]

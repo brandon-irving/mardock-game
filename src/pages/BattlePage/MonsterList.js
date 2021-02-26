@@ -57,7 +57,7 @@ export default function MonsterList({monster, setmonster}) {
             </div>
             </Grid> 
             }
-            { !initialBattle?.monsters.length > 0 && !loading && <Typography>No Monsters Within Striking Range</Typography>}
+            { !initialBattle?.monsters.length > 0 && !loading && <Typography>No Enemies Within Striking Range</Typography>}
         </>
     );
 }

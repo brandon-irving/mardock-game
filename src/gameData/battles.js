@@ -1,6 +1,15 @@
+import { map } from "lodash";
 import { generateItems } from "./helpers";
 import { generateMonsters } from "./monsters/builders";
-
+export function convertToBattle(users, rewards={exp: 0,gil: 0, items:[], consequence:''}){
+    const monsters = map(users, user=>{
+        return{...user.character, exp: 500, src: ''}
+    })
+    return {
+        monsters,
+        rewards,
+    }
+}
 export const battles = {
     tutorialBattle1: {
         monsters: generateMonsters({ wolf: 4}).monsters,

@@ -4,7 +4,7 @@ import monsterAttacks from './attacks'
 import monsters from './index'
 
 export function buildMonster({ type = 'wolf', level = 5, attackConfig = { common: 2, special: 1} }) {
-    const monster = { type, level, attacks: [], exp: level * 5.5 }
+    const monster = { type, level, attacks: [] }
     const attackMap = monsterAttacks[type] // { common: {}, special: {}}
     const availableCommonAttacks = Object.keys(attackMap.common) // ['slash']
     const availableSpecialAttacks = Object.keys(attackMap.special) // ['fireball']

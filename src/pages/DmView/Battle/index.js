@@ -14,8 +14,8 @@ const Battle = () => {
     if(loading)return null
     return (
             <Grid justify="center" spacing={3} container>
-          {!battle && <SelectBattleForm />}
-               {battle &&  <>
+          {!battle?.monsters && <SelectBattleForm />}
+               {battle?.monsters &&  <>
                 <Grid style={{maxHeight: '75vh', overflow: 'scroll'}} item xs={12} md={6}>
                 {
                     map(users, (user, i)=>{
