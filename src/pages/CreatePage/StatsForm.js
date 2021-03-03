@@ -5,9 +5,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import { cloneDeep, map } from 'lodash';
-import NumericInput from 'react-numeric-input';
+import {map } from 'lodash';
 import { useStatSheet } from '../../common/hooks/useStatSheet';
+import CustomNumberInput from '../../common/CustomNumberInput';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,14 +55,13 @@ const Stat = ({updateCharacterStat, stat, availablePoints, setavailablePoints}) 
         />
        
       </ListItem>
-             <NumericInput 
-                onChange={handleStateChange} 
-                style={{input: {fontSize: '14pt',color: textColor, width: '100px', height: '40px'}}} 
-                mobile={true} 
-                min={initialStatPoint}
-                max={max} 
-                value={statPoint}
-            />
+      <CustomNumberInput 
+      onChange={handleStateChange}
+      min={initialStatPoint}
+      max={max} 
+      value={statPoint}
+      />
+            
         </div>
        
     )

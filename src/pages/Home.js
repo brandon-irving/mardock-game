@@ -13,6 +13,8 @@ import { useContextState } from 'dynamic-context-provider'
 import { useEquipped } from '../common/hooks/useEquipped'
 import { classes } from '../gameData/player/classes'
 import { titles } from '../gameData/player/titles'
+import SpellForm from './BattlePage/SpellForm';
+import CustomNumberInput from '../common/CustomNumberInput';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,10 +65,11 @@ function getInitials(fullName='John Doe'){
                         <Grid container style={{marginTop: '10px'}}>
                           {
                             map(equipped, (equipment, index)=>{
-                              if(!equipment)return null
+                              console.log('log: equipment', equipped)
+              
                               return(
-                                <Grid key={index} item xs={4}>
-                            <CustomIcon text={equipment.label} logo={equipment.src} alt={equipment.src}/>
+                                <Grid key={index} item xs={3}>
+                            <CustomIcon text={equipment?.label || 'Empty'} logo={equipment?.src} alt={equipment?.src}/>
                             </Grid>
                               )
                             })
@@ -81,7 +84,11 @@ function getInitials(fullName='John Doe'){
                 </CardContent>
             </Card>
              <GridContainer>
-                 <InfoCard2>
+               {/* <InfoCard2><CustomNumberInput /></InfoCard2> */}
+             <InfoCard2
+             title='Spells'
+             ><SpellForm targets={[{label: character.name, value: character.name}]} /></InfoCard2>
+                 <InfoCard2 title="Stats">
                      <Grid container>
                      {map(Object.keys(stats), (abbr, i)=>{
                        const stat = stats[abbr]

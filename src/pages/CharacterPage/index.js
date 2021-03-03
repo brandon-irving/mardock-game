@@ -3,7 +3,7 @@ import React from 'react'
 const CharacterPage = () => {
     return (
         <div>
-            CharacterPage
+            Coming Soon
         </div>
     )
 }

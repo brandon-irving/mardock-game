@@ -58,7 +58,7 @@ const BattlePage = () => {
                             open: sopen,
                             setopen: setsopen,
                             title: 'Spells',
-                            content: <SpellForm monster={monster} closeModal={()=>setsopen(false)}/>,
+                            content: <SpellForm targets={[monster]} closeModal={()=>setsopen(false)}/>,
                         }}
 
                         fullWidth

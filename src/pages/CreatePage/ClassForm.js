@@ -2,10 +2,11 @@ import React from 'react'
 import { MuiFormGenerator } from 'mui-form-generator'
 import theme from '../../core/theme'
 import { classes } from '../../gameData/player/classes'
-import { map } from 'lodash'
+import { forEach, map } from 'lodash'
 import { Typography } from '@material-ui/core'
+import { statSheet } from '../../gameData/constants'
 
-const BluePrint = (options) => {
+const BluePrint = ({options, characterClass: value, }) => {
     return ({
         Rows: [
             {
@@ -17,6 +18,8 @@ const BluePrint = (options) => {
                             type: 'select',
                             label: 'class',
                             variant: 'filled',
+                            type: 'selectNative',
+                            value,
                             options,
                         }
                     },
@@ -26,9 +29,32 @@ const BluePrint = (options) => {
         ]
     })
 }
+function statDescriptionGenerator(statDescription){
+    const statTextArray = statDescription.split(' ')
+    return map(statTextArray, statDesc=>{
+        const isIncrease = statDesc.charAt([0]) === '+' && statDesc.charAt([1]) === '+'
+        const isSlightDecrease = statDesc.charAt([0]) === '-'
+        const isDecrease = statDesc.charAt([0]) === '-' && statDesc.charAt([1]) === '-'
+        const statKey = statDesc.replace('+', '').replace('+', '').replace('-', '').replace('-', '')
+        const fullStat = statSheet[statKey.toLowerCase()]
+        let desiredModifier = 'slightly increases'
+        if(isIncrease)desiredModifier = 'increases'
+        if(isSlightDecrease)desiredModifier = 'slightly decreases'
+        if(isDecrease)desiredModifier = 'decreases'
+        let description = 'This class ' + desiredModifier
+    
+    
+        return(<>
+        <Typography>{description} your {fullStat.label}</Typography>
+        </>)
+    })
 
+
+}
 const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
-    const { description, spells, attacks, starterWeapon } = classes[createUserObj.class]
+    
+    const { description, spells, attacks, statDescription } = classes[createUserObj.class]
+    const [characterClass, setcharacterClass] = React.useState(createUserObj.class)
     const initialValues= { class: createUserObj.class }
     const options = map(Object.keys(classes), className=>{
         const classOption = classes[className]
@@ -47,7 +73,8 @@ const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
                 setavailablePoints(10)
             }else if(fieldName === 'class'){    
                 setavailablePoints(10)
-                updateCharacter({class: field.label})
+                updateCharacter({class: field})                
+                setcharacterClass(field)
             }
 
         })
@@ -58,10 +85,12 @@ const ClassForm = ({createUserObj, setavailablePoints, updateCharacter}) => {
           <MuiFormGenerator
             theme={theme}
             manualValidate={validate}
-            blueprint={BluePrint(options)}
+            blueprint={BluePrint({options, characterClass})}
             initialValues={initialValues}
         />   
-        <Typography>Description:</Typography>
+        <Typography>Stats:</Typography>
+        {statDescriptionGenerator(statDescription)}
+        <Typography style={{marginTop: '10px'}}>Ability:</Typography>
         <Typography style={{marginBottom: '20px'}}>{description}</Typography>
         { spells && <Typography >Learned Spell: {spells[0]}</Typography>}
         { attacks && <Typography>Learned Attack: {attacks[0]}</Typography>}

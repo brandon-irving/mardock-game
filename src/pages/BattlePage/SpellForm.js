@@ -4,17 +4,17 @@ import React from 'react'
 import { useGetSpells } from '../../common/hooks/useGetSpells'
 import BaseForm from './BaseForm'
 
-const SpellForm = ({monster, closeModal}) => {
+const SpellForm = ({targets, closeModal=()=>null}) => {
     const spells = useGetSpells()
     function onSubmit(){
         closeModal()
     }
-    const targets = map([monster], monster=>{
+    const convertedTargets = map(targets, monster=>{
         return {label: monster.name, value: monster.name}
     }) 
     
     return (
-       <BaseForm targets={targets} onSubmit={onSubmit} type="Spell" options={spells} />
+       <BaseForm targets={convertedTargets} onSubmit={onSubmit} type="Spell" options={spells} />
     )
 }
 

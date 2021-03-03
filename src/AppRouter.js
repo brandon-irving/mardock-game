@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Root from "./common/Root";
 import BattlePage from "./pages/BattlePage";
 import CharacterPage from "./pages/CharacterPage";
+import Store from "./pages/Store";
 import { PrivateRoute } from "./common/PrivateRoute";
 import CreatePage from "./pages/CreatePage";
 import DmViewResolver from "./pages/DmView/DmViewResolver";
@@ -92,6 +93,11 @@ export default function AppRouter() {
           <PrivateRoute path="/Character">
             <Root>
               <CharacterPage />
+              </Root>
+          </PrivateRoute>
+          <PrivateRoute path="/Store">
+            <Root>
+              <Store />
               </Root>
           </PrivateRoute>
 

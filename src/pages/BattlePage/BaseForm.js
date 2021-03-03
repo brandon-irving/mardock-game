@@ -11,6 +11,8 @@ const defaultTargets = [{ label: 'No Targets', value: 'No Targets' }]
 
 const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '' }], targets = [{ label: '', value: '' }] }) => {
     const foundValue = find(options, {label: values[type]}) || {}
+    console.log('log: values', values)
+    
     return ({
         Rows: [
             {
@@ -36,7 +38,7 @@ const BaseBluePrint = ({ values, type = 'base', options = [{ label: '', value: '
                     },
                 ]
             },
-            {
+            values.target !== undefined &&{
                 Cols: [
                     {
                         Input: {
