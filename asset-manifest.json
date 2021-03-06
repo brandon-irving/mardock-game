@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/mardock-game/static/js/main.ae4940c3.chunk.js",
-    "main.js.map": "/mardock-game/static/js/main.ae4940c3.chunk.js.map",
+    "main.js": "/mardock-game/static/js/main.c9549eee.chunk.js",
+    "main.js.map": "/mardock-game/static/js/main.c9549eee.chunk.js.map",
     "runtime-main.js": "/mardock-game/static/js/runtime-main.4befc74f.js",
     "runtime-main.js.map": "/mardock-game/static/js/runtime-main.4befc74f.js.map",
     "static/css/2.8df867bc.chunk.css": "/mardock-game/static/css/2.8df867bc.chunk.css",
@@ -41,6 +41,6 @@
     "static/js/runtime-main.4befc74f.js",
     "static/css/2.8df867bc.chunk.css",
     "static/js/2.8cc25942.chunk.js",
-    "static/js/main.ae4940c3.chunk.js"
+    "static/js/main.c9549eee.chunk.js"
   ]
 }
